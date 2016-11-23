@@ -15,7 +15,7 @@ namespace MissionPlanner.Controls
         public ThemeColors()
         {
             InitializeComponent();
-
+            
             Utilities.ThemeManager.ApplyThemeTo(this);
         }
 

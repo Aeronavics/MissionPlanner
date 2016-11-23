@@ -34,7 +34,7 @@ namespace MissionPlanner.Maps
 
             list.Add(Instance.DbId, Instance);
 
-            
+
         }
 
         #region GMapProvider Members

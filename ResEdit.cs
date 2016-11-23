@@ -23,7 +23,7 @@ namespace resedit
         public Form1()
         {
             InitializeComponent();
-
+            
             List<string> list = new List<string>();
 
             list.Add("");

@@ -22,6 +22,10 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         public ConfigPlanner()
         {
             InitializeComponent();
+            CMB_Layout.Items.Add(DisplayNames.Basic);
+            CMB_Layout.Items.Add(DisplayNames.Advanced);
+
+            Utilities.ThemeManager.ApplyThemeTo(this);
             txt_log_dir.TextChanged += OnLogDirTextChanged;
 
         }
@@ -31,15 +35,26 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         public void Activate()
         {
             startup = true; // flag to ignore changes while we programatically populate controls
+            if (MainV2.DisplayConfiguration.displayName == DisplayNames.Advanced)
+            {
+                CMB_Layout.SelectedIndex = 1;
+            }
+            else if (MainV2.DisplayConfiguration.displayName == DisplayNames.Basic)
+            {
+                CMB_Layout.SelectedIndex = 0;
+            }
+            else
+            {
+                CMB_Layout.SelectedIndex = 0;
+            }
 
-
-            CMB_osdcolor.DataSource = Enum.GetNames(typeof (KnownColor));
+            CMB_osdcolor.DataSource = Enum.GetNames(typeof(KnownColor));
 
             // set distance/speed unit states
-            CMB_distunits.DataSource = Enum.GetNames(typeof (Common.distances));
-            CMB_speedunits.DataSource = Enum.GetNames(typeof (Common.speeds));
+            CMB_distunits.DataSource = Enum.GetNames(typeof(Common.distances));
+            CMB_speedunits.DataSource = Enum.GetNames(typeof(Common.speeds));
 
-            CMB_theme.DataSource = Enum.GetNames(typeof (ThemeManager.Themes));
+            CMB_theme.DataSource = Enum.GetNames(typeof(ThemeManager.Themes));
 
             CMB_theme.Text = ThemeManager.CurrentTheme.ToString();
 
@@ -93,7 +108,6 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             SetCheckboxFromConfig("speechlowspeedenabled", CHK_speechlowspeed);
             SetCheckboxFromConfig("beta_updates", CHK_beta);
             SetCheckboxFromConfig("password_protect", CHK_Password);
-            SetCheckboxFromConfig("advancedview", CHK_advancedview);
             SetCheckboxFromConfig("showairports", CHK_showairports);
             SetCheckboxFromConfig("enableadsb", chk_ADSB);
             SetCheckboxFromConfig("norcreceiver", chk_norcreceiver);
@@ -171,7 +185,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             // stop first
             BUT_videostop_Click(sender, e);
 
-            var bmp = (GCSBitmapInfo) CMB_videoresolutions.SelectedItem;
+            var bmp = (GCSBitmapInfo)CMB_videoresolutions.SelectedItem;
 
             try
             {
@@ -218,8 +232,8 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             var modes = new List<GCSBitmapInfo>();
 
             // Get the ICaptureGraphBuilder2
-            capGraph = (ICaptureGraphBuilder2) new CaptureGraphBuilder2();
-            var m_FilterGraph = (IFilterGraph2) new FilterGraph();
+            capGraph = (ICaptureGraphBuilder2)new CaptureGraphBuilder2();
+            var m_FilterGraph = (IFilterGraph2)new FilterGraph();
 
             DsDevice[] capDevices;
             capDevices = DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice);
@@ -238,7 +252,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             }
 
             // Find the stream config interface
-            hr = capGraph.FindInterface(PinCategory.Capture, MediaType.Video, capFilter, typeof (IAMStreamConfig).GUID,
+            hr = capGraph.FindInterface(PinCategory.Capture, MediaType.Video, capFilter, typeof(IAMStreamConfig).GUID,
                 out o);
             DsError.ThrowExceptionForHR(hr);
 
@@ -257,8 +271,8 @@ namespace MissionPlanner.GCSViews.ConfigurationView
                 var ptr = IntPtr.Zero;
 
                 hr = videoStreamConfig.GetStreamCaps(i, out media, TaskMemPointer);
-                v = (VideoInfoHeader) Marshal.PtrToStructure(media.formatPtr, typeof (VideoInfoHeader));
-                c = (VideoStreamConfigCaps) Marshal.PtrToStructure(TaskMemPointer, typeof (VideoStreamConfigCaps));
+                v = (VideoInfoHeader)Marshal.PtrToStructure(media.formatPtr, typeof(VideoInfoHeader));
+                c = (VideoStreamConfigCaps)Marshal.PtrToStructure(TaskMemPointer, typeof(VideoStreamConfigCaps));
                 modes.Add(new GCSBitmapInfo(v.BmiHeader.Width, v.BmiHeader.Height, c.MaxFrameInterval,
                     c.VideoStandard.ToString(), media));
             }
@@ -318,7 +332,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         {
             if (startup)
                 return;
-            MainV2.instance.changelanguage((CultureInfo) CMB_language.SelectedItem);
+            MainV2.instance.changelanguage((CultureInfo)CMB_language.SelectedItem);
 
             MessageBox.Show("Please Restart the Planner");
 
@@ -334,7 +348,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             {
                 Settings.Instance["hudcolor"] = CMB_osdcolor.Text;
                 FlightData.myhud.hudcolor =
-                    Color.FromKnownColor((KnownColor) Enum.Parse(typeof (KnownColor), CMB_osdcolor.Text));
+                    Color.FromKnownColor((KnownColor)Enum.Parse(typeof(KnownColor), CMB_osdcolor.Text));
             }
         }
 
@@ -342,9 +356,9 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         {
             if (startup)
                 return;
-            Settings.Instance["speechwaypointenabled"] = ((CheckBox) sender).Checked.ToString();
+            Settings.Instance["speechwaypointenabled"] = ((CheckBox)sender).Checked.ToString();
 
-            if (((CheckBox) sender).Checked)
+            if (((CheckBox)sender).Checked)
             {
                 var speechstring = "Heading to Waypoint {wpn}";
                 if (Settings.Instance["speechwaypoint"] != null)
@@ -360,9 +374,9 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         {
             if (startup)
                 return;
-            Settings.Instance["speechmodeenabled"] = ((CheckBox) sender).Checked.ToString();
+            Settings.Instance["speechmodeenabled"] = ((CheckBox)sender).Checked.ToString();
 
-            if (((CheckBox) sender).Checked)
+            if (((CheckBox)sender).Checked)
             {
                 var speechstring = "Mode changed to {mode}";
                 if (Settings.Instance["speechmode"] != null)
@@ -378,9 +392,9 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         {
             if (startup)
                 return;
-            Settings.Instance["speechcustomenabled"] = ((CheckBox) sender).Checked.ToString();
+            Settings.Instance["speechcustomenabled"] = ((CheckBox)sender).Checked.ToString();
 
-            if (((CheckBox) sender).Checked)
+            if (((CheckBox)sender).Checked)
             {
                 var speechstring = "Heading to Waypoint {wpn}, altitude is {alt}, Ground speed is {gsp} ";
                 if (Settings.Instance["speechcustom"] != null)
@@ -396,7 +410,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         {
             if (!MainV2.comPort.BaseStream.IsOpen)
                 return;
-            ((MyButton) sender).Enabled = false;
+            ((MyButton)sender).Enabled = false;
             try
             {
                 MainV2.comPort.getParamList();
@@ -407,7 +421,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             }
 
 
-            ((MyButton) sender).Enabled = true;
+            ((MyButton)sender).Enabled = true;
             startup = true;
 
 
@@ -418,9 +432,9 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         {
             if (startup)
                 return;
-            Settings.Instance["speechbatteryenabled"] = ((CheckBox) sender).Checked.ToString();
+            Settings.Instance["speechbatteryenabled"] = ((CheckBox)sender).Checked.ToString();
 
-            if (((CheckBox) sender).Checked)
+            if (((CheckBox)sender).Checked)
             {
                 var speechstring = "WARNING, Battery at {batv} Volt, {batp} percent";
                 if (Settings.Instance["speechbattery"] != null)
@@ -475,8 +489,8 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         {
             if (startup)
                 return;
-            Settings.Instance[((ComboBox) sender).Name] = ((ComboBox) sender).Text;
-            MainV2.comPort.MAV.cs.rateattitude = byte.Parse(((ComboBox) sender).Text);
+            Settings.Instance[((ComboBox)sender).Name] = ((ComboBox)sender).Text;
+            MainV2.comPort.MAV.cs.rateattitude = byte.Parse(((ComboBox)sender).Text);
 
             MainV2.comPort.requestDatastream(MAVLink.MAV_DATA_STREAM.EXTRA1, MainV2.comPort.MAV.cs.rateattitude);
             // request attitude
@@ -488,8 +502,8 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         {
             if (startup)
                 return;
-            Settings.Instance[((ComboBox) sender).Name] = ((ComboBox) sender).Text;
-            MainV2.comPort.MAV.cs.rateposition = byte.Parse(((ComboBox) sender).Text);
+            Settings.Instance[((ComboBox)sender).Name] = ((ComboBox)sender).Text;
+            MainV2.comPort.MAV.cs.rateposition = byte.Parse(((ComboBox)sender).Text);
 
             MainV2.comPort.requestDatastream(MAVLink.MAV_DATA_STREAM.POSITION, MainV2.comPort.MAV.cs.rateposition);
             // request gps
@@ -499,8 +513,8 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         {
             if (startup)
                 return;
-            Settings.Instance[((ComboBox) sender).Name] = ((ComboBox) sender).Text;
-            MainV2.comPort.MAV.cs.ratestatus = byte.Parse(((ComboBox) sender).Text);
+            Settings.Instance[((ComboBox)sender).Name] = ((ComboBox)sender).Text;
+            MainV2.comPort.MAV.cs.ratestatus = byte.Parse(((ComboBox)sender).Text);
 
             MainV2.comPort.requestDatastream(MAVLink.MAV_DATA_STREAM.EXTENDED_STATUS, MainV2.comPort.MAV.cs.ratestatus);
             // mode
@@ -510,19 +524,19 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         {
             if (startup)
                 return;
-            Settings.Instance[((ComboBox) sender).Name] = ((ComboBox) sender).Text;
-            MainV2.comPort.MAV.cs.raterc = byte.Parse(((ComboBox) sender).Text);
+            Settings.Instance[((ComboBox)sender).Name] = ((ComboBox)sender).Text;
+            MainV2.comPort.MAV.cs.raterc = byte.Parse(((ComboBox)sender).Text);
 
             MainV2.comPort.requestDatastream(MAVLink.MAV_DATA_STREAM.RC_CHANNELS, MainV2.comPort.MAV.cs.raterc);
-            // request rc info 
+            // request rc info
         }
 
         private void CMB_ratesensors_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (startup)
                 return;
-            Settings.Instance[((ComboBox) sender).Name] = ((ComboBox) sender).Text;
-            MainV2.comPort.MAV.cs.ratesensors = byte.Parse(((ComboBox) sender).Text);
+            Settings.Instance[((ComboBox)sender).Name] = ((ComboBox)sender).Text;
+            MainV2.comPort.MAV.cs.ratesensors = byte.Parse(((ComboBox)sender).Text);
 
             MainV2.comPort.requestDatastream(MAVLink.MAV_DATA_STREAM.EXTRA3, MainV2.comPort.MAV.cs.ratesensors);
             // request extra stuff - tridge
@@ -537,16 +551,16 @@ namespace MissionPlanner.GCSViews.ConfigurationView
 
         private void CHK_resetapmonconnect_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.Instance[((CheckBox) sender).Name] = ((CheckBox) sender).Checked.ToString();
+            Settings.Instance[((CheckBox)sender).Name] = ((CheckBox)sender).Checked.ToString();
         }
 
         private void CHK_speechaltwarning_CheckedChanged(object sender, EventArgs e)
         {
             if (startup)
                 return;
-            Settings.Instance["speechaltenabled"] = ((CheckBox) sender).Checked.ToString();
+            Settings.Instance["speechaltenabled"] = ((CheckBox)sender).Checked.ToString();
 
-            if (((CheckBox) sender).Checked)
+            if (((CheckBox)sender).Checked)
             {
                 var speechstring = "WARNING, low altitude {alt}";
                 if (Settings.Instance["speechalt"] != null)
@@ -563,7 +577,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
                     InputBox.Show("Min Alt", "What altitude do you want to warn at? (relative to home)",
                         ref speechstring))
                     return;
-                Settings.Instance["speechaltheight"] = (double.Parse(speechstring)/CurrentState.multiplierdist).ToString();
+                Settings.Instance["speechaltheight"] = (double.Parse(speechstring) / CurrentState.multiplierdist).ToString();
                 // save as m
             }
         }
@@ -608,7 +622,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
 
             g.FillRectangle(brush, rect);
 
-            brush = new SolidBrush(Color.FromName((string) CMB_osdcolor.Items[e.Index]));
+            brush = new SolidBrush(Color.FromName((string)CMB_osdcolor.Items[e.Index]));
 
             g.FillRectangle(brush, rect.X + 2, rect.Y + 2, 30, rect.Height - 4);
             g.DrawRectangle(Pens.Black, rect.X + 2, rect.Y + 2, 30, rect.Height - 4);
@@ -678,10 +692,10 @@ namespace MissionPlanner.GCSViews.ConfigurationView
                 return;
 
             Settings.Instance["theme"] = CMB_theme.Text;
-            ThemeManager.SetTheme((ThemeManager.Themes) Enum.Parse(typeof (ThemeManager.Themes), CMB_theme.Text));
+            ThemeManager.SetTheme((ThemeManager.Themes)Enum.Parse(typeof(ThemeManager.Themes), CMB_theme.Text));
             ThemeManager.ApplyThemeTo(MainV2.instance);
 
-            CustomMessageBox.Show("You may need to restart to see the full effect.");
+            CustomMessageBox.Show("You may need to select another tab or restart to see the full effect.");
         }
 
         private void BUT_themecustom_Click(object sender, EventArgs e)
@@ -694,9 +708,9 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         {
             if (startup)
                 return;
-            Settings.Instance["speecharmenabled"] = ((CheckBox) sender).Checked.ToString();
+            Settings.Instance["speecharmenabled"] = ((CheckBox)sender).Checked.ToString();
 
-            if (((CheckBox) sender).Checked)
+            if (((CheckBox)sender).Checked)
             {
                 var speechstring = "Armed";
                 if (Settings.Instance["speecharm"] != null)
@@ -753,9 +767,9 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         {
             if (startup)
                 return;
-            Settings.Instance["speechlowspeedenabled"] = ((CheckBox) sender).Checked.ToString();
+            Settings.Instance["speechlowspeedenabled"] = ((CheckBox)sender).Checked.ToString();
 
-            if (((CheckBox) sender).Checked)
+            if (((CheckBox)sender).Checked)
             {
                 var speechstring = "Low Ground Speed {gsp}";
                 if (Settings.Instance["speechlowgroundspeed"] != null)
@@ -790,12 +804,6 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             }
         }
 
-        private void CHK_advancedview_CheckedChanged(object sender, EventArgs e)
-        {
-            Settings.Instance["advancedview"] = CHK_advancedview.Checked.ToString();
-            MainV2.Advanced = CHK_advancedview.Checked;
-        }
-
         private void CHK_showairports_CheckedChanged(object sender, EventArgs e)
         {
             Settings.Instance["showairports"] = CHK_showairports.Checked.ToString();
@@ -807,7 +815,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             if (startup)
                 return;
 
-            if (((CheckBox) sender).Checked)
+            if (((CheckBox)sender).Checked)
             {
                 var server = "127.0.0.1";
                 if (Settings.Instance["adsbserver"] != null)
@@ -853,7 +861,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
 
             public override string ToString()
             {
-                return Width + " x " + Height + string.Format(" {0:0.00} fps ", 10000000.0/Fps) + Standard;
+                return Width + " x " + Height + string.Format(" {0:0.00} fps ", 10000000.0 / Fps) + Standard;
             }
         }
 
@@ -871,6 +879,19 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         private void but_AAsignin_Click(object sender, EventArgs e)
         {
             new Utilities.AltitudeAngel.AASettings().Show(this);
+        }
+
+        private void CMB_Layout_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if ((DisplayNames)CMB_Layout.SelectedItem == DisplayNames.Advanced)
+            {
+                MainV2.DisplayConfiguration = MainV2.DisplayConfiguration.Advanced();
+            }
+            else if ((DisplayNames)CMB_Layout.SelectedItem == DisplayNames.Basic)
+            {
+                MainV2.DisplayConfiguration = MainV2.DisplayConfiguration.Basic();
+            }
+            Settings.Instance["displayview"] = MainV2.DisplayConfiguration.ConvertToString();
         }
     }
 }
