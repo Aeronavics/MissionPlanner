@@ -167,6 +167,7 @@ namespace MissionPlanner.GCSViews
                 components.Dispose();
             }
         }
+
         public FlightData()
         {
             log.Info("Ctor Start");

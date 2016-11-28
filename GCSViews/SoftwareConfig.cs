@@ -70,21 +70,21 @@ namespace MissionPlanner.GCSViews
 
                     if (MainV2.comPort.MAV.cs.firmware == MainV2.Firmwares.ArduTracker)
                     {
-                        start = AddBackstageViewPage(typeof( ConfigAntennaTracker), Strings.ExtendedTuning);
+                        start = AddBackstageViewPage(typeof (ConfigAntennaTracker), Strings.ExtendedTuning);
                     }
-                    AddBackstageViewPage(typeof( ConfigFriendlyParams), Strings.StandardParams);
+                    AddBackstageViewPage(typeof (ConfigFriendlyParams), Strings.StandardParams);
 
                     if (MainV2.DisplayConfiguration.displayAdvancedParams)
                     {
-                        AddBackstageViewPage(typeof( ConfigFriendlyParamsAdv), Strings.AdvancedParams, null, true);
+                        AddBackstageViewPage(typeof (ConfigFriendlyParamsAdv), Strings.AdvancedParams, null, true);
                     }
                     if (MainV2.DisplayConfiguration.displayFullParamList)
                     {
-                        AddBackstageViewPage(typeof( ConfigRawParams), Strings.FullParameterList, null, true);
+                        AddBackstageViewPage(typeof (ConfigRawParams), Strings.FullParameterList, null, true);
                     }
                     if (MainV2.DisplayConfiguration.displayFullParamTree)
                     {
-                        AddBackstageViewPage(typeof( ConfigRawParamsTree), Strings.FullParameterTree, null, true);
+                        AddBackstageViewPage(typeof (ConfigRawParamsTree), Strings.FullParameterTree, null, true);
                     }                    
 
                     if (MainV2.comPort.MAV.cs.firmware == MainV2.Firmwares.Ateryx)

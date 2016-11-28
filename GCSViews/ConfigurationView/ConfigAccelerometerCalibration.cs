@@ -42,7 +42,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
                 count++;
                 try
                 {
-                    MainV2.comPort.sendPacket(new MAVLink.mavlink_command_ack_t { command = 1, result = count },
+                    MainV2.comPort.sendPacket(new MAVLink.mavlink_command_ack_t {command = 1, result = count},
                         MainV2.comPort.sysidcurrent, MainV2.comPort.compidcurrent);
                 }
                 catch
@@ -109,7 +109,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
 
         public void UpdateUserMessage(string message)
         {
-            Invoke((MethodInvoker)delegate
+            Invoke((MethodInvoker) delegate
             {
                 if (message.ToLower().Contains("place vehicle") || message.ToLower().Contains("calibration"))
                     lbl_Accel_user.Text = message;
