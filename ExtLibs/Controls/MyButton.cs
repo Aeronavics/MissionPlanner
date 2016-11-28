@@ -139,7 +139,7 @@ namespace MissionPlanner.Controls
                     gr.FillPath(brush, outline);
                 }
 
-
+                
                 StringFormat stringFormat = new StringFormat();
                 stringFormat.Alignment = StringAlignment.Center;
                 stringFormat.LineAlignment = StringAlignment.Center;

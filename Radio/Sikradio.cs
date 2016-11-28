@@ -468,7 +468,7 @@ S15: MAX_WINDOW=131
         {
             try
             {
-                Progressbar.Value = (int) Math.Min(completed*100,100);
+                Progressbar.Value = (int)Math.Min (completed*100,100);
                 Application.DoEvents();
             }
             catch
@@ -528,7 +528,7 @@ S15: MAX_WINDOW=131
                     // remote
                     var answer = doCommand(comPort, "RTI5", true);
 
-                    var items = answer.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    var items = answer.Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries);
 
                     foreach (var item in items)
                     {
@@ -888,7 +888,7 @@ S15: MAX_WINDOW=131
                                     }
                                     else if (controls[0].Name.Contains("MAVLINK")) //
                                     {
-                                        var ans = Enum.Parse(typeof(mavlink_option), values[2].Trim());
+                                        var ans = Enum.Parse(typeof (mavlink_option), values[2].Trim());
                                         ((ComboBox) controls[0]).Text = ans.ToString();
                                     }
                                     else if (controls[0] is ComboBox)
@@ -957,7 +957,7 @@ S15: MAX_WINDOW=131
                                 }
                                 else if (controls[0].Name.Contains("MAVLINK")) //
                                 {
-                                    var ans = Enum.Parse(typeof(mavlink_option), values[2].Trim());
+                                    var ans = Enum.Parse(typeof (mavlink_option), values[2].Trim());
                                     ((ComboBox) controls[0]).Text = ans.ToString();
                                 }
                                 else if (controls[0] is ComboBox)

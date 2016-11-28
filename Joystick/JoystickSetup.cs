@@ -213,7 +213,7 @@ namespace MissionPlanner.Joystick
                                 revCH7.Checked, int.Parse(expo_ch7.Text));
                         if (CMB_CH8.Text != "")
                             joy.setChannel(8,
-                                (Joystick.joystickaxis)Enum.Parse(typeof(Joystick.joystickaxis), CMB_CH8.Text),
+                                (Joystick.joystickaxis) Enum.Parse(typeof (Joystick.joystickaxis), CMB_CH8.Text),
                                 revCH8.Checked, int.Parse(expo_ch8.Text));
 
                         joy.elevons = CHK_elevons.Checked;

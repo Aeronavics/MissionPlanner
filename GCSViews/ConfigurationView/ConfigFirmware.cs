@@ -35,6 +35,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
                 UpdateFWList();
                 firstrun = false;
             }
+
             if (MainV2.DisplayConfiguration.displayName == DisplayNames.Advanced)
             {
                 lbl_devfw.Visible = true;

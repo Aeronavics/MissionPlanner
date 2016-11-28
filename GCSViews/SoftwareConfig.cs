@@ -70,7 +70,7 @@ namespace MissionPlanner.GCSViews
 
                     if (MainV2.comPort.MAV.cs.firmware == MainV2.Firmwares.ArduTracker)
                     {
-                        start = AddBackstageViewPage(typeof (ConfigAntennaTracker), Strings.ExtendedTuning);
+                        start = AddBackstageViewPage(typeof( ConfigAntennaTracker), Strings.ExtendedTuning);
                     }
                     AddBackstageViewPage(typeof (ConfigFriendlyParams), Strings.StandardParams);
 

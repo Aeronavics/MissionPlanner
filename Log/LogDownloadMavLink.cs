@@ -58,7 +58,7 @@ namespace MissionPlanner.Log
 
             ThemeManager.ApplyThemeTo(this);
 
-            MissionPlanner.Utilities.Tracking.AddPage(this.GetType().ToString(), this.Text);
+            MissionPlanner.Utilities.Tracking.AddPage(this.GetType().ToString(), this.Text);            
         }
 
         private void Log_Load(object sender, EventArgs e)
@@ -375,7 +375,7 @@ namespace MissionPlanner.Log
 
                     tallyBytes += receivedbytes;
                     receivedbytes = 0;
-                    UpdateProgress(0, totalBytes, tallyBytes);
+                    UpdateProgress(0, totalBytes, tallyBytes);                    
                 }
 
                 UpdateProgress(0, totalBytes, totalBytes);
@@ -389,11 +389,11 @@ namespace MissionPlanner.Log
             }
 
             RunOnUIThread(() =>
-            {
-                BUT_DLall.Enabled = true;
-                BUT_DLthese.Enabled = true;
-                status = SerialStatus.Done;
-            });
+                {
+                    BUT_DLall.Enabled = true;
+                    BUT_DLthese.Enabled = true;
+                    status = SerialStatus.Done;
+                });
         }
 
         IEnumerable<int> GetSelectedLogIndices()

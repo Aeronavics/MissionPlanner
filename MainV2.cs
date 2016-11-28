@@ -696,7 +696,6 @@ namespace MissionPlanner
                 //this.Close();
                 Application.Exit();
             }
-
             catch (Exception e)
             {
                 log.Fatal(e);
