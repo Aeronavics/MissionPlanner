@@ -554,7 +554,7 @@ mc:Ignorable=""d""
                 }
                 else if (ctl.GetType() == typeof (ZedGraph.ZedGraphControl))
                 {
-                    var zg1 = (ZedGraph.ZedGraphControl)ctl;
+                    var zg1 = (ZedGraph.ZedGraphControl) ctl;
                     zg1.GraphPane.Chart.Fill = new ZedGraph.Fill(ControlBGColor);
                     zg1.GraphPane.Fill = new ZedGraph.Fill(BGColor);
 
@@ -706,7 +706,7 @@ mc:Ignorable=""d""
                     ((HorizontalProgressBar2) ctl).BackgroundColor = ControlBGColor;
                     ((HorizontalProgressBar2) ctl).ValueColor = Color.FromArgb(148, 193, 31);
                 }
-                else if (ctl.GetType() == typeof (MyProgressBar))
+                else if (ctl.GetType() == typeof(MyProgressBar))
                 {
                     ((MyProgressBar)ctl).BGGradBot = ControlBGColor;
                     ((MyProgressBar)ctl).BGGradTop = BGColor;
@@ -990,7 +990,7 @@ mc:Ignorable=""d""
                 {
                     ctl.BackColor = BGColor;
                     ctl.ForeColor = TextColor;
-                    CheckBox CHK = (CheckBox)ctl;
+                    CheckBox CHK = (CheckBox) ctl;
                     // CHK.FlatStyle = FlatStyle.Flat;
                 }
                 else if (ctl.GetType() == typeof (ComboBox) || ctl.GetType() == typeof (MavlinkComboBox))
