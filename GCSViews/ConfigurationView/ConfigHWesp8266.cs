@@ -66,9 +66,9 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             MainV2.comPort.setParam("WIFI_CHANNEL", int.Parse(cmb_channel.Text));
             MainV2.comPort.setParam("UART_BAUDRATE", int.Parse(cmb_baud.Text));
 
-            MainV2.comPort.setParam("WIFI_SSID1", BitConverter.ToUInt32(stringTobytearray(txt_ssid.Text, 0, 4), 0));
-            MainV2.comPort.setParam("WIFI_SSID2",BitConverter.ToUInt32( stringTobytearray(txt_ssid.Text, 4, 4), 0));
-            MainV2.comPort.setParam("WIFI_SSID3", BitConverter.ToUInt32(stringTobytearray(txt_ssid.Text, 8, 4), 0));
+            MainV2.comPort.setParam("WIFI_SSID1", BitConverter.ToUInt32(stringTobytearray(txt_ssid.Text, 0, 4),0));
+            MainV2.comPort.setParam("WIFI_SSID2",BitConverter.ToUInt32( stringTobytearray(txt_ssid.Text, 4, 4),0));
+            MainV2.comPort.setParam("WIFI_SSID3", BitConverter.ToUInt32(stringTobytearray(txt_ssid.Text, 8, 4),0));
             MainV2.comPort.setParam("WIFI_SSID4", BitConverter.ToUInt32(stringTobytearray(txt_ssid.Text, 12, 4), 0));
 
             MainV2.comPort.setParam("WIFI_PASSWORD1", BitConverter.ToUInt32(stringTobytearray(txt_password.Text, 0, 4), 0));

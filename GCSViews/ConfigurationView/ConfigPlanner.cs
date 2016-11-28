@@ -271,8 +271,8 @@ namespace MissionPlanner.GCSViews.ConfigurationView
                 var ptr = IntPtr.Zero;
 
                 hr = videoStreamConfig.GetStreamCaps(i, out media, TaskMemPointer);
-                v = (VideoInfoHeader)Marshal.PtrToStructure(media.formatPtr, typeof (VideoInfoHeader));
-                c = (VideoStreamConfigCaps)Marshal.PtrToStructure(TaskMemPointer, typeof (VideoStreamConfigCaps));
+                v = (VideoInfoHeader) Marshal.PtrToStructure(media.formatPtr, typeof (VideoInfoHeader));
+                c = (VideoStreamConfigCaps) Marshal.PtrToStructure(TaskMemPointer, typeof (VideoStreamConfigCaps));
                 modes.Add(new GCSBitmapInfo(v.BmiHeader.Width, v.BmiHeader.Height, c.MaxFrameInterval,
                     c.VideoStandard.ToString(), media));
             }
@@ -348,7 +348,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             {
                 Settings.Instance["hudcolor"] = CMB_osdcolor.Text;
                 FlightData.myhud.hudcolor =
-                    Color.FromKnownColor((KnownColor)Enum.Parse(typeof (KnownColor), CMB_osdcolor.Text));
+                    Color.FromKnownColor((KnownColor) Enum.Parse(typeof (KnownColor), CMB_osdcolor.Text));
             }
         }
 
@@ -356,9 +356,9 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         {
             if (startup)
                 return;
-            Settings.Instance["speechwaypointenabled"] = ((CheckBox)sender).Checked.ToString();
+            Settings.Instance["speechwaypointenabled"] = ((CheckBox) sender).Checked.ToString();
 
-            if (((CheckBox)sender).Checked)
+            if (((CheckBox) sender).Checked)
             {
                 var speechstring = "Heading to Waypoint {wpn}";
                 if (Settings.Instance["speechwaypoint"] != null)
@@ -502,8 +502,8 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         {
             if (startup)
                 return;
-            Settings.Instance[((ComboBox) sender).Name] = ((ComboBox)sender).Text;
-            MainV2.comPort.MAV.cs.rateposition = byte.Parse(((ComboBox)sender).Text);
+            Settings.Instance[((ComboBox) sender).Name] = ((ComboBox) sender).Text;
+            MainV2.comPort.MAV.cs.rateposition = byte.Parse(((ComboBox) sender).Text);
 
             MainV2.comPort.requestDatastream(MAVLink.MAV_DATA_STREAM.POSITION, MainV2.comPort.MAV.cs.rateposition);
             // request gps

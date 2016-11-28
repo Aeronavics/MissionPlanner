@@ -138,8 +138,8 @@ namespace MissionPlanner.Controls
 
                     gr.FillPath(brush, outline);
                 }
-
                 
+
                 StringFormat stringFormat = new StringFormat();
                 stringFormat.Alignment = StringAlignment.Center;
                 stringFormat.LineAlignment = StringAlignment.Center;
@@ -152,7 +152,7 @@ namespace MissionPlanner.Controls
                 gr.DrawString(display, this.Font, mybrush, outside, stringFormat);
             }
             catch { }
-
+            
             inOnPaint = false;
         }
 

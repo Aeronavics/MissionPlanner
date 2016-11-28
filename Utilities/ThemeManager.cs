@@ -979,7 +979,7 @@ mc:Ignorable=""d""
 
                     dgv.AlternatingRowsDefaultCellStyle.BackColor = BGColor;
 
-                    DataGridViewCellStyle hs = new DataGridViewCellStyle (dgv.ColumnHeadersDefaultCellStyle);
+                    DataGridViewCellStyle hs = new DataGridViewCellStyle(dgv.ColumnHeadersDefaultCellStyle);
                     hs.BackColor = BGColor;
                     hs.ForeColor = TextColor;
 
@@ -1041,7 +1041,7 @@ mc:Ignorable=""d""
                     ((HorizontalProgressBar2) ctl).BackgroundColor = ControlBGColor;
                     ((HorizontalProgressBar2) ctl).ValueColor = HorizontalPBValueColor;
                 }
-                else if (ctl.GetType() == typeof (MyProgressBar))
+                else if (ctl.GetType() == typeof(MyProgressBar))
                 {
                     ((MyProgressBar)ctl).BGGradTop = ProgressBarColorTop;
                     ((MyProgressBar)ctl).BGGradBot = ProgressBarColorBot;
