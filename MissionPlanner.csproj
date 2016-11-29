@@ -3665,6 +3665,13 @@
     <None Include="Resources\FW icons 2013+logos-011.png" />
     <None Include="Resources\FW icons 2013+logos-012.png" />
     <None Include="Resources\uavcanesc.jpg" />
+    <None Include="Resources\Aero_splash.jpg" />
+    <None Include="Resources\Aero_terminal_icon.png" />
+    <None Include="Resources\Aero_tuningconfig_icon.png" />
+    <None Include="Resources\Aero_flightdata_icon.png" />
+    <None Include="Resources\Aero_flightplan_icon.png" />
+    <None Include="Resources\Aero_initialsetup_icon.png" />
+    <None Include="Resources\Aero_simulation_icon.png" />
     <Content Include="Scripts\example7.py">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

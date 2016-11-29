@@ -40,6 +40,7 @@ namespace MissionPlanner.Utilities
             HighContrast,
             Test,
             Custom,
+            Aeronavics
         }
 
         // Initialize to the default theme (BurntKermit)
@@ -102,6 +103,11 @@ namespace MissionPlanner.Utilities
 
                 case Themes.HighContrast:
                     SetHighContrastColours();
+                    ApplyTheme(control, 0);
+                    break;
+
+                case Themes.Aeronavics:
+                    SetAeronavicsColours();
                     ApplyTheme(control, 0);
                     break;
 
@@ -798,6 +804,39 @@ mc:Ignorable=""d""
             {
                 MainV2.instance.switchicons(new MainV2.highcontrastmenuicons());
             }
+        }
+
+        private static void SetAeronavicsColours()
+        {
+            BGColor = Color.FromArgb(0x20, 0x20, 0x20);                     // This changes the colour of the main menu background
+            ControlBGColor = Color.FromArgb(0x20, 0x20, 0x20);              // This changes the colour of the sub menu backgrounds
+            TextColor = Color.White;                                        // This changes the colour of text
+            BGColorTextBox = Color.FromArgb(0x80, 0x80, 0x80);                               // This changes the colour of the background of textboxes
+            ButtonTextColor = TextColor;                                  // This changes the colour of button text
+            ButBG = Color.FromArgb(0xAA, 0xAA, 0xAA);                       // This changes the colour of button backgrounds (Top)
+            ButBGBot = Color.FromArgb(0x50, 0x50, 0x50);                    // This changes the colour of button backgrounds (Bot)
+            ProgressBarColorTop = Color.FromArgb(0x50, 0x50, 0x50);            // These three variables change the colours of progress bars
+            ProgressBarColorBot = BGColorTextBox;
+            ProgressBarOutlineColor = BGColorTextBox;
+            BannerColor1 = Color.FromArgb(0xAA, 0xAA, 0xAA);                // These two variables change the colours of banners such as "planner" umder configuration
+            BannerColor2 = Color.FromArgb(0x50, 0x50, 0x50);
+            ColorNotEnabled = Color.FromArgb(0x10, 0x10, 0x10);               // This changes the background color of buttons when not enabled
+            ColorMouseOver = Color.FromArgb(0x20, 0x20, 0x20);                 // This changes the background color of buttons when the mouse is hovering over a button
+            ColorMouseDown = Color.FromArgb(0x18, 0x18, 0x18);                 // This changes the background color of buttons when the mouse is clicked down on a button
+            CurrentPPMBackground = Color.FromArgb(0xBB, 0xBB, 0xBB);                            // This changes the background colour of the current PPM setting in the flight modes tab
+            ZedGraphChartFill = ControlBGColor;                             // These three variables change the fill colours of Zed Graphs
+            ZedGraphPaneFill = BGColor;
+            ZedGraphLegendFill = ControlBGColor;
+            RTBForeColor = TextColor;                                       // This changes the colour of text in rich text boxes
+            BSVButtonAreaBGColor = ControlBGColor;                             // This changes the colour of a backstageview button area
+            UnselectedTextColour = Color.Gray;                              // This changes the colour of unselected text in a BSV button
+            HorizontalPBValueColor = Color.FromArgb(0x80, 0x80, 0x80);          // This changes the colour of the horizontal progressbar
+
+            if (MainV2.instance != null)
+            {
+                MainV2.instance.switchicons(new MainV2.aeronavicsIcons());
+            }
+
         }
 
         private static void ApplyTheme(Control temp, int level)

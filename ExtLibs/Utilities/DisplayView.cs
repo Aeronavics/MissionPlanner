@@ -14,7 +14,8 @@ namespace MissionPlanner.Utilities
     public enum DisplayNames
     {
         Basic,
-        Advanced
+        Advanced,
+        Aeronavics
     }
     [Serializable]
     public class DisplayView
@@ -105,6 +106,26 @@ namespace MissionPlanner.Utilities
                 displayFullParamList = true,
                 displayFullParamTree = true,
                 isAdvancedMode = true
+            };
+        }
+        public static DisplayView Aeronavics(this DisplayView v)
+        {
+            return new DisplayView()
+            {
+                displayName = DisplayNames.Aeronavics,
+                displaySimulation = false,
+                displayTerminal = false,
+                displayDonate = false,
+                displayHelp = false,
+                displayAnenometer = false,
+                displayAdvActionsTab = true,
+                displaySimpleActionsTab = false,
+                displayStatusTab = true,
+                displayServoTab = true,
+                displayScriptsTab = true,
+                displayAdvancedParams = false,
+                displayFullParamList = false,
+                displayFullParamTree = false
             };
         }
     }

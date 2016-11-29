@@ -188,6 +188,64 @@ namespace MissionPlanner
             }
         }
 
+        public class aeronavicsIcons : menuicons
+        {
+            public override Image fd
+            {
+                get { return global::MissionPlanner.Properties.Resources.Aero_flightdata_icon; }
+            }
+
+            public override Image fp
+            {
+                get { return global::MissionPlanner.Properties.Resources.Aero_flightplan_icon; }
+            }
+
+            public override Image initsetup
+            {
+                get { return global::MissionPlanner.Properties.Resources.Aero_initialsetup_icon; }
+            }
+
+            public override Image config_tuning
+            {
+                get { return global::MissionPlanner.Properties.Resources.Aero_tuningconfig_icon; }
+            }
+
+            public override Image sim
+            {
+                get { return global::MissionPlanner.Properties.Resources.Aero_simulation_icon; }
+            }
+
+            public override Image terminal
+            {
+                get { return global::MissionPlanner.Properties.Resources.Aero_terminal_icon; }
+            }
+
+            public override Image help
+            {
+                get { return global::MissionPlanner.Properties.Resources.light_help_icon; }
+            }
+
+            public override Image donate
+            {
+                get { return global::MissionPlanner.Properties.Resources.donate; }
+            }
+
+            public override Image connect
+            {
+                get { return global::MissionPlanner.Properties.Resources.light_connect_icon; }
+            }
+
+            public override Image disconnect
+            {
+                get { return global::MissionPlanner.Properties.Resources.light_disconnect_icon; }
+            }
+
+            public override Image bg
+            {
+                get { return global::MissionPlanner.Properties.Resources.bgdark; }
+            }
+        }
+
 
 
         Controls.MainSwitcher MyView;
@@ -398,7 +456,7 @@ namespace MissionPlanner
         {
             MenuSimulation.Visible = DisplayConfiguration.displaySimulation;
             MenuTerminal.Visible = DisplayConfiguration.displayTerminal;
-            //MenuDonate.Visible = DisplayConfiguration.displayDonate;
+            MenuDonate.Visible = DisplayConfiguration.displayDonate;
             MenuHelp.Visible = DisplayConfiguration.displayHelp;
             MissionPlanner.Controls.BackstageView.BackstageView.Advanced = DisplayConfiguration.isAdvancedMode;
 
@@ -639,13 +697,25 @@ namespace MissionPlanner
                     catch
                     {
                         log.Error("Bad Custom theme - reset to standard");
-                        ThemeManager.SetTheme(ThemeManager.Themes.BurntKermit);
+                        ThemeManager.SetTheme(ThemeManager.Themes.Aeronavics);
                     }
                 }
 
                 if (ThemeManager.CurrentTheme == ThemeManager.Themes.HighContrast)
                 {
                     switchicons(new highcontrastmenuicons());
+                }
+                else if (ThemeManager.CurrentTheme == ThemeManager.Themes.Aeronavics)
+                {
+                    switchicons(new aeronavicsIcons());
+                }
+                else if (ThemeManager.CurrentTheme == ThemeManager.Themes.BurntKermit)
+                {
+                    switchicons(new burntkermitmenuicons());
+                }
+                else
+                {
+                    switchicons(new burntkermitmenuicons());
                 }
             }
 
