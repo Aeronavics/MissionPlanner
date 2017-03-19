@@ -771,6 +771,18 @@ namespace MissionPlanner
                 CustomMessageBox.Show("A Major error has occured : " + e.ToString());
                 Application.Exit();
             }
+
+            // load old config
+            if (Settings.Instance["advancedview"] != null)
+            {
+                if (Settings.Instance.GetBoolean("advancedview") == true)
+                {
+                    DisplayConfiguration = new DisplayView().Advanced();
+                }
+                // remove old config
+                Settings.Instance.Remove("advancedview");
+            }
+
             //// load this before the other screens get loaded
             if (Settings.Instance["displayview"] != null)
             {
@@ -1011,6 +1023,10 @@ namespace MissionPlanner
 
         public void switchicons(menuicons icons)
         {
+            // dont update if no change
+            if (displayicons.GetType() == icons.GetType())
+                return;
+
             displayicons = icons;
 
             MainMenu.BackColor = SystemColors.MenuBar;
@@ -2528,6 +2544,7 @@ namespace MissionPlanner
 
                             // modify array and drop out
                             Comports.Remove(port);
+                            port.Dispose();
                             break;
                         }
 
@@ -2697,6 +2714,7 @@ namespace MissionPlanner
             {
                 new Utilities.AltitudeAngel.AltitudeAngel();
 
+                /*
                 // setup as a prompt once dialog
                 if (!Settings.Instance.GetBoolean("AACheck"))
                 {
@@ -2709,6 +2727,7 @@ namespace MissionPlanner
 
                     Settings.Instance["AACheck"] = true.ToString();
                 }
+                */
             }
             catch (TypeInitializationException) // windows xp lacking patch level
             {
@@ -3389,6 +3408,7 @@ namespace MissionPlanner
 
                     if (child is Form)
                     {
+                        log.Debug("ApplyThemeTo " + child.Name);
                         ThemeManager.ApplyThemeTo(child);
                     }
                     break;

@@ -960,6 +960,7 @@
     <Compile Include="Utilities\AP_GPS_SBF.cs" />
     <Compile Include="Utilities\AP_Terrain.cs" />
     <Compile Include="Utilities\dxf.cs" />
+    <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\GMapMarkerOverlapCount.cs" />
     <Compile Include="Utilities\GMapMarkerPOI.cs" />
     <Compile Include="Utilities\GMapMarkerPhoto.cs" />
@@ -3665,6 +3666,7 @@
     <None Include="Resources\FW icons 2013+logos-011.png" />
     <None Include="Resources\FW icons 2013+logos-012.png" />
     <None Include="Resources\uavcanesc.jpg" />
+    <None Include="Resources\boat.png" />
     <None Include="Resources\Aero_splash.jpg" />
     <None Include="Resources\Aero_terminal_icon.png" />
     <None Include="Resources\Aero_tuningconfig_icon.png" />
@@ -3991,6 +3993,10 @@
     <ProjectReference Include="ExtLibs\Core\Core.csproj">
       <Project>{59129078-7B12-4198-B93E-0AA08D0BB7ED}</Project>
       <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExtLibs\GDAL\GDAL.csproj">
+      <Project>{766fcf85-4809-44db-b316-6c4902c65245}</Project>
+      <Name>GDAL</Name>
     </ProjectReference>
     <ProjectReference Include="ExtLibs\GeoUtility\GeoUtility.csproj">
       <Project>{7F7994CE-823F-4A04-BBEA-D0A3808FF56D}</Project>
