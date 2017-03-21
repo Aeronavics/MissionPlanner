@@ -255,6 +255,10 @@ namespace MissionPlanner
             {
                 get { return global::MissionPlanner.Properties.Resources.bgdark; }
             }
+            public override Image wizard
+            {
+                get { return global::MissionPlanner.Properties.Resources.wizardicon; }
+            }
         }
 
 
