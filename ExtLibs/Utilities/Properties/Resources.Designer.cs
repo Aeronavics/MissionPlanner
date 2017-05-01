@@ -86,9 +86,7 @@ namespace MissionPlanner.Utilities.Properties {
         ///Accel X=加速度 X
         ///Accel Y=加速度 Y
         ///Accel Z=加速度 Z
-        ///Gyro X=陀螺仪 X
-        ///Gyro Y=陀螺仪 Y
-        ///Gyr [rest of string was truncated]&quot;;.
+        ///Gyro [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string strings_zhHans {
             get {
