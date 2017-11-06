@@ -4,6 +4,7 @@ using MissionPlanner.Arduino;
 using MissionPlanner.Comms;
 using px4uploader;
 using SharpAdbClient;
+using solo;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -46,6 +47,7 @@ namespace MissionPlanner.Utilities
             public string url2560_2;
             public string urlpx4v1;
             public string urlpx4v2;
+            public string urlpx4v3;
             public string urlpx4v4;
             public string urlvrbrainv40;
             public string urlvrbrainv45;
@@ -155,6 +157,7 @@ namespace MissionPlanner.Utilities
             string url2560_2 = "";
             string px4 = "";
             string px4v2 = "";
+            string px4v3 = "";
             string px4v4 = "";
             string vrbrainv40 = "";
             string vrbrainv45 = "";
@@ -206,6 +209,9 @@ namespace MissionPlanner.Utilities
                                 break;
                             case "urlpx4v2":
                                 px4v2 = xmlreader.ReadString();
+                                break;
+                            case "urlpx4v3":
+                                px4v3 = xmlreader.ReadString();
                                 break;
                             case "urlpx4v4":
                                 px4v4 = xmlreader.ReadString();
@@ -259,6 +265,7 @@ namespace MissionPlanner.Utilities
                                     temp.url2560_2 = url2560_2;
                                     temp.urlpx4v1 = px4;
                                     temp.urlpx4v2 = px4v2;
+                                    temp.urlpx4v3 = px4v3;
                                     temp.urlpx4v4 = px4v4;
                                     temp.urlvrbrainv40 = vrbrainv40;
                                     temp.urlvrbrainv45 = vrbrainv45;
@@ -306,6 +313,7 @@ namespace MissionPlanner.Utilities
                                 url2560_2 = "";
                                 px4 = "";
                                 px4v2 = "";
+                                px4v3 = "";
                                 px4v4 = "";
                                 vrbrainv40 = "";
                                 vrbrainv45 = "";
@@ -429,6 +437,8 @@ namespace MissionPlanner.Utilities
                         var index = softwares.IndexOf(temp);
                         // get item to modify
                         var item = softwares[index];
+                        // move existing name
+                        item.desc = item.name;
                         // change name
                         item.name = line.Substring(line.IndexOf(':') + 2);
                         // save back to list
@@ -499,6 +509,14 @@ namespace MissionPlanner.Utilities
                 {
                     baseurl = temp.urlpx4v2.ToString();
                 }
+                else if (board == BoardDetect.boards.px4v3)
+                {
+                    baseurl = temp.urlpx4v3.ToString();
+                    if (String.IsNullOrEmpty(baseurl) || !Common.CheckHTTPFileExists(baseurl))
+                    {
+                        baseurl = temp.urlpx4v2.ToString();
+                    }
+                }
                 else if (board == BoardDetect.boards.px4v4)
                 {
                     baseurl = temp.urlpx4v4.ToString();
@@ -551,10 +569,7 @@ namespace MissionPlanner.Utilities
 
                 if (board < BoardDetect.boards.px4)
                 {
-                    if (temp.name.ToLower().Contains("arducopter"))
-                    {
-                        CustomMessageBox.Show(Strings.ThisBoardHasBeenRetired, Strings.Note);
-                    }
+                    CustomMessageBox.Show(Strings.ThisBoardHasBeenRetired, Strings.Note);
                 }
 
                 if (historyhash != "")
@@ -668,38 +683,7 @@ namespace MissionPlanner.Utilities
                 return false;
             }
 
-            try
-            {
-                updateProgress(-1, "Look for HeartBeat");
-                // check if we are seeing heartbeats
-                MainV2.comPort.BaseStream.Open();
-                MainV2.comPort.giveComport = true;
-
-                if (MainV2.comPort.getHeartBeat().Length > 0)
-                {
-                    updateProgress(-1, "Reboot to Bootloader");
-                    MainV2.comPort.doReboot(true, false);
-                    MainV2.comPort.Close();
-
-                    //specific action for VRBRAIN4 board that needs to be manually disconnected before uploading
-                    if (board == BoardDetect.boards.vrbrainv40)
-                    {
-                        CustomMessageBox.Show(
-                            "VRBRAIN 4 detected. Please unplug the board then press OK and plug back in.\n");
-                    }
-                }
-                else
-                {
-                    updateProgress(-1, "No HeartBeat found");
-                    MainV2.comPort.BaseStream.Close();
-                    CustomMessageBox.Show(Strings.PleaseUnplugTheBoardAnd);
-                }
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex);
-                CustomMessageBox.Show(Strings.PleaseUnplugTheBoardAnd);
-            }
+            AttemptRebootToBootloader();
 
             DateTime DEADLINE = DateTime.Now.AddSeconds(30);
 
@@ -793,6 +777,57 @@ namespace MissionPlanner.Utilities
 
             updateProgress(0, "ERROR: No Response from board");
             return false;
+        }
+
+        private void AttemptRebootToBootloader()
+        {
+            string[] allports = SerialPort.GetPortNames();
+
+            foreach (string port in allports)
+            {
+                log.Info(DateTime.Now.Millisecond + " Trying Port " + port);
+                try
+                {
+                    using (var up = new Uploader(port, 115200))
+                    {
+                        up.identify();
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error(ex);
+                }
+            }
+
+            if (MainV2.comPort.BaseStream is SerialPort)
+            {
+                try
+                {
+                    updateProgress(-1, "Look for HeartBeat");
+                    // check if we are seeing heartbeats
+                    MainV2.comPort.BaseStream.Open();
+                    MainV2.comPort.giveComport = true;
+
+                    if (MainV2.comPort.getHeartBeat().Length > 0)
+                    {
+                        updateProgress(-1, "Reboot to Bootloader");
+                        MainV2.comPort.doReboot(true, false);
+                        MainV2.comPort.Close();
+                    }
+                    else
+                    {
+                        updateProgress(-1, "No HeartBeat found");
+                        MainV2.comPort.BaseStream.Close();
+                        CustomMessageBox.Show(Strings.PleaseUnplugTheBoardAnd);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error(ex);
+                    CustomMessageBox.Show(Strings.PleaseUnplugTheBoardAnd);
+                }
+            }
         }
 
         /// <summary>
@@ -1253,7 +1288,8 @@ namespace MissionPlanner.Utilities
         /// <returns>pass/fail</returns>
         public bool UploadFlash(string comport, string filename, BoardDetect.boards board)
         {
-            if (board == BoardDetect.boards.px4 || board == BoardDetect.boards.px4v2 || board == BoardDetect.boards.px4v4)
+            if (board == BoardDetect.boards.px4 || board == BoardDetect.boards.px4v2 ||
+                board == BoardDetect.boards.px4v3 || board == BoardDetect.boards.px4v4)
             {
                 try
                 {
@@ -1279,7 +1315,19 @@ namespace MissionPlanner.Utilities
                 return UploadParrot(filename, board);
             }
 
+            if (board == BoardDetect.boards.solo)
+            {
+                return UploadSolo(filename, board);
+            }
+
             return UploadArduino(comport, filename, board);
+        }
+
+        private bool UploadSolo(string filename, BoardDetect.boards board)
+        {
+            Solo.flash_px4(filename);
+
+            return true;
         }
 
         public bool UploadArduino(string comport, string filename, BoardDetect.boards board)
