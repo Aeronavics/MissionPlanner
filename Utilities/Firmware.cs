@@ -25,10 +25,10 @@ namespace MissionPlanner.Utilities
 
         public event ProgressEventHandler Progress;
 
-        string firmwareurl = "https://raw.github.com/diydrones/binary/master/Firmware/firmware2.xml";
+        string firmwareurl = "https://services.aeronavics.com/MissionPlanner/ArduCopter/firmware2.xml";
 
-        readonly string gholdurl = ("https://github.com/diydrones/binary/raw/!Hash!/Firmware/firmware2.xml");
-        readonly string gholdfirmwareurl = ("https://github.com/diydrones/binary/raw/!Hash!/Firmware/!Firmware!");
+        readonly string gholdurl = ("https://services.aeronavics.com/MissionPlanner/ArduCopter/firmware2.xml");
+        readonly string gholdfirmwareurl = ("https://services.aeronavics.com/MissionPlanner/ArduCopter/firmware2.xml");
 
         string[] gholdurls = new string[] {};
 
@@ -289,7 +289,7 @@ namespace MissionPlanner.Utilities
                                     {
                                         try
                                         {
-                                            if (!url2560.Contains("github"))
+                                            if (!px4v3.Contains("github"))
                                             {
                                                 //name = 
 
@@ -414,7 +414,7 @@ namespace MissionPlanner.Utilities
             {
                 software temp = (software) tempin;
 
-                string baseurl = temp.urlpx4v2;
+                string baseurl = temp.urlpx4v3;
 
                 if (baseurl == "" || !baseurl.ToLower().StartsWith("http")) return;
 
