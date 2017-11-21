@@ -1,0 +1,71 @@
+<?xml version='1.0'?>
+<mavlink>
+    <include>ardupilotmega.xml</include>
+    <include>uAvionix.xml</include>
+    <include>common.xml</include>
+    <enums>
+          <enum name="MAV_COMPONENT">
+              <!-- cID 0 is always reserved, it has the special meaning 'ALL COMPONENTS'. -->
+              <!-- cID 0 is defined in common.xml -->
+
+              <!-- cID 1 is used by the Flight Controller: the Pixhawk hard codes C1, this definition is just provided so other components can recognise the flight controller. -->
+             <entry value="1" name="MAV_COMP_ID_FCS1">
+                  <description>cID for Primary Flight Controller.  Note that the Pixhawk hard codes C1, so this definition is just for convenience.</description>
+             </entry>
+
+              <!-- cID's 25-49 are used by Mission Computer elements of the Aeronavics Avionics Stack. -->
+              <entry value="25" name="MAV_COMP_ID_UNL_MC_MONOLITH">
+                  <description>cID for monolithic elements on the Mission Computer, which don't have their own cID.  Most obviously, the parameter server uses this cID, so all elements using the parameter server should use this cID.</description>
+              </entry>
+              <entry value="26" name="MAV_COMP_ID_UNL_MC_CORE">
+                  <description>cID for the Mission Computer 'cored' module, which monitors the health of other components and emits a heartbeat for the overall system.</description>
+              </entry>
+              <entry value="27" name="MAV_COMP_ID_UNL_MC_LOG">
+                  <description>cID for the Mission Computer 'logd' module, which simply provides logging of all MAVlink messages.</description>
+              </entry>
+              <entry value="28" name="MAV_COMP_ID_UNL_MC_VIDEO">
+                  <description>cID for the Mission Computer 'videod' module, which manages capture and streaming of imagery.</description>
+              </entry>
+              <entry value="29" name="MAV_COMP_ID_LCM_BRIDGE">
+                  <description>cID for the Mission Computer 'bridge_lcmd' module, which governs the link between internal and external MAVlink comms.</description>
+              </entry>
+              <entry value="30" name="MAV_COMP_ID_SBP_BRIDGE">
+                  <description>cID for the Mission Computer 'bridge_inject_uartd' module, which links between the mission computer and the RTK GPS.</description>
+              </entry>
+              <entry value="31" name="MAV_COMP_ID_UART_PAYCTL">
+                  <description>cID for the Mission Computer 'bridge_uart' module, which links between the mission computer and the payload controller.</description>
+              </entry>
+              <entry value="34" name="MAV_COMP_ID_UART_FC">
+                  <description>cID for the Mission Computer 'bridge_uart' module, which links between mission computer and the flight controller.</description>
+              </entry>
+              <entry value="35" name="MAV_COMP_ID_UART_RTX">
+                  <description>cID for the Mission Computer 'bridge_uart' module, which links between mission computer and the RC transciever.</description>
+              </entry>
+              <entry value="36" name="MAV_COMP_ID_UDPD_MAVROS">
+                  <description>cID for the Mission Computer 'bridge_udpd' module, linking been internal LCM and MAVROS.  Note the cID is set by command line parameter, so this definition is just for convenience.</description>
+              </entry>
+              <entry value="37" name="MAV_COMP_ID_UDPD_MAVPROXY">
+                  <description>cID for the Mission Computer 'bridge_udpd' module, linking between external LCM and MAVPROXY.  Note the cID is set by command line parameter, so this definition is just for convenience.</description>
+              </entry>
+              <entry value="38" name="MAV_COMP_ID_UDPD_DRONEKIT">
+                  <description>cID for the Mission Computer 'bridge_udpd' module, linking between external LCM and DroneKit.  Note the cID is set by command line parameter, so this definition is just for convenience.</description>
+              </entry>
+
+              <!-- cID 49 is used by MAVROS: the value is hard coded by mavros.launch, this definition is just provided so other components can recognise messages from MAVROS. -->
+             <entry value="49" name="MAV_COMP_ID_MAVROS">
+                  <description>cID for MAVROS itself (not the bridge).  Note that mavros.launch hard codes 49, so this definition is just for convenience.</description>
+             </entry>
+
+              <!-- cID's 50-74 are used by other elements of the Aeronavics Avionics Stack. -->
+              <entry value="50" name="MAV_COMP_ID_RTK_GPS">
+                  <description>cID for an RTK GPS unit.</description>
+              </entry>
+              <entry value="51" name="MAV_COMP_ID_PAYCTL">
+                  <description>cID for the Advanced Payload Controller.</description>
+              </entry>
+          </enum>
+    </enums>
+
+    <messages>
+     </messages>
+</mavlink>

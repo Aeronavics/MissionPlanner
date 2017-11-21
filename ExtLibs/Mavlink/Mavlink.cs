@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 public partial class MAVLink
 {
-    public const string MAVLINK_BUILD_DATE = "Fri Sep 15 2017";
+    public const string MAVLINK_BUILD_DATE = "Tue Nov 21 2017";
     public const string MAVLINK_WIRE_PROTOCOL_VERSION = "2.0";
     public const int MAVLINK_MAX_PAYLOAD_LEN = 255;
 
@@ -507,6 +507,109 @@ AOA_SSA = 11020,
 
     }  
 	    
+    
+    ///<summary>  </summary>
+    public enum MAV_COMPONENT: int /*default*/
+    {
+			///<summary>  | </summary>
+        MAV_COMP_ID_ALL=0, 
+    	///<summary> cID for Primary Flight Controller.  Note that the Pixhawk hard codes C1, so this definition is just for convenience. | </summary>
+        MAV_COMP_ID_FCS1=1, 
+    	///<summary> cID for monolithic elements on the Mission Computer, which don't have their own cID.  Most obviously, the parameter server uses this cID, so all elements using the parameter server should use this cID. | </summary>
+        MAV_COMP_ID_UNL_MC_MONOLITH=25, 
+    	///<summary> cID for the Mission Computer 'cored' module, which monitors the health of other components and emits a heartbeat for the overall system. | </summary>
+        MAV_COMP_ID_UNL_MC_CORE=26, 
+    	///<summary> cID for the Mission Computer 'logd' module, which simply provides logging of all MAVlink messages. | </summary>
+        MAV_COMP_ID_UNL_MC_LOG=27, 
+    	///<summary> cID for the Mission Computer 'videod' module, which manages capture and streaming of imagery. | </summary>
+        MAV_COMP_ID_UNL_MC_VIDEO=28, 
+    	///<summary> cID for the Mission Computer 'bridge_lcmd' module, which governs the link between internal and external MAVlink comms. | </summary>
+        MAV_COMP_ID_LCM_BRIDGE=29, 
+    	///<summary> cID for the Mission Computer 'bridge_inject_uartd' module, which links between the mission computer and the RTK GPS. | </summary>
+        MAV_COMP_ID_SBP_BRIDGE=30, 
+    	///<summary> cID for the Mission Computer 'bridge_uart' module, which links between the mission computer and the payload controller. | </summary>
+        MAV_COMP_ID_UART_PAYCTL=31, 
+    	///<summary> cID for the Mission Computer 'bridge_uart' module, which links between mission computer and the flight controller. | </summary>
+        MAV_COMP_ID_UART_FC=34, 
+    	///<summary> cID for the Mission Computer 'bridge_uart' module, which links between mission computer and the RC transciever. | </summary>
+        MAV_COMP_ID_UART_RTX=35, 
+    	///<summary> cID for the Mission Computer 'bridge_udpd' module, linking been internal LCM and MAVROS.  Note the cID is set by command line parameter, so this definition is just for convenience. | </summary>
+        MAV_COMP_ID_UDPD_MAVROS=36, 
+    	///<summary> cID for the Mission Computer 'bridge_udpd' module, linking between external LCM and MAVPROXY.  Note the cID is set by command line parameter, so this definition is just for convenience. | </summary>
+        MAV_COMP_ID_UDPD_MAVPROXY=37, 
+    	///<summary> cID for the Mission Computer 'bridge_udpd' module, linking between external LCM and DroneKit.  Note the cID is set by command line parameter, so this definition is just for convenience. | </summary>
+        MAV_COMP_ID_UDPD_DRONEKIT=38, 
+    	///<summary> cID for MAVROS itself (not the bridge).  Note that mavros.launch hard codes 49, so this definition is just for convenience. | </summary>
+        MAV_COMP_ID_MAVROS=49, 
+    	///<summary> cID for an RTK GPS unit. | </summary>
+        MAV_COMP_ID_RTK_GPS=50, 
+    	///<summary> cID for the Advanced Payload Controller. | </summary>
+        MAV_COMP_ID_PAYCTL=51, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_CAMERA=100, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_SERVO1=140, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_SERVO2=141, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_SERVO3=142, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_SERVO4=143, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_SERVO5=144, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_SERVO6=145, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_SERVO7=146, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_SERVO8=147, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_SERVO9=148, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_SERVO10=149, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_SERVO11=150, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_SERVO12=151, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_SERVO13=152, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_SERVO14=153, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_GIMBAL=154, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_LOG=155, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_ADSB=156, 
+    	///<summary> On Screen Display (OSD) devices for video links | </summary>
+        MAV_COMP_ID_OSD=157, 
+    	///<summary> Generic autopilot peripheral component ID. Meant for devices that do not implement the parameter sub-protocol | </summary>
+        MAV_COMP_ID_PERIPHERAL=158, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_QX1_GIMBAL=159, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_MAPPER=180, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_MISSIONPLANNER=190, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_PATHPLANNER=195, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_IMU=200, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_IMU_2=201, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_IMU_3=202, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_GPS=220, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_UDP_BRIDGE=240, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_UART_BRIDGE=241, 
+    	///<summary>  | </summary>
+        MAV_COMP_ID_SYSTEM_CONTROL=250, 
+    
+    };
+    
     
     ///<summary>  </summary>
     public enum ACCELCAL_VEHICLE_POS: int /*default*/
@@ -1433,6 +1536,159 @@ AOA_SSA = 11020,
     };
     
     
+    ///<summary> State flags for ADS-B transponder dynamic report </summary>
+    public enum UAVIONIX_ADSB_OUT_DYNAMIC_STATE: ushort
+    {
+			///<summary>  | </summary>
+        INTENT_CHANGE=1, 
+    	///<summary>  | </summary>
+        AUTOPILOT_ENABLED=2, 
+    	///<summary>  | </summary>
+        NICBARO_CROSSCHECKED=4, 
+    	///<summary>  | </summary>
+        ON_GROUND=8, 
+    	///<summary>  | </summary>
+        IDENT=16, 
+    
+    };
+    
+    ///<summary> Transceiver RF control flags for ADS-B transponder dynamic reports </summary>
+    public enum UAVIONIX_ADSB_OUT_RF_SELECT: byte
+    {
+			///<summary>  | </summary>
+        STANDBY=0, 
+    	///<summary>  | </summary>
+        RX_ENABLED=1, 
+    	///<summary>  | </summary>
+        TX_ENABLED=2, 
+    
+    };
+    
+    ///<summary> Status for ADS-B transponder dynamic input </summary>
+    public enum UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX: byte
+    {
+			///<summary>  | </summary>
+        NONE_0=0, 
+    	///<summary>  | </summary>
+        NONE_1=1, 
+    	///<summary>  | </summary>
+        _2D=2, 
+    	///<summary>  | </summary>
+        _3D=3, 
+    	///<summary>  | </summary>
+        DGPS=4, 
+    	///<summary>  | </summary>
+        RTK=5, 
+    
+    };
+    
+    ///<summary> Status flags for ADS-B transponder dynamic output </summary>
+    public enum UAVIONIX_ADSB_RF_HEALTH: byte
+    {
+			///<summary>  | </summary>
+        INITIALIZING=0, 
+    	///<summary>  | </summary>
+        OK=1, 
+    	///<summary>  | </summary>
+        FAIL_TX=2, 
+    	///<summary>  | </summary>
+        FAIL_RX=16, 
+    
+    };
+    
+    ///<summary> Definitions for aircraft size </summary>
+    public enum UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE: byte
+    {
+			///<summary>  | </summary>
+        NO_DATA=0, 
+    	///<summary>  | </summary>
+        L15M_W23M=1, 
+    	///<summary>  | </summary>
+        L25M_W28P5M=2, 
+    	///<summary>  | </summary>
+        L25_34M=3, 
+    	///<summary>  | </summary>
+        L35_33M=4, 
+    	///<summary>  | </summary>
+        L35_38M=5, 
+    	///<summary>  | </summary>
+        L45_39P5M=6, 
+    	///<summary>  | </summary>
+        L45_45M=7, 
+    	///<summary>  | </summary>
+        L55_45M=8, 
+    	///<summary>  | </summary>
+        L55_52M=9, 
+    	///<summary>  | </summary>
+        L65_59P5M=10, 
+    	///<summary>  | </summary>
+        L65_67M=11, 
+    	///<summary>  | </summary>
+        L75_W72P5M=12, 
+    	///<summary>  | </summary>
+        L75_W80M=13, 
+    	///<summary>  | </summary>
+        L85_W80M=14, 
+    	///<summary>  | </summary>
+        L85_W90M=15, 
+    
+    };
+    
+    ///<summary> GPS lataral offset encoding </summary>
+    public enum UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT: byte
+    {
+			///<summary>  | </summary>
+        NO_DATA=0, 
+    	///<summary>  | </summary>
+        LEFT_2M=1, 
+    	///<summary>  | </summary>
+        LEFT_4M=2, 
+    	///<summary>  | </summary>
+        LEFT_6M=3, 
+    	///<summary>  | </summary>
+        RIGHT_0M=4, 
+    	///<summary>  | </summary>
+        RIGHT_2M=5, 
+    	///<summary>  | </summary>
+        RIGHT_4M=6, 
+    	///<summary>  | </summary>
+        RIGHT_6M=7, 
+    
+    };
+    
+    ///<summary> GPS longitudinal offset encoding </summary>
+    public enum UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LON: byte
+    {
+			///<summary>  | </summary>
+        NO_DATA=0, 
+    	///<summary>  | </summary>
+        APPLIED_BY_SENSOR=1, 
+    
+    };
+    
+    ///<summary> Emergency status encoding </summary>
+    public enum UAVIONIX_ADSB_EMERGENCY_STATUS: byte
+    {
+			///<summary>  | </summary>
+        UAVIONIX_ADSB_OUT_NO_EMERGENCY=0, 
+    	///<summary>  | </summary>
+        UAVIONIX_ADSB_OUT_GENERAL_EMERGENCY=1, 
+    	///<summary>  | </summary>
+        UAVIONIX_ADSB_OUT_LIFEGUARD_EMERGENCY=2, 
+    	///<summary>  | </summary>
+        UAVIONIX_ADSB_OUT_MINIMUM_FUEL_EMERGENCY=3, 
+    	///<summary>  | </summary>
+        UAVIONIX_ADSB_OUT_NO_COMM_EMERGENCY=4, 
+    	///<summary>  | </summary>
+        UAVIONIX_ADSB_OUT_UNLAWFUL_INTERFERANCE_EMERGENCY=5, 
+    	///<summary>  | </summary>
+        UAVIONIX_ADSB_OUT_DOWNED_AIRCRAFT_EMERGENCY=6, 
+    	///<summary>  | </summary>
+        UAVIONIX_ADSB_OUT_RESERVED=7, 
+    
+    };
+    
+    
     ///<summary> Micro air vehicle / autopilot classes. This identifies the individual model. </summary>
     public enum MAV_AUTOPILOT: byte
     {
@@ -1665,76 +1921,6 @@ AOA_SSA = 11020,
     
     };
     
-    ///<summary>  </summary>
-    public enum MAV_COMPONENT: int /*default*/
-    {
-			///<summary>  | </summary>
-        MAV_COMP_ID_ALL=0, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_CAMERA=100, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_SERVO1=140, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_SERVO2=141, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_SERVO3=142, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_SERVO4=143, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_SERVO5=144, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_SERVO6=145, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_SERVO7=146, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_SERVO8=147, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_SERVO9=148, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_SERVO10=149, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_SERVO11=150, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_SERVO12=151, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_SERVO13=152, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_SERVO14=153, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_GIMBAL=154, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_LOG=155, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_ADSB=156, 
-    	///<summary> On Screen Display (OSD) devices for video links | </summary>
-        MAV_COMP_ID_OSD=157, 
-    	///<summary> Generic autopilot peripheral component ID. Meant for devices that do not implement the parameter sub-protocol | </summary>
-        MAV_COMP_ID_PERIPHERAL=158, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_QX1_GIMBAL=159, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_MAPPER=180, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_MISSIONPLANNER=190, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_PATHPLANNER=195, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_IMU=200, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_IMU_2=201, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_IMU_3=202, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_GPS=220, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_UDP_BRIDGE=240, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_UART_BRIDGE=241, 
-    	///<summary>  | </summary>
-        MAV_COMP_ID_SYSTEM_CONTROL=250, 
-    
-    };
-    
     ///<summary> These encode the sensors whose status is sent as part of the SYS_STATUS message. </summary>
     public enum MAV_SYS_STATUS_SENSOR: uint
     {
@@ -1898,7 +2084,7 @@ AOA_SSA = 11020,
         EXTENDED_STATUS=2, 
     	///<summary> Enable RC_CHANNELS_SCALED, RC_CHANNELS_RAW, SERVO_OUTPUT_RAW | </summary>
         RC_CHANNELS=3, 
-    	///<summary> Enable ATTITUDE_CONTROLLER_OUTPUT, POSITION_CONTROLLER_OUTPUT, NAV_CONTROLLER_OUTPUT. | </summary>
+    	///<summary> Enable ATTITUDE_CONTROLLER_OUTPUT, POSITION_CONTROLLER_OUTPUT, CONTROLLER_OUTPUT. | </summary>
         RAW_CONTROLLER=4, 
     	///<summary> Enable LOCAL_POSITION, GLOBAL_POSITION/GLOBAL_POSITION_INT messages. | </summary>
         POSITION=6, 
@@ -1911,7 +2097,7 @@ AOA_SSA = 11020,
     
     };
     
-    ///<summary>  The ROI (region of interest) for the vehicle. This can be                 be used by the vehicle for camera/vehicle attitude alignment (see                 MAV_CMD_NAV_ROI). </summary>
+    ///<summary>  The ROI (region of interest) for the vehicle. This can be                 be used by the vehicle for camera/vehicle attitude alignment (see                 MAV_CMD_ROI). </summary>
     public enum MAV_ROI: int /*default*/
     {
 			///<summary> No region of interest. | </summary>
@@ -2554,159 +2740,6 @@ AOA_SSA = 11020,
         RTK_FIXED=6, 
     	///<summary> Static fixed, typically used for base stations | </summary>
         STATIC=7, 
-    
-    };
-    
-    
-    ///<summary> State flags for ADS-B transponder dynamic report </summary>
-    public enum UAVIONIX_ADSB_OUT_DYNAMIC_STATE: ushort
-    {
-			///<summary>  | </summary>
-        INTENT_CHANGE=1, 
-    	///<summary>  | </summary>
-        AUTOPILOT_ENABLED=2, 
-    	///<summary>  | </summary>
-        NICBARO_CROSSCHECKED=4, 
-    	///<summary>  | </summary>
-        ON_GROUND=8, 
-    	///<summary>  | </summary>
-        IDENT=16, 
-    
-    };
-    
-    ///<summary> Transceiver RF control flags for ADS-B transponder dynamic reports </summary>
-    public enum UAVIONIX_ADSB_OUT_RF_SELECT: byte
-    {
-			///<summary>  | </summary>
-        STANDBY=0, 
-    	///<summary>  | </summary>
-        RX_ENABLED=1, 
-    	///<summary>  | </summary>
-        TX_ENABLED=2, 
-    
-    };
-    
-    ///<summary> Status for ADS-B transponder dynamic input </summary>
-    public enum UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX: byte
-    {
-			///<summary>  | </summary>
-        NONE_0=0, 
-    	///<summary>  | </summary>
-        NONE_1=1, 
-    	///<summary>  | </summary>
-        _2D=2, 
-    	///<summary>  | </summary>
-        _3D=3, 
-    	///<summary>  | </summary>
-        DGPS=4, 
-    	///<summary>  | </summary>
-        RTK=5, 
-    
-    };
-    
-    ///<summary> Status flags for ADS-B transponder dynamic output </summary>
-    public enum UAVIONIX_ADSB_RF_HEALTH: byte
-    {
-			///<summary>  | </summary>
-        INITIALIZING=0, 
-    	///<summary>  | </summary>
-        OK=1, 
-    	///<summary>  | </summary>
-        FAIL_TX=2, 
-    	///<summary>  | </summary>
-        FAIL_RX=16, 
-    
-    };
-    
-    ///<summary> Definitions for aircraft size </summary>
-    public enum UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE: byte
-    {
-			///<summary>  | </summary>
-        NO_DATA=0, 
-    	///<summary>  | </summary>
-        L15M_W23M=1, 
-    	///<summary>  | </summary>
-        L25M_W28P5M=2, 
-    	///<summary>  | </summary>
-        L25_34M=3, 
-    	///<summary>  | </summary>
-        L35_33M=4, 
-    	///<summary>  | </summary>
-        L35_38M=5, 
-    	///<summary>  | </summary>
-        L45_39P5M=6, 
-    	///<summary>  | </summary>
-        L45_45M=7, 
-    	///<summary>  | </summary>
-        L55_45M=8, 
-    	///<summary>  | </summary>
-        L55_52M=9, 
-    	///<summary>  | </summary>
-        L65_59P5M=10, 
-    	///<summary>  | </summary>
-        L65_67M=11, 
-    	///<summary>  | </summary>
-        L75_W72P5M=12, 
-    	///<summary>  | </summary>
-        L75_W80M=13, 
-    	///<summary>  | </summary>
-        L85_W80M=14, 
-    	///<summary>  | </summary>
-        L85_W90M=15, 
-    
-    };
-    
-    ///<summary> GPS lataral offset encoding </summary>
-    public enum UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT: byte
-    {
-			///<summary>  | </summary>
-        NO_DATA=0, 
-    	///<summary>  | </summary>
-        LEFT_2M=1, 
-    	///<summary>  | </summary>
-        LEFT_4M=2, 
-    	///<summary>  | </summary>
-        LEFT_6M=3, 
-    	///<summary>  | </summary>
-        RIGHT_0M=4, 
-    	///<summary>  | </summary>
-        RIGHT_2M=5, 
-    	///<summary>  | </summary>
-        RIGHT_4M=6, 
-    	///<summary>  | </summary>
-        RIGHT_6M=7, 
-    
-    };
-    
-    ///<summary> GPS longitudinal offset encoding </summary>
-    public enum UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LON: byte
-    {
-			///<summary>  | </summary>
-        NO_DATA=0, 
-    	///<summary>  | </summary>
-        APPLIED_BY_SENSOR=1, 
-    
-    };
-    
-    ///<summary> Emergency status encoding </summary>
-    public enum UAVIONIX_ADSB_EMERGENCY_STATUS: byte
-    {
-			///<summary>  | </summary>
-        UAVIONIX_ADSB_OUT_NO_EMERGENCY=0, 
-    	///<summary>  | </summary>
-        UAVIONIX_ADSB_OUT_GENERAL_EMERGENCY=1, 
-    	///<summary>  | </summary>
-        UAVIONIX_ADSB_OUT_LIFEGUARD_EMERGENCY=2, 
-    	///<summary>  | </summary>
-        UAVIONIX_ADSB_OUT_MINIMUM_FUEL_EMERGENCY=3, 
-    	///<summary>  | </summary>
-        UAVIONIX_ADSB_OUT_NO_COMM_EMERGENCY=4, 
-    	///<summary>  | </summary>
-        UAVIONIX_ADSB_OUT_UNLAWFUL_INTERFERANCE_EMERGENCY=5, 
-    	///<summary>  | </summary>
-        UAVIONIX_ADSB_OUT_DOWNED_AIRCRAFT_EMERGENCY=6, 
-    	///<summary>  | </summary>
-        UAVIONIX_ADSB_OUT_RESERVED=7, 
     
     };
     
@@ -3880,6 +3913,81 @@ AOA_SSA = 11020,
     };
 
 
+    [StructLayout(LayoutKind.Sequential,Pack=1,Size=20)]
+    ///<summary> Static data to configure the ADS-B transponder (send within 10 sec of a POR and every 10 sec thereafter) </summary>
+    public struct mavlink_uavionix_adsb_out_cfg_t
+    {
+        /// <summary> Vehicle address (24 bit) </summary>
+        public  uint ICAO;
+            /// <summary> Aircraft stall speed in cm/s </summary>
+        public  ushort stallSpeed;
+            /// <summary> Vehicle identifier (8 characters, null terminated, valid characters are A-Z, 0-9, " " only) </summary>
+        [MarshalAs(UnmanagedType.ByValArray,SizeConst=9)]
+		public byte[] callsign;
+            /// <summary> Transmitting vehicle type. See ADSB_EMITTER_TYPE enum ADSB_EMITTER_TYPE</summary>
+        public  /*ADSB_EMITTER_TYPE*/byte emitterType;
+            /// <summary> Aircraft length and width encoding (table 2-35 of DO-282B) UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE</summary>
+        public  /*UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE*/byte aircraftSize;
+            /// <summary> GPS antenna lateral offset (table 2-36 of DO-282B) UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT</summary>
+        public  /*UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT*/byte gpsOffsetLat;
+            /// <summary> GPS antenna longitudinal offset from nose [if non-zero, take position (in meters) divide by 2 and add one] (table 2-37 DO-282B) UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LON</summary>
+        public  /*UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LON*/byte gpsOffsetLon;
+            /// <summary> ADS-B transponder reciever and transmit enable flags UAVIONIX_ADSB_OUT_RF_SELECT</summary>
+        public  /*UAVIONIX_ADSB_OUT_RF_SELECT*/byte rfSelect;
+    
+    };
+
+
+    [StructLayout(LayoutKind.Sequential,Pack=1,Size=41)]
+    ///<summary> Dynamic data used to generate ADS-B out transponder data (send at 5Hz) </summary>
+    public struct mavlink_uavionix_adsb_out_dynamic_t
+    {
+        /// <summary> UTC time in seconds since GPS epoch (Jan 6, 1980). If unknown set to UINT32_MAX </summary>
+        public  uint utcTime;
+            /// <summary> Latitude WGS84 (deg * 1E7). If unknown set to INT32_MAX </summary>
+        public  int gpsLat;
+            /// <summary> Longitude WGS84 (deg * 1E7). If unknown set to INT32_MAX </summary>
+        public  int gpsLon;
+            /// <summary> Altitude in mm (m * 1E-3) UP +ve. WGS84 altitude. If unknown set to INT32_MAX </summary>
+        public  int gpsAlt;
+            /// <summary> Barometric pressure altitude relative to a standard atmosphere of 1013.2 mBar and NOT bar corrected altitude (m * 1E-3). (up +ve). If unknown set to INT32_MAX </summary>
+        public  int baroAltMSL;
+            /// <summary> Horizontal accuracy in mm (m * 1E-3). If unknown set to UINT32_MAX </summary>
+        public  uint accuracyHor;
+            /// <summary> Vertical accuracy in cm. If unknown set to UINT16_MAX </summary>
+        public  ushort accuracyVert;
+            /// <summary> Velocity accuracy in mm/s (m * 1E-3). If unknown set to UINT16_MAX </summary>
+        public  ushort accuracyVel;
+            /// <summary> GPS vertical speed in cm/s. If unknown set to INT16_MAX </summary>
+        public  short velVert;
+            /// <summary> North-South velocity over ground in cm/s North +ve. If unknown set to INT16_MAX </summary>
+        public  short velNS;
+            /// <summary> East-West velocity over ground in cm/s East +ve. If unknown set to INT16_MAX </summary>
+        public  short VelEW;
+            /// <summary> ADS-B transponder dynamic input state flags UAVIONIX_ADSB_OUT_DYNAMIC_STATE</summary>
+        public  /*UAVIONIX_ADSB_OUT_DYNAMIC_STATE*/ushort state;
+            /// <summary> Mode A code (typically 1200 [0x04B0] for VFR) </summary>
+        public  ushort squawk;
+            /// <summary> 0-1: no fix, 2: 2D fix, 3: 3D fix, 4: DGPS, 5: RTK UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX</summary>
+        public  /*UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX*/byte gpsFix;
+            /// <summary> Number of satellites visible. If unknown set to UINT8_MAX </summary>
+        public  byte numSats;
+            /// <summary> Emergency status UAVIONIX_ADSB_EMERGENCY_STATUS</summary>
+        public  /*UAVIONIX_ADSB_EMERGENCY_STATUS*/byte emergencyStatus;
+    
+    };
+
+
+    [StructLayout(LayoutKind.Sequential,Pack=1,Size=1)]
+    ///<summary> Transceiver heartbeat with health report (updated every 10s) </summary>
+    public struct mavlink_uavionix_adsb_transceiver_health_report_t
+    {
+        /// <summary> ADS-B transponder messages UAVIONIX_ADSB_RF_HEALTH</summary>
+        public  /*UAVIONIX_ADSB_RF_HEALTH*/byte rfHealth;
+    
+    };
+
+
     [StructLayout(LayoutKind.Sequential,Pack=1,Size=9)]
     ///<summary> The heartbeat message shows that a system is present and responding. The type of the MAV and Autopilot hardware allow the receiving system to treat further messages from this system appropriate (e.g. by laying out the user interface based on the autopilot). </summary>
     public struct mavlink_heartbeat_t
@@ -3901,7 +4009,7 @@ AOA_SSA = 11020,
 
 
     [StructLayout(LayoutKind.Sequential,Pack=1,Size=31)]
-    ///<summary> The general system state. If the system is following the MAVLink standard, the system state is mainly defined by three orthogonal states/modes: The system mode, which is either LOCKED (motors shut down and locked), MANUAL (system under RC control), GUIDED (system with autonomous position control, position setpoint controlled manually) or AUTO (system guided by path/waypoint planner). The NAV_MODE defined the current flight state: LIFTOFF (often an open-loop maneuver), LANDING, WAYPOINTS or VECTOR. This represents the internal navigation state machine. The system status shows wether the system is currently active or not and if an emergency occured. During the CRITICAL and EMERGENCY states the MAV is still considered to be active, but should start emergency procedures autonomously. After a failure occured it should first move from active to critical to allow manual intervention and then move to emergency after a certain timeout. </summary>
+    ///<summary> The general system state. If the system is following the MAVLink standard, the system state is mainly defined by three orthogonal states/modes: The system mode, which is either LOCKED (motors shut down and locked), MANUAL (system under RC control), GUIDED (system with autonomous position control, position setpoint controlled manually) or AUTO (system guided by path/waypoint planner). The MODE defined the current flight state: LIFTOFF (often an open-loop maneuver), LANDING, WAYPOINTS or VECTOR. This represents the internal navigation state machine. The system status shows wether the system is currently active or not and if an emergency occured. During the CRITICAL and EMERGENCY states the MAV is still considered to be active, but should start emergency procedures autonomously. After a failure occured it should first move from active to critical to allow manual intervention and then move to emergency after a certain timeout. </summary>
     public struct mavlink_sys_status_t
     {
         /// <summary> Bitmask showing which onboard controllers and sensors are present. Value of 0: not present. Value of 1: present. Indices defined by ENUM MAV_SYS_STATUS_SENSOR MAV_SYS_STATUS_SENSOR</summary>
@@ -7491,81 +7599,6 @@ AOA_SSA = 11020,
         public  /*MAV_PARAM_TYPE*/byte param_type;
             /// <summary> Result code: see the PARAM_ACK enum for possible codes. PARAM_ACK</summary>
         public  /*PARAM_ACK*/byte param_result;
-    
-    };
-
-
-    [StructLayout(LayoutKind.Sequential,Pack=1,Size=20)]
-    ///<summary> Static data to configure the ADS-B transponder (send within 10 sec of a POR and every 10 sec thereafter) </summary>
-    public struct mavlink_uavionix_adsb_out_cfg_t
-    {
-        /// <summary> Vehicle address (24 bit) </summary>
-        public  uint ICAO;
-            /// <summary> Aircraft stall speed in cm/s </summary>
-        public  ushort stallSpeed;
-            /// <summary> Vehicle identifier (8 characters, null terminated, valid characters are A-Z, 0-9, " " only) </summary>
-        [MarshalAs(UnmanagedType.ByValArray,SizeConst=9)]
-		public byte[] callsign;
-            /// <summary> Transmitting vehicle type. See ADSB_EMITTER_TYPE enum ADSB_EMITTER_TYPE</summary>
-        public  /*ADSB_EMITTER_TYPE*/byte emitterType;
-            /// <summary> Aircraft length and width encoding (table 2-35 of DO-282B) UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE</summary>
-        public  /*UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE*/byte aircraftSize;
-            /// <summary> GPS antenna lateral offset (table 2-36 of DO-282B) UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT</summary>
-        public  /*UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT*/byte gpsOffsetLat;
-            /// <summary> GPS antenna longitudinal offset from nose [if non-zero, take position (in meters) divide by 2 and add one] (table 2-37 DO-282B) UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LON</summary>
-        public  /*UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LON*/byte gpsOffsetLon;
-            /// <summary> ADS-B transponder reciever and transmit enable flags UAVIONIX_ADSB_OUT_RF_SELECT</summary>
-        public  /*UAVIONIX_ADSB_OUT_RF_SELECT*/byte rfSelect;
-    
-    };
-
-
-    [StructLayout(LayoutKind.Sequential,Pack=1,Size=41)]
-    ///<summary> Dynamic data used to generate ADS-B out transponder data (send at 5Hz) </summary>
-    public struct mavlink_uavionix_adsb_out_dynamic_t
-    {
-        /// <summary> UTC time in seconds since GPS epoch (Jan 6, 1980). If unknown set to UINT32_MAX </summary>
-        public  uint utcTime;
-            /// <summary> Latitude WGS84 (deg * 1E7). If unknown set to INT32_MAX </summary>
-        public  int gpsLat;
-            /// <summary> Longitude WGS84 (deg * 1E7). If unknown set to INT32_MAX </summary>
-        public  int gpsLon;
-            /// <summary> Altitude in mm (m * 1E-3) UP +ve. WGS84 altitude. If unknown set to INT32_MAX </summary>
-        public  int gpsAlt;
-            /// <summary> Barometric pressure altitude relative to a standard atmosphere of 1013.2 mBar and NOT bar corrected altitude (m * 1E-3). (up +ve). If unknown set to INT32_MAX </summary>
-        public  int baroAltMSL;
-            /// <summary> Horizontal accuracy in mm (m * 1E-3). If unknown set to UINT32_MAX </summary>
-        public  uint accuracyHor;
-            /// <summary> Vertical accuracy in cm. If unknown set to UINT16_MAX </summary>
-        public  ushort accuracyVert;
-            /// <summary> Velocity accuracy in mm/s (m * 1E-3). If unknown set to UINT16_MAX </summary>
-        public  ushort accuracyVel;
-            /// <summary> GPS vertical speed in cm/s. If unknown set to INT16_MAX </summary>
-        public  short velVert;
-            /// <summary> North-South velocity over ground in cm/s North +ve. If unknown set to INT16_MAX </summary>
-        public  short velNS;
-            /// <summary> East-West velocity over ground in cm/s East +ve. If unknown set to INT16_MAX </summary>
-        public  short VelEW;
-            /// <summary> ADS-B transponder dynamic input state flags UAVIONIX_ADSB_OUT_DYNAMIC_STATE</summary>
-        public  /*UAVIONIX_ADSB_OUT_DYNAMIC_STATE*/ushort state;
-            /// <summary> Mode A code (typically 1200 [0x04B0] for VFR) </summary>
-        public  ushort squawk;
-            /// <summary> 0-1: no fix, 2: 2D fix, 3: 3D fix, 4: DGPS, 5: RTK UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX</summary>
-        public  /*UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX*/byte gpsFix;
-            /// <summary> Number of satellites visible. If unknown set to UINT8_MAX </summary>
-        public  byte numSats;
-            /// <summary> Emergency status UAVIONIX_ADSB_EMERGENCY_STATUS</summary>
-        public  /*UAVIONIX_ADSB_EMERGENCY_STATUS*/byte emergencyStatus;
-    
-    };
-
-
-    [StructLayout(LayoutKind.Sequential,Pack=1,Size=1)]
-    ///<summary> Transceiver heartbeat with health report (updated every 10s) </summary>
-    public struct mavlink_uavionix_adsb_transceiver_health_report_t
-    {
-        /// <summary> ADS-B transponder messages UAVIONIX_ADSB_RF_HEALTH</summary>
-        public  /*UAVIONIX_ADSB_RF_HEALTH*/byte rfHealth;
     
     };
 
