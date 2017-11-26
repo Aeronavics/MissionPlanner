@@ -267,7 +267,7 @@ namespace MissionPlanner
 
         Controls.MainSwitcher MyView;
 
-        private static DisplayView _displayConfiguration = new DisplayView().Advanced();
+        private static DisplayView _displayConfiguration = new DisplayView().Basic();
 
         public static event EventHandler LayoutChanged;
 
@@ -649,8 +649,10 @@ namespace MissionPlanner
             InitializeComponent();
             try
             {
-                if(Settings.Instance["theme"] != null)
+                if (Settings.Instance["theme"] != null)
                     ThemeManager.SetTheme((ThemeManager.Themes)Enum.Parse(typeof(ThemeManager.Themes), Settings.Instance["theme"]));
+                else
+                    ThemeManager.SetTheme(ThemeManager.Themes.Aeronavics);
             }
             catch
             {
@@ -885,7 +887,7 @@ namespace MissionPlanner
             //set first instance display configuration
             if (DisplayConfiguration == null)
             {
-                DisplayConfiguration = DisplayConfiguration.Advanced();
+                DisplayConfiguration = DisplayConfiguration.Basic();
             }
 
             // load old config
@@ -893,7 +895,7 @@ namespace MissionPlanner
             {
                 if (Settings.Instance.GetBoolean("advancedview") == true)
                 {
-                    DisplayConfiguration = new DisplayView().Advanced();
+                    DisplayConfiguration = new DisplayView().Aeronavics();
                 }
                 // remove old config
                 Settings.Instance.Remove("advancedview");
@@ -906,7 +908,7 @@ namespace MissionPlanner
                 }
                 catch
                 {
-                    DisplayConfiguration = DisplayConfiguration.Advanced();
+                    DisplayConfiguration = DisplayConfiguration.Basic();
                 }
             }
 
