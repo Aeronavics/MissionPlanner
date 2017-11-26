@@ -167,9 +167,9 @@ namespace MissionPlanner.Utilities
             displayFullParamList = false;
             displayFullParamTree = false;
             displayParamCommitButton = false;
-            displayBaudCMB = true;
+            displayBaudCMB = false;
             standardFlightModesOnly = false;
-            displaySerialPortCMB = true;
+            displaySerialPortCMB = false;
             autoHideMenuForce = false;
             isAdvancedMode = false;
         }

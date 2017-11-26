@@ -481,6 +481,16 @@ namespace MissionPlanner
             MenuTerminal.Visible = DisplayConfiguration.displayTerminal;
             MenuHelp.Visible = DisplayConfiguration.displayHelp;
             MenuDonate.Visible = DisplayConfiguration.displayDonate;
+            _connectionControl.CMB_baudrate.Visible = DisplayConfiguration.displayBaudCMB;
+            _connectionControl.CMB_serialport.Visible = DisplayConfiguration.displaySerialPortCMB;
+
+            //force serial port selection to UDP when serial port combo box is hidden
+            if (!DisplayConfiguration.displaySerialPortCMB)
+            {
+                _connectionControl.CMB_serialport.SelectedIndex = _connectionControl.CMB_serialport.FindString("UDP");
+                CMB_serialport_SelectedIndexChanged(this, null);
+            }
+
             MissionPlanner.Controls.BackstageView.BackstageView.Advanced = DisplayConfiguration.isAdvancedMode;
 
             if (Settings.Instance.GetBoolean("menu_autohide") != DisplayConfiguration.autoHideMenuForce)
