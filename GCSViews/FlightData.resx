@@ -2763,6 +2763,54 @@
   <data name="&gt;&gt;tabPagemessages.ZOrder" xml:space="preserve">
     <value>10</value>
   </data>
+    <data name="hud2.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="hud2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="hud2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>214, 159</value>
+  </data>
+  <data name="hud2.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;hud2.Name" xml:space="preserve">
+    <value>hud2</value>
+  </data>
+  <data name="&gt;&gt;hud2.Type" xml:space="preserve">
+    <value>MissionPlanner.Controls.Terrain, MissionPlanner.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;hud2.Parent" xml:space="preserve">
+    <value>tabTerrain</value>
+  </data>
+  <data name="&gt;&gt;hud2.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="tabTerrain.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="tabTerrain.Size" type="System.Drawing.Size, System.Drawing">
+    <value>350, 164</value>
+  </data>
+  <data name="tabTerrain.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="tabTerrain.Text" xml:space="preserve">
+    <value>Terrain</value>
+  </data>
+  <data name="&gt;&gt;tabTerrain.Name" xml:space="preserve">
+    <value>tabTerrain</value>
+  </data>
+  <data name="&gt;&gt;tabTerrain.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabTerrain.Parent" xml:space="preserve">
+    <value>tabControlactions</value>
+  </data>
+  <data name="&gt;&gt;tabTerrain.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
   <data name="BUT_PayloadFolder.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>

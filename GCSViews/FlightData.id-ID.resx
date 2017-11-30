@@ -441,4 +441,7 @@
   <data name="lbl_hdop.ToolTip" xml:space="preserve">
     <value>gps hdop</value>
   </data>
+  <data name="tabTerrain.Text" xml:space="preserve">
+    <value>Terrain</value>
+  </data>
 </root>

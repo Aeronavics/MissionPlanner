@@ -67,7 +67,6 @@
             this.myButton2 = new MissionPlanner.Controls.MyButton();
             this.myButton3 = new MissionPlanner.Controls.MyButton();
             this.tabPagePreFlight = new System.Windows.Forms.TabPage();
-            this.checkListControl1 = new MissionPlanner.Controls.PreFlight.CheckListControl();
             this.tabGauges = new System.Windows.Forms.TabPage();
             this.Gvspeed = new AGaugeApp.AGauge();
             this.bindingSourceGaugesTab = new System.Windows.Forms.BindingSource(this.components);
@@ -122,6 +121,8 @@
             this.BUT_select_script = new MissionPlanner.Controls.MyButton();
             this.tabPagemessages = new System.Windows.Forms.TabPage();
             this.txt_messagebox = new System.Windows.Forms.TextBox();
+            this.tabTerrain = new System.Windows.Forms.TabPage();
+            this.hud2 = new MissionPlanner.Controls.Terrain();
             this.tabPayload = new System.Windows.Forms.TabPage();
             this.BUT_PayloadFolder = new MissionPlanner.Controls.MyButton();
             this.groupBoxRoll = new System.Windows.Forms.GroupBox();
@@ -198,7 +199,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceQuickTab)).BeginInit();
             this.tabActions.SuspendLayout();
             this.tabActionsSimple.SuspendLayout();
-            this.tabPagePreFlight.SuspendLayout();
             this.tabGauges.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceGaugesTab)).BeginInit();
             this.tabServo.SuspendLayout();
@@ -210,6 +210,7 @@
             this.tablogbrowse.SuspendLayout();
             this.tabScripts.SuspendLayout();
             this.tabPagemessages.SuspendLayout();
+            this.tabTerrain.SuspendLayout();
             this.tabPayload.SuspendLayout();
             this.groupBoxRoll.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourcePayloadTab)).BeginInit();
@@ -455,6 +456,7 @@
             this.tabControlactions.Controls.Add(this.tablogbrowse);
             this.tabControlactions.Controls.Add(this.tabScripts);
             this.tabControlactions.Controls.Add(this.tabPagemessages);
+            this.tabControlactions.Controls.Add(this.tabTerrain);
             this.tabControlactions.Controls.Add(this.tabPayload);
             resources.ApplyResources(this.tabControlactions, "tabControlactions");
             this.tabControlactions.Name = "tabControlactions";
@@ -920,15 +922,9 @@
             // 
             // tabPagePreFlight
             // 
-            this.tabPagePreFlight.Controls.Add(this.checkListControl1);
             resources.ApplyResources(this.tabPagePreFlight, "tabPagePreFlight");
             this.tabPagePreFlight.Name = "tabPagePreFlight";
             this.tabPagePreFlight.UseVisualStyleBackColor = true;
-            // 
-            // checkListControl1
-            // 
-            resources.ApplyResources(this.checkListControl1, "checkListControl1");
-            this.checkListControl1.Name = "checkListControl1";
             // 
             // tabGauges
             // 
@@ -1804,6 +1800,77 @@
             resources.ApplyResources(this.txt_messagebox, "txt_messagebox");
             this.txt_messagebox.Name = "txt_messagebox";
             // 
+            // tabTerrain
+            // 
+            this.tabTerrain.Controls.Add(this.hud2);
+            resources.ApplyResources(this.tabTerrain, "tabTerrain");
+            this.tabTerrain.Name = "tabTerrain";
+            this.tabTerrain.UseVisualStyleBackColor = true;
+            this.tabTerrain.Resize += new System.EventHandler(this.tabTerrain_Resize);
+            // 
+            // hud2
+            // 
+            this.hud2.alt = 0F;
+            this.hud2.AOA = 0F;
+            resources.ApplyResources(this.hud2, "hud2");
+            this.hud2.BackColor = System.Drawing.Color.Black;
+            this.hud2.bgimage = null;
+            this.hud2.drone = global::MissionPlanner.Properties.Resources.drone;
+            this.hud2.connected = false;
+            this.hud2.ContextMenuStrip = this.contextMenuStripHud;
+            this.hud2.critAOA = 25F;
+            this.hud2.critSSA = 30F;
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("alt", this.bindingSourceHud, "alt", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("disttowp", this.bindingSourceHud, "wp_dist", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("ekfstatus", this.bindingSourceHud, "ekfstatus", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("failsafe", this.bindingSourceHud, "failsafe", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("groundalt", this.bindingSourceHud, "HomeAlt", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("groundcourse", this.bindingSourceHud, "groundcourse", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("heading", this.bindingSourceHud, "yaw", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("message", this.bindingSourceHud, "messageHigh", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("messagetime", this.bindingSourceHud, "messageHighTime", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("targetalt", this.bindingSourceHud, "targetalt", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("vibex", this.bindingSourceHud, "vibex", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("vibey", this.bindingSourceHud, "vibey", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("vibez", this.bindingSourceHud, "vibez", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("wpno", this.bindingSourceHud, "wpno", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("xtrack_error", this.bindingSourceHud, "xtrack_error", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("AOA", this.bindingSourceHud, "AOA", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("SSA", this.bindingSourceHud, "SSA", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("critAOA", this.bindingSourceHud, "crit_AOA", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("lat", this.bindingSourceHud, "lat", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("lng", this.bindingSourceHud, "lng", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("Homealt", this.bindingSourceHud, "Homealt", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("groundspeed", this.bindingSourceHud, "groundspeed", true));
+            this.hud2.displayAOASSA = false;
+            this.hud2.disttowp = 0F;
+            this.hud2.ekfstatus = 0F;
+            this.hud2.failsafe = false;
+            this.hud2.groundspeed = 0F;
+            this.hud2.groundalt = 0F;
+            this.hud2.groundcourse = 0F;
+            this.hud2.heading = 0F;
+            this.hud2.hudcolor = System.Drawing.Color.LightGray;
+            this.hud2.lat = 0D;
+            this.hud2.Homealt = 0F;
+            this.hud2.lng = 0D;
+            this.hud2.lowvoltagealert = false;
+            this.hud2.message = "";
+            this.hud2.messagetime = new System.DateTime(((long)(0)));
+            this.hud2.Name = "hud2";
+            this.hud2.Russian = false;
+            this.hud2.SSA = 0F;
+            this.hud2.status = false;
+
+            this.hud2.targetalt = 0F;
+            this.hud2.turnrate = 0F;
+            this.hud2.vibex = 0F;
+            this.hud2.vibey = 0F;
+            this.hud2.vibez = 0F;
+            this.hud2.VSync = false;
+            this.hud2.wpno = 0;
+            this.hud2.xtrack_error = 0F;
+            // 
             // tabPayload
             // 
             this.tabPayload.Controls.Add(this.BUT_PayloadFolder);
@@ -2087,7 +2154,7 @@
             this.windDir1.BackColor = System.Drawing.Color.Transparent;
             this.windDir1.DataBindings.Add(new System.Windows.Forms.Binding("Direction", this.bindingSource1, "wind_dir", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             this.windDir1.DataBindings.Add(new System.Windows.Forms.Binding("Speed", this.bindingSource1, "wind_vel", true, System.Windows.Forms.DataSourceUpdateMode.Never));
-            this.windDir1.Direction = 180D;
+            this.windDir1.Direction = 360D;
             resources.ApplyResources(this.windDir1, "windDir1");
             this.windDir1.Name = "windDir1";
             this.windDir1.Speed = 0D;
@@ -2192,6 +2259,7 @@
             this.panel1.Controls.Add(this.CB_tuning);
             resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Name = "panel1";
+
             // 
             // coords1
             // 
@@ -2331,7 +2399,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceQuickTab)).EndInit();
             this.tabActions.ResumeLayout(false);
             this.tabActionsSimple.ResumeLayout(false);
-            this.tabPagePreFlight.ResumeLayout(false);
             this.tabGauges.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceGaugesTab)).EndInit();
             this.tabServo.ResumeLayout(false);
@@ -2347,6 +2414,8 @@
             this.tabScripts.PerformLayout();
             this.tabPagemessages.ResumeLayout(false);
             this.tabPagemessages.PerformLayout();
+            this.tabTerrain.ResumeLayout(false);
+            this.tabTerrain.PerformLayout();
             this.tabPayload.ResumeLayout(false);
             this.groupBoxRoll.ResumeLayout(false);
             this.groupBoxRoll.PerformLayout();
@@ -2385,6 +2454,7 @@
         private System.Windows.Forms.SplitContainer SubMainLeft;
         private System.Windows.Forms.ToolStripMenuItem goHereToolStripMenuItem;
         private Controls.HUD hud1;
+        private Controls.Terrain hud2;
         private Controls.MyButton BUT_clear_track;
         private System.Windows.Forms.CheckBox CB_tuning;
         private Controls.MyButton BUT_RAWSensor;
@@ -2502,6 +2572,7 @@
         private Controls.MyButton BUT_DFMavlink;
         public System.Windows.Forms.TabPage tabPagemessages;
         private System.Windows.Forms.TextBox txt_messagebox;
+        public System.Windows.Forms.TabPage tabTerrain;
         private System.Windows.Forms.Timer Messagetabtimer;
         public System.Windows.Forms.TabPage tabActionsSimple;
         private Controls.MyButton myButton1;

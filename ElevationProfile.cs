@@ -68,9 +68,9 @@ namespace MissionPlanner
 
             Form frm = Common.LoadingBox("Loading", "using alt data");
 
-            gelocs = getGEAltPath(planlocs);
+            gelocs = getGEAltPath(planlocs);    //Google Earth data
 
-            srtmlocs = getSRTMAltPath(planlocs);
+            srtmlocs = getSRTMAltPath(planlocs);  //DEM data
 
             frm.Close();
 
