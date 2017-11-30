@@ -1278,6 +1278,7 @@ namespace MissionPlanner
 
         public float speedup { get; set; }
 
+
         // HIL
         public int hilch1;// { get; set; }
         public int hilch2;// { get; set; }
