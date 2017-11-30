@@ -152,7 +152,7 @@ namespace MissionPlanner.GCSViews
         /// <param name="lat"></param>
         /// <param name="lng"></param>
         /// <param name="alt"></param>
-        public void setfromMap(double lat, double lng, int alt, double p1 = 0)
+        public void setfromMap(double lat, double lng, double alt, double p1 = 0)
         {
             if (selectedrow > Commands.RowCount)
             {
@@ -5758,11 +5758,11 @@ namespace MissionPlanner.GCSViews
                 // add delay if supplied
                 Commands.Rows[rowIndex].Cells[Param1.Index].Value = p1;
 
-                setfromMap(y, x, (int)z, Math.Round(p1, 1));
+                setfromMap(y, x, z, Math.Round(p1, 1));
             }
             else if (cmd == MAVLink.MAV_CMD.LOITER_UNLIM)
             {
-                setfromMap(y, x, (int)z);
+                setfromMap(y, x, z);
             }
             else
             {
@@ -6342,7 +6342,7 @@ namespace MissionPlanner.GCSViews
                 foreach (var loc in ls.Coordinates)
                 {
                     selectedrow = Commands.Rows.Add();
-                    setfromMap(loc.Latitude, loc.Longitude, (int) loc.Altitude);
+                    setfromMap(loc.Latitude, loc.Longitude, (double)loc.Altitude);
                 }
             }
         }
@@ -7061,6 +7061,13 @@ Column 1: Field type (RALLY is the only one at the moment -- may have RALLY_LAND
             GridPlugin grid = new GridPlugin();
             grid.Host = new PluginHost();
             grid.but_Click(sender, e);
+        }
+
+        private void faceMapToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FaceMapPlugin facemap = new FaceMapPlugin();
+            facemap.Host = new PluginHost();
+            facemap.but_Click(sender, e);
         }
     }
 }
