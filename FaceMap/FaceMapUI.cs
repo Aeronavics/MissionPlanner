@@ -664,6 +664,19 @@ namespace MissionPlanner
                     distance = distance / 5280f;
                     lbl_distance.Text = distance.ToString("0.##") + " miles";
                 }
+
+                float alt = (float)grid[0].Alt * 3280.84f;
+                //face width
+                if (distance < 5280f)
+                {
+                    lbl_initialalt.Text = distance.ToString("0.##") + " ft";
+                }
+                else
+                {
+                    distance = distance / 5280f;
+                    lbl_initialalt.Text = distance.ToString("0.##") + " miles";
+                }
+
                 lbl_spacing.Text = (NUM_spacing.Value * 3.2808399m).ToString("#") + " ft";
                 lbl_grndres.Text = inchpixel;
                 lbl_distbetweenlines.Text = (camVerticalSpacing * 3.2808399m).ToString("0.##") + " ft";
@@ -674,6 +687,7 @@ namespace MissionPlanner
             else
             {
                 // Meters
+                lbl_initialalt.Text = grid[0].Alt.ToString("0.##") + "m";
                 lbl_spacing.Text = NUM_spacing.Value.ToString("#") + " m";
                 lbl_distance.Text = routetotal.ToString("0.##") + " km";
                 lbl_grndres.Text = TXT_cmpixel.Text;
@@ -701,7 +715,7 @@ namespace MissionPlanner
 
             double flyspeedms = CurrentState.fromSpeedDisplayUnit((double)NUM_UpDownFlySpeed.Value);
 
-            lbl_pictures.Text = images.ToString();
+            lbl_pictures.Text = ((int)(routetotal * 1000/ (float)NUM_spacing.Value)).ToString();
             lbl_strips.Text = ((int)strips).ToString();
             double seconds = ((routetotal * 1000.0) / ((flyspeedms) * 0.8));
             // reduce flying speed by 20 %

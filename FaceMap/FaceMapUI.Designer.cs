@@ -53,7 +53,7 @@
             this.lbl_spacing = new System.Windows.Forms.Label();
             this.label27 = new System.Windows.Forms.Label();
             this.lbl_distance = new System.Windows.Forms.Label();
-            this.lbl_area = new System.Windows.Forms.Label();
+            this.lbl_initialalt = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
             this.tabCamera = new System.Windows.Forms.TabPage();
@@ -204,7 +204,7 @@
             this.groupBox5.Controls.Add(this.lbl_spacing);
             this.groupBox5.Controls.Add(this.label27);
             this.groupBox5.Controls.Add(this.lbl_distance);
-            this.groupBox5.Controls.Add(this.lbl_area);
+            this.groupBox5.Controls.Add(this.lbl_initialalt);
             this.groupBox5.Controls.Add(this.label23);
             this.groupBox5.Controls.Add(this.label22);
             resources.ApplyResources(this.groupBox5, "groupBox5");
@@ -326,10 +326,10 @@
             resources.ApplyResources(this.lbl_distance, "lbl_distance");
             this.lbl_distance.Name = "lbl_distance";
             // 
-            // lbl_area
+            // lbl_initialalt
             // 
-            resources.ApplyResources(this.lbl_area, "lbl_area");
-            this.lbl_area.Name = "lbl_area";
+            resources.ApplyResources(this.lbl_initialalt, "lbl_initialalt");
+            this.lbl_initialalt.Name = "lbl_initialalt";
             // 
             // label23
             // 
@@ -821,6 +821,11 @@
             // 
             this.NUM_Distance.DecimalPlaces = 1;
             resources.ApplyResources(this.NUM_Distance, "NUM_Distance");
+            this.NUM_Distance.Minimum = new decimal(new int[] {
+            6,
+            0,
+            0,
+            0});
             this.NUM_Distance.Name = "NUM_Distance";
             this.NUM_Distance.Value = new decimal(new int[] {
             10,
@@ -1271,7 +1276,7 @@
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label lbl_distance;
-        private System.Windows.Forms.Label lbl_area;
+        private System.Windows.Forms.Label lbl_initialalt;
         private System.Windows.Forms.Label lbl_spacing;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label lbl_grndres;
