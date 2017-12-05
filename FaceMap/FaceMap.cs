@@ -90,7 +90,7 @@ namespace MissionPlanner
             map.ShowUserControl();
         }
 
-        public static List<PointLatLngAlt> CreateCorridor(List<PointLatLngAlt> polygon, double height, double camVertSpacing, double distance, double angle,
+        public static List<PointLatLngAlt> CreateCorridor(List<PointLatLngAlt> polygon, double height, double camViewHeight, double camVertSpacing, double distance, double angle,
             double camPitch, bool flipDirection, double bermDepth, int numBenches, double toeHeight, bool pathHome)
         {
             int direction = (flipDirection == true ? -1 : 1);
@@ -112,18 +112,20 @@ namespace MissionPlanner
             double vertOffset = 0;
             double horizOffset = 0;
 
+            //calculate number of lanes with a starting altitude of half the calculated cam view height
+            double initialAltitude = camViewHeight * Math.Sin(angle * deg2rad) / 2;
             var vertIncrement = camVertSpacing * Math.Sin(angle * deg2rad);
-            var lanes = Math.Round(height / vertIncrement);
+            var lanes = Math.Round((height - initialAltitude) / vertIncrement) + 1;
         
             //repeat for each bench, applying height/berm depth offsets
             for (int bench = 0; bench < numBenches; bench++)
             {
                 //repeat for each increment up face
-                for (int lane = 1; lane <= lanes; lane++)
+                for (int lane = 0; lane < lanes; lane++)
                 {
                     //calculate offset from the base of the face based on toe angle, camera pitch, camera overlap % and bench offset
-                    vertOffset = distance * Math.Sin(camPitch * deg2rad) + lane * vertIncrement + bench * height + toeHeight;
-                    horizOffset = distance * Math.Cos(camPitch * deg2rad) - ((lane * vertIncrement) / Math.Tan(angle * deg2rad)) - bench * (bermDepth + height / Math.Tan(angle * deg2rad));
+                    vertOffset = distance * Math.Sin(camPitch * deg2rad) + (initialAltitude + (lane * vertIncrement) + (bench * height) + toeHeight);
+                    horizOffset = distance * Math.Cos(camPitch * deg2rad) - ((initialAltitude + (lane * vertIncrement)) / Math.Tan(angle * deg2rad)) - bench * (bermDepth + height / Math.Tan(angle * deg2rad));
 
                     GenerateOffsetPath(utmpositions, horizOffset * direction, utmzone)
                         .ForEach(pnt => { ans.Add(pnt); ans.Last().Alt = vertOffset; });

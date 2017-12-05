@@ -564,7 +564,7 @@ namespace MissionPlanner
 
             // new grid system test
 
-                grid = FaceMap.CreateCorridor(list, CurrentState.fromDistDisplayUnit((double)NUM_BenchHeight.Value),
+            grid = FaceMap.CreateCorridor(list, CurrentState.fromDistDisplayUnit((double)NUM_BenchHeight.Value), (double)viewheight,
                      (double)camVerticalSpacing, (double)NUM_Distance.Value, (double)NUM_angle.Value,(double)NUM_cameraPitch.Value, 
                      CHK_facedirection.Checked, (double)NUM_BermDepth.Value, (int)NUM_Benches.Value, (double)NUM_toeHeight.Value, 
                      CHK_FollowPathHome.Checked);
@@ -1614,7 +1614,8 @@ namespace MissionPlanner
 
             if (camVerticalSpacing != 0)
             {
-                var lanes = Math.Round((double)NUM_BenchHeight.Value / vertIncrement);
+                double initialAltitude = viewheight * Math.Sin((double)NUM_angle.Value* deg2rad) / 2;
+                var lanes = Math.Round(((double)NUM_BenchHeight.Value - initialAltitude) / vertIncrement) + 1;
                 System.Drawing.Pen pen1 = new System.Drawing.Pen(Color.DimGray, 2F);
                 pen1.DashPattern = new float[] { 2.0F, 2.0F };
 
@@ -1626,12 +1627,12 @@ namespace MissionPlanner
                 for (int bench = 0; bench < NUM_Benches.Value; bench++)
                 {
                     //repeat for each increment up face
-                    for (int lane = 1; lane <= lanes; lane++)
+                    for (int lane = 0; lane < lanes; lane++)
                     {
                         //calculate offset from the base of the face based on toe angle, camera pitch, camera overlap % and bench offset
                         PointF surveyPoint = new PointF();
-                        surveyPoint.X = (float)(points[2].X + (((lane * vertIncrement) / tanAngle) + bench * ((double)NUM_BermDepth.Value + (double)NUM_BenchHeight.Value / tanAngle)) * scaleFactor);
-                        surveyPoint.Y = (float)(points[2].Y - (lane * vertIncrement + bench * (double)NUM_BenchHeight.Value) * scaleFactor);
+                        surveyPoint.X = (float)(points[2].X + (((initialAltitude + (lane * vertIncrement)) / tanAngle) + bench * ((double)NUM_BermDepth.Value + (double)NUM_BenchHeight.Value / tanAngle)) * scaleFactor);
+                        surveyPoint.Y = (float)(points[2].Y - (initialAltitude + (lane * vertIncrement) + (bench * (double)NUM_BenchHeight.Value)) * scaleFactor);
 
                         PointF copterPoint = PointF.Add(surveyPoint, new SizeF((float)(-CopterDistX * scaleFactor), (float)(-CopterDistY * scaleFactor)));
 
