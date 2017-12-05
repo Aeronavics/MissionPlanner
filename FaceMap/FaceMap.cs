@@ -113,7 +113,7 @@ namespace MissionPlanner
             double horizOffset = 0;
 
             //calculate number of lanes with a starting altitude of half the calculated cam view height
-            double initialAltitude = camViewHeight * Math.Sin(angle * deg2rad) / 2;
+            double initialAltitude = camViewHeight * Math.Sin(angle * deg2rad) / 3;
             var vertIncrement = camVertSpacing * Math.Sin(angle * deg2rad);
             var lanes = Math.Round((height - initialAltitude) / vertIncrement) + 1;
         

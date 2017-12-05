@@ -1614,7 +1614,7 @@ namespace MissionPlanner
 
             if (camVerticalSpacing != 0)
             {
-                double initialAltitude = viewheight * Math.Sin((double)NUM_angle.Value* deg2rad) / 2;
+                double initialAltitude = viewheight * Math.Sin((double)NUM_angle.Value* deg2rad) / 3;
                 var lanes = Math.Round(((double)NUM_BenchHeight.Value - initialAltitude) / vertIncrement) + 1;
                 System.Drawing.Pen pen1 = new System.Drawing.Pen(Color.DimGray, 2F);
                 pen1.DashPattern = new float[] { 2.0F, 2.0F };
