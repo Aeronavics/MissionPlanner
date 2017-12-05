@@ -48,8 +48,10 @@ namespace MissionPlanner
         public string inchpixel = "";
         public string feet_fovH = "";
         public string feet_fovV = "";
+        double viewwidth = 0;
+        double viewheight = 0;
 
-        decimal verticalSpacing = 0;
+        decimal camVerticalSpacing = 0;
 
         internal PointLatLng MouseDownStart = new PointLatLng();
         internal PointLatLng MouseDownEnd;
@@ -73,14 +75,14 @@ namespace MissionPlanner
             public float imageheight;
         }
 
-        public struct GridData
+        public struct FaceMapData
         {
             public List<PointLatLngAlt> poly;
             //simple
             public string camera;
-            public decimal alt;
+            public decimal benchheight;
             public decimal angle;
-            public bool camdir;
+            public bool facedirection;
             public decimal speed;
             public bool usespeed;
             public bool autotakeoff;
@@ -88,15 +90,13 @@ namespace MissionPlanner
 
             public decimal splitmission;
 
-            public bool internals;
-            public bool footprints;
-            public bool advanced;
-
+            public decimal bermdepth;
+            public decimal numbenches;
+            public decimal camerapitch;
+            public decimal toeheight;
+            public bool campitchunlock;
             //options
             public decimal dist;
-            public decimal overshoot1;
-            public decimal overshoot2;
-            public decimal leadin;
             public string startfrom;
             public decimal overlap;
             public decimal sidelap;
@@ -104,11 +104,6 @@ namespace MissionPlanner
             public bool crossgrid;
             // Copter Settings
             public decimal copter_delay;
-            public bool copter_headinghold_chk;
-            public decimal copter_headinghold;
-            // plane settings
-            public bool alternateLanes;
-            public decimal minlaneseparation;
 
             // camera config
             public bool trigdist;
@@ -127,7 +122,6 @@ namespace MissionPlanner
             public decimal setservo_high;
         }
 
-        // GridUI
         public FaceMapUI(FaceMapPlugin plugin)
         {
             this.plugin = plugin;
@@ -159,9 +153,6 @@ namespace MissionPlanner
             if (plugin.Host.config["distunits"] != null)
                 DistUnits = plugin.Host.config["distunits"].ToString();
 
-            CMB_startfrom.DataSource = Enum.GetNames(typeof (FaceMap.StartPosition));
-            CMB_startfrom.SelectedIndex = 0;
-
             if (plugin.Host.cs.firmware == MainV2.Firmwares.ArduPlane)
                 NUM_UpDownFlySpeed.Value = (decimal) (12*CurrentState.multiplierspeed);
 
@@ -190,9 +181,6 @@ namespace MissionPlanner
             if (!loadedfromfile)
                 loadsettings();
 
-            // setup state before settings load
-            CHK_advanced_CheckedChanged(null, null);
-
             TRK_zoom.Value = (float)map.Zoom;
 
             label1.Text += " (" + CurrentState.DistanceUnit+")";
@@ -209,169 +197,171 @@ namespace MissionPlanner
         }
 
         // Load/Save
-        public void LoadGrid()
+        public void LoadFaceMap()
         {
-            System.Xml.Serialization.XmlSerializer reader = new System.Xml.Serialization.XmlSerializer(typeof(GridData));
+            System.Xml.Serialization.XmlSerializer reader = new System.Xml.Serialization.XmlSerializer(typeof(FaceMapData));
 
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
-                ofd.Filter = "*.grid|*.grid";
+                ofd.Filter = "*.facemap|*.facemap";
                 ofd.ShowDialog();
 
                 if (File.Exists(ofd.FileName))
                 {
                     using (StreamReader sr = new StreamReader(ofd.FileName))
                     {
-                        var test = (GridData)reader.Deserialize(sr);
+                        var test = (FaceMapData)reader.Deserialize(sr);
 
                         loading = true;
-                        loadgriddata(test);
+                        loadfacemapdata(test);
                         loading = false;
                     }
                 }
             }
         }
 
-        public void SaveGrid()
+        public void SaveFaceMap()
         {
-            System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(GridData));
+            System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(FaceMapData));
 
-            var griddata = savegriddata();
+            var facemapdata = saveFaceMapData();
 
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
-                sfd.Filter = "*.grid|*.grid";
+                sfd.Filter = "*.facemap|*.facemap";
                 sfd.ShowDialog();
 
                 if (sfd.FileName != "")
                 {
                     using (StreamWriter sw = new StreamWriter(sfd.FileName))
                     {
-                        writer.Serialize(sw, griddata);
+                        writer.Serialize(sw, facemapdata);
                     }
                 }
             }
         }
 
-        void loadgriddata(GridData griddata)
+        void loadfacemapdata(FaceMapData facemapdata)
         {
-            list = griddata.poly;
+            list = facemapdata.poly;
 
-            CMB_camera.Text = griddata.camera;
-            NUM_altitude.Value = griddata.alt;
-            NUM_angle.Value = griddata.angle;
-            CHK_facedirection.Checked = griddata.camdir;
-            CHK_usespeed.Checked = griddata.usespeed;
-            NUM_UpDownFlySpeed.Value = griddata.speed;
-            CHK_toandland.Checked = griddata.autotakeoff;
-            CHK_toandland_RTL.Checked = griddata.autotakeoff_RTL;
-            NUM_split.Value = griddata.splitmission;
+            CMB_camera.Text = facemapdata.camera;
+            NUM_BenchHeight.Value = facemapdata.benchheight;
+            NUM_angle.Value = facemapdata.angle;
+            CHK_facedirection.Checked = facemapdata.facedirection;
+            CHK_usespeed.Checked = facemapdata.usespeed;
+            NUM_UpDownFlySpeed.Value = facemapdata.speed;
+            CHK_toandland.Checked = facemapdata.autotakeoff;
+            CHK_toandland_RTL.Checked = facemapdata.autotakeoff_RTL;
+            NUM_split.Value = facemapdata.splitmission;
 
+            NUM_BermDepth.Value = facemapdata.bermdepth;
+            NUM_Benches.Value = facemapdata.numbenches;
+            NUM_cameraPitch.Value = facemapdata.camerapitch;
+            NUM_toeHeight.Value = facemapdata.toeheight;
+            CHK_camPitchUnlock.Checked = facemapdata.campitchunlock;
 
-            //NUM_Distance.Value = griddata.dist;
-            //NUM_overshoot.Value = griddata.overshoot1;
-            //NUM_overshoot2.Value = griddata.overshoot2;
-            //NUM_leadin.Value = griddata.leadin;
-            CMB_startfrom.Text = griddata.startfrom;
-            num_overlap.Value = griddata.overlap;
-            num_sidelap.Value = griddata.sidelap;
-            //chk_crossgrid.Checked = griddata.crossgrid;
+            num_overlap.Value = facemapdata.overlap;
+            num_sidelap.Value = facemapdata.sidelap;
             
-            rad_trigdist.Checked = griddata.trigdist;
-            rad_digicam.Checked = griddata.digicam;
-            rad_repeatservo.Checked = griddata.repeatservo;
-            chk_stopstart.Checked = griddata.breaktrigdist;
+            rad_trigdist.Checked = facemapdata.trigdist;
+            rad_digicam.Checked = facemapdata.digicam;
+            rad_repeatservo.Checked = facemapdata.repeatservo;
+            chk_stopstart.Checked = facemapdata.breaktrigdist;
 
-            NUM_reptservo.Value = griddata.repeatservo_no;
-            num_reptpwm.Value = griddata.repeatservo_pwm;
-            NUM_repttime.Value = griddata.repeatservo_cycle;
+            NUM_reptservo.Value = facemapdata.repeatservo_no;
+            num_reptpwm.Value = facemapdata.repeatservo_pwm;
+            NUM_repttime.Value = facemapdata.repeatservo_cycle;
 
-            num_setservono.Value = griddata.setservo_no;
-            num_setservolow.Value = griddata.setservo_low;
-            num_setservohigh.Value = griddata.setservo_high;
+            num_setservono.Value = facemapdata.setservo_no;
+            num_setservolow.Value = facemapdata.setservo_low;
+            num_setservohigh.Value = facemapdata.setservo_high;
 
             // Copter Settings
-            NUM_copter_delay.Value = griddata.copter_delay;
-
-            // update display options last
-            CHK_advanced.Checked = griddata.advanced;
+            NUM_copter_delay.Value = facemapdata.copter_delay;
 
             loadedfromfile = true;
         }
 
-        GridData savegriddata()
+        FaceMapData saveFaceMapData()
         {
-            GridData griddata = new GridData();
+            FaceMapData facemapdata = new FaceMapData();
 
-            griddata.poly = list;
+            facemapdata.poly = list;
 
-            griddata.camera = CMB_camera.Text;
-            griddata.alt = NUM_altitude.Value;
-            griddata.angle = NUM_angle.Value;
-            griddata.camdir = CHK_facedirection.Checked;
-            griddata.speed = NUM_UpDownFlySpeed.Value;
-            griddata.usespeed = CHK_usespeed.Checked;
-            griddata.autotakeoff = CHK_toandland.Checked;
-            griddata.autotakeoff_RTL = CHK_toandland_RTL.Checked;
-            griddata.splitmission = NUM_split.Value;
+            facemapdata.camera = CMB_camera.Text;
+            facemapdata.benchheight = NUM_BenchHeight.Value;
+            facemapdata.angle = NUM_angle.Value;
+            facemapdata.facedirection = CHK_facedirection.Checked;
+            facemapdata.speed = NUM_UpDownFlySpeed.Value;
+            facemapdata.usespeed = CHK_usespeed.Checked;
+            facemapdata.autotakeoff = CHK_toandland.Checked;
+            facemapdata.autotakeoff_RTL = CHK_toandland_RTL.Checked;
+            facemapdata.splitmission = NUM_split.Value;
+            facemapdata.overlap = num_overlap.Value;
+            facemapdata.sidelap = num_sidelap.Value;
 
-            griddata.advanced = CHK_advanced.Checked;
+            facemapdata.bermdepth = NUM_BermDepth.Value;
+            facemapdata.numbenches = NUM_Benches.Value;
+            facemapdata.camerapitch = NUM_cameraPitch.Value;
+            facemapdata.toeheight = NUM_toeHeight.Value;
+            facemapdata.campitchunlock = CHK_camPitchUnlock.Checked;
 
-            griddata.startfrom = CMB_startfrom.Text;
-            griddata.overlap = num_overlap.Value;
-            griddata.sidelap = num_sidelap.Value;
-            
             // Copter Settings
-            griddata.copter_delay = NUM_copter_delay.Value;
+            facemapdata.copter_delay = NUM_copter_delay.Value;
 
-            griddata.trigdist = rad_trigdist.Checked;
-            griddata.digicam = rad_digicam.Checked;
-            griddata.repeatservo = rad_repeatservo.Checked;
-            griddata.breaktrigdist = chk_stopstart.Checked;
+            facemapdata.trigdist = rad_trigdist.Checked;
+            facemapdata.digicam = rad_digicam.Checked;
+            facemapdata.repeatservo = rad_repeatservo.Checked;
+            facemapdata.breaktrigdist = chk_stopstart.Checked;
 
-            griddata.repeatservo_no = NUM_reptservo.Value;
-            griddata.repeatservo_pwm = num_reptpwm.Value;
-            griddata.repeatservo_cycle = NUM_repttime.Value;
+            facemapdata.repeatservo_no = NUM_reptservo.Value;
+            facemapdata.repeatservo_pwm = num_reptpwm.Value;
+            facemapdata.repeatservo_cycle = NUM_repttime.Value;
 
-            griddata.setservo_no = num_setservono.Value;
-            griddata.setservo_low = num_setservolow.Value;
-            griddata.setservo_high = num_setservohigh.Value;
+            facemapdata.setservo_no = num_setservono.Value;
+            facemapdata.setservo_low = num_setservolow.Value;
+            facemapdata.setservo_high = num_setservohigh.Value;
 
-            return griddata;
+            return facemapdata;
         }
 
         void loadsettings()
         {
-            if (plugin.Host.config.ContainsKey("grid_camera"))
+            if (plugin.Host.config.ContainsKey("facemap_camera"))
             {
-                loadsetting("grid_alt", NUM_altitude);
-                loadsetting("grid_camdir", CHK_facedirection);
-                loadsetting("grid_usespeed", CHK_usespeed);
-                loadsetting("grid_speed", NUM_UpDownFlySpeed);
-                loadsetting("grid_autotakeoff", CHK_toandland);
-                loadsetting("grid_autotakeoff_RTL", CHK_toandland_RTL);
+                loadsetting("facemap_benchheight", NUM_BenchHeight);
+                loadsetting("facemap_facedir", CHK_facedirection);
+                loadsetting("facemap_autotakeoff", CHK_toandland);
+                loadsetting("facemap_autotakeoff_RTL", CHK_toandland_RTL);
+                loadsetting("facemap_followpathhome", CHK_FollowPathHome);
+                loadsetting("facemap_benchangle", NUM_angle);
+                loadsetting("facemap_bermdepth", NUM_BermDepth);
+                loadsetting("facemap_numbenches", NUM_Benches);
+                loadsetting("facemap_campitch", NUM_cameraPitch);
+                loadsetting("facemap_toeheight", NUM_toeHeight);
+                loadsetting("facemap_unlockcampitch", CHK_camPitchUnlock);
 
+                loadsetting("facemap_overlap", num_overlap);
+                loadsetting("facemap_sidelap", num_sidelap);
+                loadsetting("facemap_distance", NUM_Distance);
+                loadsetting("facemap_usespeed", CHK_usespeed);
+                loadsetting("facemap_speed", NUM_UpDownFlySpeed);
 
-                loadsetting("grid_startfrom", CMB_startfrom);
-                loadsetting("grid_overlap", num_overlap);
-                loadsetting("grid_sidelap", num_sidelap);
+                loadsetting("facemap_trigdist", rad_trigdist);
+                loadsetting("facemap_digicam", rad_digicam);
+                loadsetting("facemap_repeatservo", rad_repeatservo);
+                loadsetting("facemap_breakstopstart", chk_stopstart);
 
-                // Should probably be saved as one setting, and us logic
-                loadsetting("grid_trigdist", rad_trigdist);
-                loadsetting("grid_digicam", rad_digicam);
-                loadsetting("grid_repeatservo", rad_repeatservo);
-                loadsetting("grid_breakstopstart", chk_stopstart);
+                loadsetting("facemap_repeatservo_no", NUM_reptservo);
+                loadsetting("facemap_repeatservo_pwm", num_reptpwm);
+                loadsetting("facemap_repeatservo_cycle", NUM_repttime);
 
-                loadsetting("grid_repeatservo_no", NUM_reptservo);
-                loadsetting("grid_repeatservo_pwm", num_reptpwm);
-                loadsetting("grid_repeatservo_cycle", NUM_repttime);
-
-                // camera last to it invokes a reload
-                loadsetting("grid_camera", CMB_camera);
+                // camera last as it invokes a reload
+                loadsetting("facemap_camera", CMB_camera);
 
                 // Copter Settings
-                loadsetting("grid_copter_delay", NUM_copter_delay);
-                loadsetting("grid_advanced", CHK_advanced);
+                loadsetting("facemap_copter_delay", NUM_copter_delay);
             }
         }
 
@@ -405,28 +395,36 @@ namespace MissionPlanner
 
         void savesettings()
         {
-            plugin.Host.config["grid_camera"] = CMB_camera.Text;
-            plugin.Host.config["grid_alt"] = NUM_altitude.Value.ToString();
-            plugin.Host.config["grid_angle"] = NUM_angle.Value.ToString();
-            plugin.Host.config["grid_camdir"] = CHK_facedirection.Checked.ToString();
+            plugin.Host.config["facemap_camera"] = CMB_camera.Text;
+            plugin.Host.config["facemap_benchheight"] = NUM_BenchHeight.Value.ToString();
+            plugin.Host.config["facemap_benchangle"] = NUM_angle.Value.ToString();
+            plugin.Host.config["facemap_facedir"] = CHK_facedirection.Checked.ToString();
+            plugin.Host.config["facemap_autotakeoff"] = CHK_toandland.Checked.ToString();
+            plugin.Host.config["facemap_autotakeoff_RTL"] = CHK_toandland_RTL.Checked.ToString();
+            plugin.Host.config["facemap_followpathhome"] = CHK_FollowPathHome.Checked.ToString();
+            plugin.Host.config["facemap_bermdepth"] = NUM_BermDepth.Value.ToString();
+            plugin.Host.config["facemap_numbenches"] = NUM_Benches.Value.ToString();
+            plugin.Host.config["facemap_campitch"] = NUM_cameraPitch.Value.ToString();
+            plugin.Host.config["facemap_toeheight"] = NUM_toeHeight.Value.ToString();
+            plugin.Host.config["facemap_unlockcampitch"] = CHK_camPitchUnlock.Checked.ToString();
 
-            plugin.Host.config["grid_usespeed"] = CHK_usespeed.Checked.ToString();
-            plugin.Host.config["grid_overlap"] = num_overlap.Value.ToString();
-            plugin.Host.config["grid_sidelap"] = num_sidelap.Value.ToString();
+            plugin.Host.config["facemap_usespeed"] = CHK_usespeed.Checked.ToString();
+            plugin.Host.config["facemap_speed"] = NUM_UpDownFlySpeed.Value.ToString();
+            plugin.Host.config["facemap_distance"] = NUM_Distance.Value.ToString();
+            plugin.Host.config["facemap_overlap"] = num_overlap.Value.ToString();
+            plugin.Host.config["facemap_sidelap"] = num_sidelap.Value.ToString();
 
-            plugin.Host.config["grid_startfrom"] = CMB_startfrom.Text;
+            plugin.Host.config["facemap_trigdist"] = rad_trigdist.Checked.ToString();
+            plugin.Host.config["facemap_digicam"] = rad_digicam.Checked.ToString();
+            plugin.Host.config["facemap_repeatservo"] = rad_repeatservo.Checked.ToString();
+            plugin.Host.config["facemap_breakstopstart"] = chk_stopstart.Checked.ToString();
 
-            plugin.Host.config["grid_autotakeoff"] = CHK_toandland.Checked.ToString();
-            plugin.Host.config["grid_autotakeoff_RTL"] = CHK_toandland_RTL.Checked.ToString();
-            plugin.Host.config["grid_advanced"] = CHK_advanced.Checked.ToString();
-
-            plugin.Host.config["grid_trigdist"] = rad_trigdist.Checked.ToString();
-            plugin.Host.config["grid_digicam"] = rad_digicam.Checked.ToString();
-            plugin.Host.config["grid_repeatservo"] = rad_repeatservo.Checked.ToString();
-            plugin.Host.config["grid_breakstopstart"] = chk_stopstart.Checked.ToString();
+            plugin.Host.config["facemap_repeatservo_no"] = NUM_reptservo.Value.ToString();
+            plugin.Host.config["facemap_repeatservo_pwm"] = num_reptpwm.Value.ToString();
+            plugin.Host.config["facemap_repeatservo_cycle"] = NUM_repttime.Value.ToString();
 
             // Copter Settings
-            plugin.Host.config["grid_copter_delay"] = NUM_copter_delay.Value.ToString();
+            plugin.Host.config["facemap_copter_delay"] = NUM_copter_delay.Value.ToString();
         }
 
         private void xmlcamera(bool write, string filename)
@@ -566,9 +564,10 @@ namespace MissionPlanner
 
             // new grid system test
 
-                grid = FaceMap.CreateCorridor(list, CurrentState.fromDistDisplayUnit((double)NUM_altitude.Value),
-                     (double)verticalSpacing, (double)NUM_Distance.Value, (double)NUM_angle.Value,(double)NUM_cameraPitch.Value, 
-                     CHK_facedirection.Checked);
+                grid = FaceMap.CreateCorridor(list, CurrentState.fromDistDisplayUnit((double)NUM_BenchHeight.Value),
+                     (double)camVerticalSpacing, (double)NUM_Distance.Value, (double)NUM_angle.Value,(double)NUM_cameraPitch.Value, 
+                     CHK_facedirection.Checked, (double)NUM_BermDepth.Value, (int)NUM_Benches.Value, (double)NUM_toeHeight.Value, 
+                     CHK_FollowPathHome.Checked);
 
 
             map.HoldInvalidation = true;
@@ -646,12 +645,6 @@ namespace MissionPlanner
 
                 segment.Clear();
             }
-            /*      Old way of drawing route, incase something breaks using segments
-            GMapRoute wproute = new GMapRoute(list2, "GridRoute");
-            wproute.Stroke = new Pen(Color.Yellow, 4);
-            if (chk_grid.Checked)
-                routesOverlay.Routes.Add(wproute);
-            */
 
             // turn radrad = tas^2 / (tan(angle) * G)
             float v_sq = (float)(((float)NUM_UpDownFlySpeed.Value / CurrentState.multiplierspeed) * ((float)NUM_UpDownFlySpeed.Value / CurrentState.multiplierspeed));
@@ -660,27 +653,6 @@ namespace MissionPlanner
             // Update Stats 
             if (DistUnits == "Feet")
             {
-                // Area
-                float area = (float)calcpolygonarea(list) * 10.7639f; // Calculate the area in square feet
-                lbl_area.Text = area.ToString("#") + " ft^2";
-                if (area < 21780f)
-                {
-                    lbl_area.Text = area.ToString("#") + " ft^2";
-                }
-                else
-                {
-                    area = area / 43560f;
-                    if (area < 640f)
-                    {
-                        lbl_area.Text = area.ToString("0.##") + " acres";
-                    }
-                    else
-                    {
-                        area = area / 640f;
-                        lbl_area.Text = area.ToString("0.##") + " miles^2";
-                    }
-                }
-
                 // Distance
                 float distance = routetotal * 3280.84f; // Calculate the distance in feet
                 if (distance < 5280f)
@@ -692,9 +664,9 @@ namespace MissionPlanner
                     distance = distance / 5280f;
                     lbl_distance.Text = distance.ToString("0.##") + " miles";
                 }
-
+                lbl_spacing.Text = (NUM_spacing.Value * 3.2808399m).ToString("#") + " ft";
                 lbl_grndres.Text = inchpixel;
-                lbl_distbetweenlines.Text = (verticalSpacing * 3.2808399m).ToString("0.##") + " ft";
+                lbl_distbetweenlines.Text = (camVerticalSpacing * 3.2808399m).ToString("0.##") + " ft";
                 lbl_footprint.Text = feet_fovH + " x " + feet_fovV + " ft";
                 lbl_turnrad.Text = (turnrad * 2 * 3.2808399).ToString("0") + " ft";
                 lbl_gndelev.Text = (mingroundelevation*3.2808399).ToString("0") + "-" + (maxgroundelevation*3.2808399).ToString("0") + " ft";
@@ -702,10 +674,10 @@ namespace MissionPlanner
             else
             {
                 // Meters
-                lbl_area.Text = calcpolygonarea(list).ToString("#") + " m^2";
+                lbl_spacing.Text = NUM_spacing.Value.ToString("#") + " m";
                 lbl_distance.Text = routetotal.ToString("0.##") + " km";
                 lbl_grndres.Text = TXT_cmpixel.Text;
-                lbl_distbetweenlines.Text = verticalSpacing.ToString("0.##") + " m";
+                lbl_distbetweenlines.Text = camVerticalSpacing.ToString("0.##") + " m";
                 lbl_footprint.Text = TXT_fovH.Text + " x " + TXT_fovV.Text + " m";
                 lbl_turnrad.Text = (turnrad * 2).ToString("0") + " m";
                 lbl_gndelev.Text = mingroundelevation.ToString("0") + "-" + maxgroundelevation.ToString("0") + " m";
@@ -741,6 +713,7 @@ namespace MissionPlanner
                 map.ZoomAndCenterMarkers("routes");
 
             map.Invalidate();
+            pictureBox1.Invalidate();
         }
 
         private void AddWP(double Lng, double Lat, double Alt, double bearing, object gridobject = null)
@@ -800,75 +773,6 @@ namespace MissionPlanner
             }
         }
 
-        double calcpolygonarea(List<PointLatLngAlt> polygon)
-        {
-            // should be a closed polygon
-            // coords are in lat long
-            // need utm to calc area
-
-            if (polygon.Count == 0)
-            {
-                CustomMessageBox.Show("Please define a polygon!");
-                return 0;
-            }
-
-            // close the polygon
-            if (polygon[0] != polygon[polygon.Count - 1])
-                polygon.Add(polygon[0]); // make a full loop
-
-            CoordinateTransformationFactory ctfac = new CoordinateTransformationFactory();
-
-            GeographicCoordinateSystem wgs84 = GeographicCoordinateSystem.WGS84;
-
-            int utmzone = (int)((polygon[0].Lng - -186.0) / 6.0);
-
-            IProjectedCoordinateSystem utm = ProjectedCoordinateSystem.WGS84_UTM(utmzone, polygon[0].Lat < 0 ? false : true);
-
-            ICoordinateTransformation trans = ctfac.CreateFromCoordinateSystems(wgs84, utm);
-
-            double prod1 = 0;
-            double prod2 = 0;
-
-            for (int a = 0; a < (polygon.Count - 1); a++)
-            {
-                double[] pll1 = { polygon[a].Lng, polygon[a].Lat };
-                double[] pll2 = { polygon[a + 1].Lng, polygon[a + 1].Lat };
-
-                double[] p1 = trans.MathTransform.Transform(pll1);
-                double[] p2 = trans.MathTransform.Transform(pll2);
-
-                prod1 += p1[0] * p2[1];
-                prod2 += p1[1] * p2[0];
-            }
-
-            double answer = (prod1 - prod2) / 2;
-
-            if (polygon[0] == polygon[polygon.Count - 1])
-                polygon.RemoveAt(polygon.Count - 1); // unmake a full loop
-
-            return Math.Abs(answer);
-        }
-
-        double getAngleOfLongestSide(List<PointLatLngAlt> list)
-        {
-            if (list.Count == 0)
-                return 0;
-            double angle = 0;
-            double maxdist = 0;
-            PointLatLngAlt last = list[list.Count - 1];
-            foreach (var item in list)
-            {
-                if (item.GetDistance(last) > maxdist)
-                {
-                    angle = item.GetBearing(last);
-                    maxdist = item.GetDistance(last);
-                }
-                last = item;
-            }
-
-            return (angle + 360) % 360;
-        }
-
         void getFOV(double flyalt, ref double fovh, ref double fovv)
         {
             double focallen = (double)NUM_focallength.Value;
@@ -911,9 +815,6 @@ namespace MissionPlanner
                 int overlap = (int)num_overlap.Value;
                 int sidelap = (int)num_sidelap.Value;
 
-                double viewwidth = 0;
-                double viewheight = 0;
-
                 getFOV(distanceFromFace, ref viewwidth, ref viewheight);
 
                 TXT_fovH.Text = viewwidth.ToString("#.#");
@@ -930,7 +831,7 @@ namespace MissionPlanner
                 NUM_spacing.ValueChanged -= domainUpDown1_ValueChanged;
 
                 NUM_spacing.Value = (decimal)((1 - (sidelap / 100.0f)) * viewwidth);
-                verticalSpacing = (decimal)((1 - (overlap / 100.0f)) * viewheight);
+                camVerticalSpacing = (decimal)((1 - (overlap / 100.0f)) * viewheight);
 
                 NUM_spacing.ValueChanged += domainUpDown1_ValueChanged;
             }
@@ -1170,22 +1071,6 @@ namespace MissionPlanner
             domainUpDown1_ValueChanged(null, null);
         }
 
-        private void CHK_advanced_CheckedChanged(object sender, EventArgs e)
-        {
-            if (CHK_advanced.Checked)
-            {
-                if (!tabControl1.TabPages.Contains(tabGrid))
-                    tabControl1.TabPages.Add(tabGrid);
-                if (!tabControl1.TabPages.Contains(tabCamera))
-                    tabControl1.TabPages.Add(tabCamera);
-            }
-            else
-            {
-                tabControl1.TabPages.Remove(tabGrid);
-                tabControl1.TabPages.Remove(tabCamera);
-            }
-        }
-
         private void BUT_samplephoto_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog ofd = new OpenFileDialog())
@@ -1315,7 +1200,7 @@ namespace MissionPlanner
                     return;
                 }
 
-                var gridobject = savegriddata();
+                var gridobject = saveFaceMapData();
 
                 int wpsplit = (int)Math.Round(grid.Count / NUM_split.Value,MidpointRounding.AwayFromZero);
 
@@ -1361,6 +1246,8 @@ namespace MissionPlanner
                             gridobject);
                     }
 
+                    plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_MOUNT_CONTROL, (double)NUM_cameraPitch.Value, 0, 0, 0, 0, 0, 0, MAVLink.MAV_MOUNT_MODE.MAVLINK_TARGETING);
+
                     int i = 0;
                     bool startedtrigdist = false;
                     int direction = (CHK_facedirection.Checked == true ? -1 : 1);
@@ -1379,11 +1266,15 @@ namespace MissionPlanner
                             break;
                         if (i > wpstart)
                         {
-                            /* calculate the heading of the aircraft in order to face the created path.
+                            /* calculate the heading of the aircraft in order to face the created path. Ignore paths from End tags to Start tags
+                             (transitioning between each lane) and the very first point in the path.
                              positive offset from path is defined as to the port side of the aircraft so yaw 90 anticlockwise
-                             to face the path on even lanes. Odd lanes are calculated in the opposite direction so must be rotated
+                             to face the path on Odd lanes. Even lanes are calculated in the opposite direction so must be rotated
                              90 clockwise instead.*/
-                            faceHeading = AddAngle(ComputeBearing(lastplla, plla), (-90 * direction));
+                            if (lastplla.Tag != "E" && lastplla.Tag != "ME" && lastplla.Tag != "")
+                            {
+                                faceHeading = AddAngle(ComputeBearing(lastplla, plla), (-90 * direction));
+                            }
 
                             // internal point check
                             if (plla.Tag == "M")
@@ -1414,14 +1305,7 @@ namespace MissionPlanner
                                     if (plla.Lat != lastplla.Lat || plla.Lng != lastplla.Lng ||
                                         plla.Alt != lastplla.Alt)
                                     {
-                                        if (lastplla.Tag == "E")
-                                        {
-                                            AddWP(plla.Lng, plla.Lat, plla.Alt, -1); //do not change heading going to first waypoint in lane
-                                        }
-                                        else
-                                        {
-                                            AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
-                                        }
+                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
                                     }
                                 }
                                 else if (plla.Tag == "E")
@@ -1610,13 +1494,13 @@ namespace MissionPlanner
         {
             if (keyData == (Keys.Control | Keys.O))
             {
-                LoadGrid();
+                LoadFaceMap();
 
                 return true;
             }
             if (keyData == (Keys.Control | Keys.S))
             {
-                SaveGrid();
+                SaveFaceMap();
 
                 return true;
             }
@@ -1628,15 +1512,6 @@ namespace MissionPlanner
         {
             // doCalc
             domainUpDown1_ValueChanged(sender, e);
-        }
-
-        private System.Drawing.Graphics g;
-        private System.Drawing.Pen pen1 = new System.Drawing.Pen(Color.Blue, 2F);
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            g = pictureBox1.CreateGraphics();
-            g.DrawLine(pen1, 250, 50, 400, 200);
         }
 
         //computes the bearing between two coordinates using haversine formula
@@ -1676,6 +1551,113 @@ namespace MissionPlanner
             if (!CHK_camPitchUnlock.Checked)
             {
                 NUM_cameraPitch.Value = 90 - NUM_angle.Value;
+            }
+        }
+
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            g.Clear(Color.GhostWhite);
+            
+            //fill in sky
+            RectangleF bg = new RectangleF(0, 0, pictureBox1.Width, pictureBox1.Height);
+
+            using (System.Drawing.Drawing2D.LinearGradientBrush linearBrush = new System.Drawing.Drawing2D.LinearGradientBrush(
+                bg, Color.FromArgb(128, Color.Blue), Color.LightBlue, System.Drawing.Drawing2D.LinearGradientMode.Vertical))
+            {
+                g.FillRectangle(linearBrush, bg);
+            }
+
+            //precalculate useful variables
+            var tanAngle = Math.Tan((double)NUM_angle.Value * deg2rad);
+            var vertIncrement = (double)camVerticalSpacing * Math.Sin((double)NUM_angle.Value * deg2rad);
+
+            //calculate vert/horiz scaling factors
+            double CopterDistX = (double)NUM_Distance.Value * Math.Cos((double)NUM_cameraPitch.Value * deg2rad);
+            double CopterDistY = (double)NUM_Distance.Value * Math.Sin((double)NUM_cameraPitch.Value * deg2rad);
+            double BenchDepth = (double)NUM_BenchHeight.Value / tanAngle;
+
+            double totalWidth = (float)CopterDistX + (double)NUM_Benches.Value * ((double)NUM_BermDepth.Value + BenchDepth);
+            double totalHeight = (double)NUM_Benches.Value * ((double)NUM_BenchHeight.Value) + CopterDistY + vertIncrement / 2;
+
+            double scaleFactor = 390 / Math.Max(totalWidth, totalHeight);
+
+            //draw ground from 0,0
+            List<PointF> points = new List<PointF>();
+
+            points.Add(new PointF(0, pictureBox1.Height));
+            points.Add(new PointF(0, pictureBox1.Height - 30));
+
+            //create toe point so benches are right aligned
+            points.Add(new PointF(pictureBox1.Width - 30 - (float)((double)NUM_Benches.Value * ((double)NUM_BermDepth.Value + BenchDepth) * scaleFactor), pictureBox1.Height - 30));
+
+            for (int bench = 1; bench <= NUM_Benches.Value; bench++)
+            {
+                //slope
+                points.Add(new PointF((float)(BenchDepth * scaleFactor) + points.Last().X,
+                    pictureBox1.Height - 30 - ((float)(bench * (double)NUM_BenchHeight.Value * scaleFactor))));
+
+                //berm
+                points.Add(new PointF(points.Last().X + (float)((double)NUM_BermDepth.Value * scaleFactor), points.Last().Y));
+            }
+
+            //close polygon
+            points.Add(new PointF(pictureBox1.Width, points.Last().Y));
+            points.Add(new PointF(pictureBox1.Width, pictureBox1.Height));
+
+            //fill in bench polygon
+            using (System.Drawing.Drawing2D.LinearGradientBrush linearBrush = new System.Drawing.Drawing2D.LinearGradientBrush(
+                     bg, Color.FromArgb(0x9b, 0xb8, 0x24), Color.FromArgb(0x41, 0x4f, 0x07), System.Drawing.Drawing2D.LinearGradientMode.Vertical))
+            {
+                g.FillPolygon(linearBrush, points.ToArray());
+            }
+
+            if (camVerticalSpacing != 0)
+            {
+                var lanes = Math.Round((double)NUM_BenchHeight.Value / vertIncrement);
+                System.Drawing.Pen pen1 = new System.Drawing.Pen(Color.DimGray, 2F);
+                pen1.DashPattern = new float[] { 2.0F, 2.0F };
+
+                System.Drawing.SolidBrush transparentFill = new System.Drawing.SolidBrush(Color.FromArgb(48 ,Color.LightGoldenrodYellow));
+
+                //draw points where each lane is relative to benches
+
+                //repeat for each bench, applying height/berm depth offsets
+                for (int bench = 0; bench < NUM_Benches.Value; bench++)
+                {
+                    //repeat for each increment up face
+                    for (int lane = 1; lane <= lanes; lane++)
+                    {
+                        //calculate offset from the base of the face based on toe angle, camera pitch, camera overlap % and bench offset
+                        PointF surveyPoint = new PointF();
+                        surveyPoint.X = (float)(points[2].X + (((lane * vertIncrement) / tanAngle) + bench * ((double)NUM_BermDepth.Value + (double)NUM_BenchHeight.Value / tanAngle)) * scaleFactor);
+                        surveyPoint.Y = (float)(points[2].Y - (lane * vertIncrement + bench * (double)NUM_BenchHeight.Value) * scaleFactor);
+
+                        PointF copterPoint = PointF.Add(surveyPoint, new SizeF((float)(-CopterDistX * scaleFactor), (float)(-CopterDistY * scaleFactor)));
+
+                        //draw dotted line
+                        g.DrawLine(pen1, surveyPoint, copterPoint);
+
+                        //draw point at copter position
+                        g.DrawImage(Resources.camera_icon_G, copterPoint.X - 10, copterPoint.Y - 10, 20, 20);
+
+                        //draw triangular beams to represent FOV
+                        PointF[] fovPoly = new PointF[3];
+                        fovPoly[0] = copterPoint;
+
+                        //intersection point above beam centre
+                        fovPoly[1] = PointF.Add(surveyPoint, new SizeF((float)(viewheight/2 * Math.Cos((double)NUM_angle.Value * deg2rad) * scaleFactor), 
+                            (float)(-viewheight/2 * Math.Sin((double)NUM_angle.Value * deg2rad) * scaleFactor)));
+
+                        //intersection point below beam centre
+                        fovPoly[2] = PointF.Add(surveyPoint, new SizeF((float)(-viewheight/2 * Math.Cos((double)NUM_angle.Value * deg2rad) * scaleFactor), 
+                            (float)(viewheight/2 * Math.Sin((double)NUM_angle.Value * deg2rad) * scaleFactor)));
+
+                        g.FillPolygon(transparentFill, fovPoly);
+                    }
+                }
+                pen1.Dispose();
+                transparentFill.Dispose();
             }
         }
     }

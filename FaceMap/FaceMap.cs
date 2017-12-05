@@ -28,16 +28,6 @@ namespace MissionPlanner
             public utmpos basepnt;
         }
 
-        public enum StartPosition
-        {
-            Home = 0,
-            BottomLeft = 1,
-            TopLeft = 2,
-            BottomRight = 3,
-            TopRight = 4,
-            Point = 5
-        }
-
         public static PointLatLngAlt StartPointLatLngAlt = PointLatLngAlt.Zero;
 
         static void addtomap(linelatlng pos)
@@ -100,13 +90,15 @@ namespace MissionPlanner
             map.ShowUserControl();
         }
 
-        public static List<PointLatLngAlt> CreateCorridor(List<PointLatLngAlt> polygon, double height, double vertIncrement, double distance, double angle, double camPitch, bool flipDirection)
+        public static List<PointLatLngAlt> CreateCorridor(List<PointLatLngAlt> polygon, double height, double camVertSpacing, double distance, double angle,
+            double camPitch, bool flipDirection, double bermDepth, int numBenches, double toeHeight, bool pathHome)
         {
             int direction = (flipDirection == true ? -1 : 1);
-            if (vertIncrement < 0.1)
-                vertIncrement = 0.1;
+            
+            if (camVertSpacing < 0.1)
+                camVertSpacing = 0.1;
 
-            if (polygon.Count == 0)
+            if (polygon.Count == 0 || numBenches < 1)
                 return new List<PointLatLngAlt>();
 
             List<PointLatLngAlt> ans = new List<PointLatLngAlt>();
@@ -119,23 +111,34 @@ namespace MissionPlanner
 
             double vertOffset = 0;
             double horizOffset = 0;
-            var lanes = (height / vertIncrement) + 1;
-            var start = 1;
-            var end = lanes;
-                                 
 
-            for (int lane = start; lane <= end; lane++)
+            var vertIncrement = camVertSpacing * Math.Sin(angle * deg2rad);
+            var lanes = Math.Round(height / vertIncrement);
+        
+            //repeat for each bench, applying height/berm depth offsets
+            for (int bench = 0; bench < numBenches; bench++)
             {
-                //calculate offset from the base of the face based on toe angle, camera pitch and camera overlap %
-                vertOffset = distance * Math.Sin(camPitch * deg2rad) + lane * vertIncrement;
-                horizOffset = distance * Math.Cos(camPitch * deg2rad) - ((lane * vertIncrement) / Math.Tan(angle * deg2rad));
+                //repeat for each increment up face
+                for (int lane = 1; lane <= lanes; lane++)
+                {
+                    //calculate offset from the base of the face based on toe angle, camera pitch, camera overlap % and bench offset
+                    vertOffset = distance * Math.Sin(camPitch * deg2rad) + lane * vertIncrement + bench * height + toeHeight;
+                    horizOffset = distance * Math.Cos(camPitch * deg2rad) - ((lane * vertIncrement) / Math.Tan(angle * deg2rad)) - bench * (bermDepth + height / Math.Tan(angle * deg2rad));
 
+                    GenerateOffsetPath(utmpositions, horizOffset * direction, utmzone)
+                        .ForEach(pnt => { ans.Add(pnt); ans.Last().Alt = vertOffset; });
+
+                    //reverse the order of waypoints and direction of offset on the way back 
+                    utmpositions.Reverse();
+                    direction = -direction;
+                }
+            }
+
+            //if an odd number of lanes were specified create one last run along the path back to home
+            if (pathHome && ((lanes * numBenches) % 2) == 1)
+            {
                 GenerateOffsetPath(utmpositions, horizOffset * direction, utmzone)
-                    .ForEach(pnt => { ans.Add(pnt); ans.Last().Alt = vertOffset;});
-
-                //reverse the order of waypoints and direction of offset on the way back 
-                utmpositions.Reverse();
-                direction = -direction;
+                    .ForEach(pnt => { ans.Add(pnt); ans.Last().Alt = vertOffset; });
             }
             return ans;
         }
@@ -249,9 +252,5 @@ namespace MissionPlanner
             result.zone = start1.zone;
             return result;
         }
-
-
-        
-
     }
 }
