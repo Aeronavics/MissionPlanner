@@ -3162,6 +3162,7 @@ namespace MissionPlanner
         /// <returns></returns>
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            if (GCSViews.Terminal.SSHTerminal) { return false; }
             if (keyData == Keys.F12)
             {
                 MenuConnect_Click(null, null);
@@ -3205,6 +3206,7 @@ namespace MissionPlanner
             }*/
             if (keyData == (Keys.Control | Keys.G)) // nmea out
             {
+                if (GCSViews.Terminal.SSHTerminal) { return false; }
                 Form frm = new SerialOutputNMEA();
                 ThemeManager.ApplyThemeTo(frm);
                 frm.Show();
@@ -3212,6 +3214,7 @@ namespace MissionPlanner
             }
             if (keyData == (Keys.Control | Keys.X)) 
             {
+                if (GCSViews.Terminal.SSHTerminal) { return false; }
                 Video v = new Video();
                 v.Show();
             }
@@ -3221,12 +3224,14 @@ namespace MissionPlanner
             }
             if (keyData == (Keys.Control | Keys.W)) // test ac config
             {
+                if (GCSViews.Terminal.SSHTerminal) { return false; }
                 new Swarm.SRB.Control().Show();
 
                 return true;
             }
             if (keyData == (Keys.Control | Keys.Z))
             {
+                if (GCSViews.Terminal.SSHTerminal) { return false; }
                 MissionPlanner.GenOTP otp = new MissionPlanner.GenOTP();
 
                 otp.ShowDialog(this);
@@ -3235,6 +3240,7 @@ namespace MissionPlanner
             }
             if (keyData == (Keys.Control | Keys.T)) // for override connect
             {
+                if (GCSViews.Terminal.SSHTerminal) { return false; }
                 try
                 {
                     MainV2.comPort.Open(false);
@@ -3247,6 +3253,7 @@ namespace MissionPlanner
             }
             if (keyData == (Keys.Control | Keys.Y)) // for ryan beall and ollyw42
             {
+                if (GCSViews.Terminal.SSHTerminal) { return false; }
                 // write
                 try
                 {
@@ -3264,6 +3271,7 @@ namespace MissionPlanner
             }
             if (keyData == (Keys.Control | Keys.J))
             {
+                if (GCSViews.Terminal.SSHTerminal) { return false; }
                 /*
                 var test = MainV2.comPort.GetLogList();
 
