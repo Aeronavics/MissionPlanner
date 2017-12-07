@@ -776,6 +776,7 @@
             0,
             0,
             0});
+            this.NUM_UpDownFlySpeed.ValueChanged += new System.EventHandler(this.domainUpDown1_ValueChanged);
             // 
             // label37
             // 

@@ -127,6 +127,14 @@ namespace MissionPlanner
                     vertOffset = distance * Math.Sin(camPitch * deg2rad) + (initialAltitude + (lane * vertIncrement) + (bench * height) + toeHeight);
                     horizOffset = distance * Math.Cos(camPitch * deg2rad) - ((initialAltitude + (lane * vertIncrement)) / Math.Tan(angle * deg2rad)) - bench * (bermDepth + height / Math.Tan(angle * deg2rad));
 
+                    //if this is the first lane of a bench, climb to the altitude of the first waypoint of the lane before moving to the waypoint 
+                    if (lane == 0 && ans.Count > 0)
+                    {
+                        PointLatLngAlt intermediateWP = new PointLatLngAlt(ans.Last().Lat, ans.Last().Lng, vertOffset);
+                        intermediateWP.Tag = "E";
+                        ans.Add(intermediateWP);
+                    }
+
                     GenerateOffsetPath(utmpositions, horizOffset * direction, utmzone)
                         .ForEach(pnt => { ans.Add(pnt); ans.Last().Alt = vertOffset; });
 

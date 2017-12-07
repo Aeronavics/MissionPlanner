@@ -730,15 +730,15 @@ namespace MissionPlanner
             pictureBox1.Invalidate();
         }
 
-        private void AddWP(double Lng, double Lat, double Alt, double bearing, object gridobject = null)
+        private void AddWP(double Lng, double Lat, double Alt, double bearing, double delay = 0, object gridobject = null)
         {
             if (bearing != -1)
             {
                 plugin.Host.AddWPtoList(MAVLink.MAV_CMD.CONDITION_YAW, bearing, 0, 0, 0, 0, 0, 0, gridobject);
             }
-            if (NUM_copter_delay.Value > 0)
+            if (NUM_copter_delay.Value > 0 || delay > 0)
             {
-                plugin.Host.AddWPtoList(MAVLink.MAV_CMD.WAYPOINT, (double)NUM_copter_delay.Value, 0, 0, 0, Lng, Lat, Alt * CurrentState.multiplierdist, gridobject);
+                plugin.Host.AddWPtoList(MAVLink.MAV_CMD.WAYPOINT, ((double)NUM_copter_delay.Value > delay ? (double)NUM_copter_delay.Value : delay), 0, 0, 0, Lng, Lat, Alt * CurrentState.multiplierdist, gridobject);
             }
             else
             {
@@ -1224,6 +1224,7 @@ namespace MissionPlanner
                 {
                     int wpstart = wpsplit*splitno;
                     int wpend = wpsplit*(splitno + 1);
+                    double entryAltitude = 10;
 
                     while (wpstart != 0 && wpstart < grid.Count && grid[wpstart].Tag != "E")
                     {
@@ -1235,23 +1236,33 @@ namespace MissionPlanner
                         wpend--;
                     }
 
+                    /*if the first surveying point is above 10m fly to this altitude before starting survey run
+                      otherwise stay at 10m altitude and descend to starting altitude after reaching the start long/lat*/
+                    if (entryAltitude < grid[0].Alt)
+                    {
+                        entryAltitude = grid[0].Alt;
+                    }
+
                     if (CHK_toandland.Checked)
                     {
                         if (plugin.Host.cs.firmware == MainV2.Firmwares.ArduCopter2)
                         {
                             var wpno = plugin.Host.AddWPtoList(MAVLink.MAV_CMD.TAKEOFF, 20, 0, 0, 0, 0, 0,
-                                (int) (30*CurrentState.multiplierdist), gridobject);
+                                (entryAltitude * CurrentState.multiplierdist), gridobject);
 
                             wpsplitstart.Add(wpno);
                         }
                         else
                         {
                             var wpno = plugin.Host.AddWPtoList(MAVLink.MAV_CMD.TAKEOFF, 20, 0, 0, 0, 0, 0,
-                                (int) (30*CurrentState.multiplierdist), gridobject);
+                                (entryAltitude * CurrentState.multiplierdist), gridobject);
 
                             wpsplitstart.Add(wpno);
                         }
                     }
+
+                    //create waypoint to first point, flying at a safe altitude
+                    AddWP(grid[0].Lng, grid[0].Lat, entryAltitude, -1);
 
                     if (CHK_usespeed.Checked)
                     {
@@ -1326,7 +1337,8 @@ namespace MissionPlanner
                                 {
                                     if (plla.Lat != lastplla.Lat || plla.Lng != lastplla.Lng ||
                                         plla.Alt != lastplla.Alt)
-                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
+                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
+
                                     //at the end of each lane the path follows the opposite direction, update direction value to get correct heading
                                     direction = -direction;
                                 }
@@ -1350,7 +1362,7 @@ namespace MissionPlanner
                                         }
                                         else if (plla.Tag == "ME")
                                         {
-                                            AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
+                                            AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
 
                                             plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_CAM_TRIGG_DIST, 0,
                                                 0, 0, 0, 0, 0, 0, gridobject);
@@ -1368,7 +1380,7 @@ namespace MissionPlanner
                                         }
                                         else if (plla.Tag == "ME")
                                         {
-                                            AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
+                                            AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
                                         }
                                     }
                                 }
@@ -1389,7 +1401,7 @@ namespace MissionPlanner
                                         }
                                         else if (plla.Tag == "ME")
                                         {
-                                            AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
+                                            AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
 
                                             plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_REPEAT_SERVO,
                                                 (float) NUM_reptservo.Value,
@@ -1413,7 +1425,7 @@ namespace MissionPlanner
                                     }
                                     else if (plla.Tag == "ME")
                                     {
-                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
+                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
 
                                         plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_SERVO,
                                             (float) num_setservono.Value,
@@ -1455,6 +1467,14 @@ namespace MissionPlanner
                         }
                         else
                         {
+                            double exitAlt = 10;
+                            
+                            if (exitAlt < grid.Last().Alt)
+                            {
+                                exitAlt = grid.Last().Alt;
+                            }
+                            AddWP(plugin.Host.cs.HomeLocation.Lng, plugin.Host.cs.HomeLocation.Lat, exitAlt, -1);
+
                             plugin.Host.AddWPtoList(MAVLink.MAV_CMD.LAND, 0, 0, 0, 0, plugin.Host.cs.HomeLocation.Lng,
                                 plugin.Host.cs.HomeLocation.Lat, 0, gridobject);
                         }

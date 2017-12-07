@@ -15,7 +15,7 @@ namespace MissionPlanner
 
         public override string Name
         {
-            get { return "Grid"; }
+            get { return "Face Map"; }
         }
 
         public override string Version
@@ -25,7 +25,7 @@ namespace MissionPlanner
 
         public override string Author
         {
-            get { return "Michael Oborne"; }
+            get { return "Jonathan Wang"; }
         }
 
         public override bool Init()
