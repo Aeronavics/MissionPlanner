@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using GMap.NET;
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
+using MissionPlanner.GCSViews;
 using MissionPlanner.Utilities;
 using MissionPlanner.Controls;
 using Timer = System.Windows.Forms.Timer;
@@ -47,9 +48,6 @@ namespace MissionPlanner
         /// <param name="tag"></param>
         static void addtomap(utmpos pos, string tag)
         {
-            if (tag == "M")
-                return;
-
             polygons.Markers.Add(new GMapMarkerWP(pos.ToLLA(), tag));
         }
 
@@ -91,7 +89,7 @@ namespace MissionPlanner
         }
 
         public static List<PointLatLngAlt> CreateCorridor(List<PointLatLngAlt> polygon, double height, double camViewHeight, double camVertSpacing, double distance, double angle,
-            double camPitch, bool flipDirection, double bermDepth, int numBenches, double toeHeight, bool pathHome)
+            double camPitch, bool flipDirection, double bermDepth, int numBenches, double toeHeight, bool pathHome, double homeAlt, FlightPlanner.altmode altmode)
         {
             int direction = (flipDirection == true ? -1 : 1);
             
@@ -126,12 +124,18 @@ namespace MissionPlanner
                     //calculate offset from the base of the face based on toe angle, camera pitch, camera overlap % and bench offset
                     vertOffset = distance * Math.Sin(camPitch * deg2rad) + (initialAltitude + (lane * vertIncrement) + (bench * height) + toeHeight);
                     horizOffset = distance * Math.Cos(camPitch * deg2rad) - ((initialAltitude + (lane * vertIncrement)) / Math.Tan(angle * deg2rad)) - bench * (bermDepth + height / Math.Tan(angle * deg2rad));
+                    
+                    //convert to absolute if flight planner is set to absolute mode (shift up by home alt)
+                    if (altmode == FlightPlanner.altmode.Absolute)
+                    {
+                        vertOffset += homeAlt;
+                    }
 
                     //if this is the first lane of a bench, climb to the altitude of the first waypoint of the lane before moving to the waypoint 
                     if (lane == 0 && ans.Count > 0)
                     {
                         PointLatLngAlt intermediateWP = new PointLatLngAlt(ans.Last().Lat, ans.Last().Lng, vertOffset);
-                        intermediateWP.Tag = "E";
+                        intermediateWP.Tag = "S";
                         ans.Add(intermediateWP);
                     }
 
@@ -148,7 +152,7 @@ namespace MissionPlanner
             if (pathHome && ((lanes * numBenches) % 2) == 1)
             {
                 GenerateOffsetPath(utmpositions, horizOffset * direction, utmzone)
-                    .ForEach(pnt => { ans.Add(pnt); ans.Last().Alt = vertOffset; });
+                    .ForEach(pnt => { ans.Add(pnt); ans.Last().Alt = vertOffset; ans.Last().Tag = "R";});
             }
             return ans;
         }
@@ -190,8 +194,8 @@ namespace MissionPlanner
                     oldpos = l1prev;
                 }
 
-                //end of leg
-                l1l2center.Tag = "S";
+                //middle of leg
+                l1l2center.Tag = "M";
                 ans.Add(l1l2center);
                 oldpos = l1l2center;
 

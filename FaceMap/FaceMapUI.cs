@@ -549,6 +549,15 @@ namespace MissionPlanner
         // Do Work
         private void domainUpDown1_ValueChanged(object sender, EventArgs e)
         {
+            int strips = 0;
+            int images = 0;
+            int a = 1;
+            float routetotal = 0;
+            List<PointLatLng> segment = new List<PointLatLng>();
+            double maxgroundelevation = double.MinValue;
+            double mingroundelevation = double.MaxValue;
+            double startalt = plugin.Host.cs.HomeAlt;
+
             if (loading)
                 return;
 
@@ -562,13 +571,14 @@ namespace MissionPlanner
                 doCalc();
             }
 
-            // new grid system test
-
             grid = FaceMap.CreateCorridor(list, CurrentState.fromDistDisplayUnit((double)NUM_BenchHeight.Value), (double)viewheight,
-                     (double)camVerticalSpacing, (double)NUM_Distance.Value, (double)NUM_angle.Value,(double)NUM_cameraPitch.Value, 
-                     CHK_facedirection.Checked, (double)NUM_BermDepth.Value, (int)NUM_Benches.Value, (double)NUM_toeHeight.Value, 
-                     CHK_FollowPathHome.Checked);
+                     (double)camVerticalSpacing, (double)NUM_Distance.Value, (double)NUM_angle.Value, (double)NUM_cameraPitch.Value,
+                     CHK_facedirection.Checked, (double)NUM_BermDepth.Value, (int)NUM_Benches.Value, (double)NUM_toeHeight.Value,
+                     CHK_FollowPathHome.Checked, startalt, (FlightPlanner.altmode)plugin.Host.MainForm.FlightPlanner.CMB_altmode.SelectedValue);
 
+
+            PointLatLngAlt prevprevpoint = grid[0];
+            PointLatLngAlt prevpoint = grid[0];
 
             map.HoldInvalidation = true;
 
@@ -581,17 +591,6 @@ namespace MissionPlanner
             if (CHK_boundary.Checked)
                 AddDrawPolygon();
 
-            int strips = 0;
-            int images = 0;
-            int a = 1;
-            PointLatLngAlt prevprevpoint = grid[0];
-            PointLatLngAlt prevpoint = grid[0];
-            float routetotal = 0;
-            List<PointLatLng> segment = new List<PointLatLng>();
-            double maxgroundelevation = double.MinValue;
-            double mingroundelevation = double.MaxValue;
-            double startalt = plugin.Host.cs.HomeAlt;
-
             foreach (var item in grid)
             {
                 double currentalt = srtm.getAltitude(item.Lat, item.Lng).alt;
@@ -600,35 +599,20 @@ namespace MissionPlanner
 
                 prevprevpoint = prevpoint;
 
-                if (item.Tag == "M")
+                if (item.Tag == "E")
+                    strips++;
+
+                if (CHK_markers.Checked)
                 {
-                    images++;
-
-                    try
-                    {
-                        if (TXT_fovH.Text != "")
-                        {
-                            
-                        }
-                    }
-                    catch { }
+                    var marker = new GMapMarkerWP(item, a.ToString()) { ToolTipText = a.ToString(), ToolTipMode = MarkerTooltipMode.OnMouseOver };
+                    routesOverlay.Markers.Add(marker);
                 }
-                else
-                {
-                    if (item.Tag == "E")
-                        strips++;
 
-                    if (CHK_markers.Checked)
-                    {
-                        var marker = new GMapMarkerWP(item, a.ToString()) { ToolTipText = a.ToString(), ToolTipMode = MarkerTooltipMode.OnMouseOver };
-                        routesOverlay.Markers.Add(marker);
-                    }
+                segment.Add(prevpoint);
+                segment.Add(item);
+                prevpoint = item;
+                a++;
 
-                    segment.Add(prevpoint);
-                    segment.Add(item);
-                    prevpoint = item;
-                    a++;
-                }
                 GMapRoute seg = new GMapRoute(segment, "segment" + a.ToString());
                 seg.Stroke = new Pen(Color.Yellow, 4);
                 seg.Stroke.DashStyle = System.Drawing.Drawing2D.DashStyle.Custom;
@@ -1296,121 +1280,97 @@ namespace MissionPlanner
                              positive offset from path is defined as to the port side of the aircraft so yaw 90 anticlockwise
                              to face the path on Odd lanes. Even lanes are calculated in the opposite direction so must be rotated
                              90 clockwise instead.*/
-                            if (lastplla.Tag != "E" && lastplla.Tag != "ME" && lastplla.Tag != "")
+                            if (plla.Tag != "S" && lastplla.Tag != "")
                             {
-                                faceHeading = AddAngle(ComputeBearing(lastplla, plla), (-90 * direction));
+                                if (plla.Lat != lastplla.Lat || plla.Lng != lastplla.Lng)
+                                {
+                                    faceHeading = AddAngle(ComputeBearing(lastplla, plla), (-90 * direction));
+                                }
                             }
 
-                            // internal point check
-                            if (plla.Tag == "M")
+                            //at the end of each lane the path follows the opposite direction, update direction value to get correct heading
+                            if (plla.Tag == "E")
                             {
-                                if (rad_repeatservo.Checked)
+                                direction = -direction;
+                            }
+
+                            // points that do not trigger the camera
+                         
+                            if (plla.Lat != lastplla.Lat || plla.Lng != lastplla.Lng ||
+                                plla.Alt != lastplla.Alt)
+                            {
+                                switch (plla.Tag)
                                 {
-                                    if (!chk_stopstart.Checked)
-                                    {
+                                    case "M":
                                         AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
-                                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_REPEAT_SERVO,
-                                            (float) NUM_reptservo.Value,
-                                            (float) num_reptpwm.Value, 1, (float) NUM_repttime.Value, 0, 0, 0,
-                                            gridobject);
-                                    }
-                                }
-                                if (rad_digicam.Checked)
-                                {
-                                    AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
-                                    plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_DIGICAM_CONTROL, 1, 0, 0, 0, 0, 1, 0,
-                                        gridobject);
+                                        break;
+                                    case "S":
+                                    case "E":
+                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
+                                        break;
+                                    case "R":
+                                        //turn off camera and fly without straifing the face as an indication that the mission is complete on return path
+                                        AddWP(plla.Lng, plla.Lat, plla.Alt, -1);
+
+                                        if (rad_trigdist.Checked && startedtrigdist)
+                                        {
+                                            plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_CAM_TRIGG_DIST, 0, 0, 0, 0, 0, 0, 0, gridobject);
+                                            startedtrigdist = false;
+                                        }
+                                        break;
+                                    default:
+                                        break;
                                 }
                             }
-                            else
+
+                            // check trigger method
+                            if (rad_trigdist.Checked)
                             {
-                                // only add points that are ends
-                                if (plla.Tag == "S")
+                                // if stopstart enabled, add wp and trigger start/stop
+                                if (chk_stopstart.Checked)
                                 {
-                                    if (plla.Lat != lastplla.Lat || plla.Lng != lastplla.Lng ||
-                                        plla.Alt != lastplla.Alt)
+                                    if (plla.Tag == "SM")
                                     {
-                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
+                                        //  s > sm, need to dup check
+                                        if (plla.Lat != lastplla.Lat || plla.Lng != lastplla.Lng ||
+                                            plla.Alt != lastplla.Alt)
+                                            AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
+
+                                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_CAM_TRIGG_DIST,
+                                            (float) NUM_spacing.Value,
+                                            0, 0, 0, 0, 0, 0, gridobject);
+
+                                        startedtrigdist = true;
                                     }
-                                }
-                                else if (plla.Tag == "E")
-                                {
-                                    if (plla.Lat != lastplla.Lat || plla.Lng != lastplla.Lng ||
-                                        plla.Alt != lastplla.Alt)
+                                    else if (plla.Tag == "ME")
+                                    {
                                         AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
 
-                                    //at the end of each lane the path follows the opposite direction, update direction value to get correct heading
-                                    direction = -direction;
-                                }
+                                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_CAM_TRIGG_DIST, 0,
+                                            0, 0, 0, 0, 0, 0, gridobject);
 
-                                // check trigger method
-                                if (rad_trigdist.Checked)
+                                        startedtrigdist = false;
+                                    }
+                                }
+                                else
                                 {
-                                    // if stopstart enabled, add wp and trigger start/stop
-                                    if (chk_stopstart.Checked)
+                                    // add single start trigger
+                                    if (!startedtrigdist)
                                     {
-                                        if (plla.Tag == "SM")
-                                        {
-                                            //  s > sm, need to dup check
-                                            if (plla.Lat != lastplla.Lat || plla.Lng != lastplla.Lng ||
-                                                plla.Alt != lastplla.Alt)
-                                                AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
-
-                                            plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_CAM_TRIGG_DIST,
-                                                (float) NUM_spacing.Value,
-                                                0, 0, 0, 0, 0, 0, gridobject);
-                                        }
-                                        else if (plla.Tag == "ME")
-                                        {
-                                            AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
-
-                                            plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_CAM_TRIGG_DIST, 0,
-                                                0, 0, 0, 0, 0, 0, gridobject);
-                                        }
+                                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_CAM_TRIGG_DIST,
+                                            (float) NUM_spacing.Value,
+                                            0, 0, 0, 0, 0, 0, gridobject);
+                                        startedtrigdist = true;
                                     }
-                                    else
+                                    else if (plla.Tag == "ME")
                                     {
-                                        // add single start trigger
-                                        if (!startedtrigdist)
-                                        {
-                                            plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_CAM_TRIGG_DIST,
-                                                (float) NUM_spacing.Value,
-                                                0, 0, 0, 0, 0, 0, gridobject);
-                                            startedtrigdist = true;
-                                        }
-                                        else if (plla.Tag == "ME")
-                                        {
-                                            AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
-                                        }
+                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
                                     }
                                 }
-                                else if (rad_repeatservo.Checked)
-                                {
-                                    if (chk_stopstart.Checked)
-                                    {
-                                        if (plla.Tag == "SM")
-                                        {
-                                            if (plla.Lat != lastplla.Lat || plla.Lng != lastplla.Lng ||
-                                                plla.Alt != lastplla.Alt)
-                                                AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
-
-                                            plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_REPEAT_SERVO,
-                                                (float) NUM_reptservo.Value,
-                                                (float) num_reptpwm.Value, 999, (float) NUM_repttime.Value, 0, 0, 0,
-                                                gridobject);
-                                        }
-                                        else if (plla.Tag == "ME")
-                                        {
-                                            AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
-
-                                            plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_REPEAT_SERVO,
-                                                (float) NUM_reptservo.Value,
-                                                (float) num_reptpwm.Value, 0, (float) NUM_repttime.Value, 0, 0, 0,
-                                                gridobject);
-                                        }
-                                    }
-                                }
-                                else if (rad_do_set_servo.Checked)
+                            }
+                            else if (rad_repeatservo.Checked)
+                            {
+                                if (chk_stopstart.Checked)
                                 {
                                     if (plla.Tag == "SM")
                                     {
@@ -1418,20 +1378,43 @@ namespace MissionPlanner
                                             plla.Alt != lastplla.Alt)
                                             AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
 
-                                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_SERVO,
-                                            (float) num_setservono.Value,
-                                            (float) num_setservolow.Value, 0, 0, 0, 0, 0,
+                                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_REPEAT_SERVO,
+                                            (float) NUM_reptservo.Value,
+                                            (float) num_reptpwm.Value, 999, (float) NUM_repttime.Value, 0, 0, 0,
                                             gridobject);
                                     }
                                     else if (plla.Tag == "ME")
                                     {
                                         AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
 
-                                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_SERVO,
-                                            (float) num_setservono.Value,
-                                            (float) num_setservohigh.Value, 0, 0, 0, 0, 0,
+                                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_REPEAT_SERVO,
+                                            (float) NUM_reptservo.Value,
+                                            (float) num_reptpwm.Value, 0, (float) NUM_repttime.Value, 0, 0, 0,
                                             gridobject);
                                     }
+                                }
+                            }
+                            else if (rad_do_set_servo.Checked)
+                            {
+                                if (plla.Tag == "SM")
+                                {
+                                    if (plla.Lat != lastplla.Lat || plla.Lng != lastplla.Lng ||
+                                        plla.Alt != lastplla.Alt)
+                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
+
+                                    plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_SERVO,
+                                        (float) num_setservono.Value,
+                                        (float) num_setservolow.Value, 0, 0, 0, 0, 0,
+                                        gridobject);
+                                }
+                                else if (plla.Tag == "ME")
+                                {
+                                    AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
+
+                                    plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_SERVO,
+                                        (float) num_setservono.Value,
+                                        (float) num_setservohigh.Value, 0, 0, 0, 0, 0,
+                                        gridobject);
                                 }
                             }
                         }
@@ -1444,9 +1427,10 @@ namespace MissionPlanner
                     }
 
                     // end
-                    if (rad_trigdist.Checked)
+                    if (rad_trigdist.Checked && startedtrigdist)
                     {
                         plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_CAM_TRIGG_DIST, 0, 0, 0, 0, 0, 0, 0, gridobject);
+                        startedtrigdist = false;
                     }
 
                     if (CHK_usespeed.Checked)
