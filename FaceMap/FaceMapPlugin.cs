@@ -67,7 +67,11 @@ namespace MissionPlanner
             {
                 MissionPlanner.Utilities.ThemeManager.ApplyThemeTo(gridui);
 
-                if (Host.FPDrawnPolygon != null && Host.FPDrawnPolygon.Points.Count > 2)
+                if ((GCSViews.FlightPlanner.altmode)Host.MainForm.FlightPlanner.CMB_altmode.SelectedValue == GCSViews.FlightPlanner.altmode.Terrain)
+                {
+                    CustomMessageBox.Show("Terrain following altitude mode cannot be used with the face mapping tool.", "Error");
+                }
+                else if (Host.FPDrawnPolygon != null && Host.FPDrawnPolygon.Points.Count > 2)
                 {
                     gridui.ShowDialog();
                 }

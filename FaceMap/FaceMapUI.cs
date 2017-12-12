@@ -1189,6 +1189,9 @@ namespace MissionPlanner
 
         private void BUT_Accept_Click(object sender, EventArgs e)
         {
+            double entryAltitude = 10;
+            double exitAltitude = 10;
+
             if (grid != null && grid.Count > 0)
             {
                 MainV2.instance.FlightPlanner.quickadd = true;
@@ -1209,7 +1212,11 @@ namespace MissionPlanner
                 {
                     int wpstart = wpsplit*splitno;
                     int wpend = wpsplit*(splitno + 1);
-                    double entryAltitude = 10;
+
+                    if ((FlightPlanner.altmode)plugin.Host.MainForm.FlightPlanner.CMB_altmode.SelectedValue == FlightPlanner.altmode.Absolute)
+                    {
+                        exitAltitude = entryAltitude = plugin.Host.cs.HomeAlt + 10;
+                    }
 
                     while (wpstart != 0 && wpstart < grid.Count && grid[wpstart].Tag != "E")
                     {
@@ -1223,9 +1230,9 @@ namespace MissionPlanner
 
                     /*if the first surveying point is above 10m fly to this altitude before starting survey run
                       otherwise stay at 10m altitude and descend to starting altitude after reaching the start long/lat*/
-                    if (entryAltitude < grid[0].Alt)
+                    if (entryAltitude < grid[wpstart].Alt)
                     {
-                        entryAltitude = grid[0].Alt;
+                        entryAltitude = grid[wpstart].Alt;
                     }
 
                     if (CHK_toandland.Checked)
@@ -1452,13 +1459,19 @@ namespace MissionPlanner
                         }
                         else
                         {
-                            double exitAlt = 10;
-                            
-                            if (exitAlt < grid.Last().Alt)
+                            // overwrite exit altitude if it is greater than 10m from home
+                            if (exitAltitude < lastplla.Alt)
                             {
-                                exitAlt = grid.Last().Alt;
+                                exitAltitude = lastplla.Alt;
                             }
-                            AddWP(plugin.Host.cs.HomeLocation.Lng, plugin.Host.cs.HomeLocation.Lat, exitAlt, -1);
+                            else
+                            {
+                                //climb directly upwards to 10m above home if last wp alt is lower than that
+                                AddWP(lastplla.Lng, lastplla.Lat, exitAltitude, -1);
+                            }
+
+                            //fly home at constant alt before landing
+                            AddWP(plugin.Host.cs.HomeLocation.Lng, plugin.Host.cs.HomeLocation.Lat, exitAltitude, -1);
 
                             plugin.Host.AddWPtoList(MAVLink.MAV_CMD.LAND, 0, 0, 0, 0, plugin.Host.cs.HomeLocation.Lng,
                                 plugin.Host.cs.HomeLocation.Lat, 0, gridobject);
