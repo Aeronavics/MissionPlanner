@@ -8,9 +8,11 @@ using GMap.NET;
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
 using MissionPlanner.GCSViews;
+using MissionPlanner.Maps;
 using MissionPlanner.Utilities;
 using MissionPlanner.Controls;
 using Timer = System.Windows.Forms.Timer;
+
 
 namespace MissionPlanner
 {
