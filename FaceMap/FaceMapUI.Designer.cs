@@ -970,7 +970,7 @@
             this.NUM_cameraPitch.Cursor = System.Windows.Forms.Cursors.Default;
             resources.ApplyResources(this.NUM_cameraPitch, "NUM_cameraPitch");
             this.NUM_cameraPitch.Maximum = new decimal(new int[] {
-            90,
+            45,
             0,
             0,
             0});
@@ -1195,7 +1195,6 @@
             this.map.RetryLoadTile = 0;
             this.map.RoutesEnabled = true;
             this.map.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Fractional;
-            this.map.SelectedArea = ((GMap.NET.RectLatLng)(resources.GetObject("map.SelectedArea")));
             this.map.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
             this.map.ShowTileGridLines = false;
             this.map.Zoom = 3D;
