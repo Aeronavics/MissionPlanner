@@ -99,73 +99,72 @@ namespace MissionPlanner.Utilities
             // default to basic.
             //also when a new field is added/created this defines the template for missing options
             displayName = DisplayNames.Basic;
-            
+
 
             //MainV2 buttons
             displaySimulation = false;
             displayTerminal = false;
-            displayDonate = true;
-            displayHelp = true;
+            displayDonate = false;
+            displayHelp = false;
 
             //flight Data view
             displayAnenometer = true;
             displayQuickTab = true;
             displayPreFlightTab = true;
             displayAdvActionsTab = false;
-            displaySimpleActionsTab = true;
-            displayGaugesTab = true;
+            displaySimpleActionsTab = false;
+            displayGaugesTab = false;
             displayStatusTab = false;
             displayServoTab = false;
             displayScriptsTab = false;
-            displayTelemetryTab = true;
+            displayTelemetryTab = false;
             displayDataflashTab = true;
             displayMessagesTab = true;
 
             //flight plan
-            displayRallyPointsMenu = true;
-            displayGeoFenceMenu = true;
-            displaySplineCircleAutoWp = true;
-            displayTextAutoWp = true;
-            displayCircleSurveyAutoWp = true;
-            displayPoiMenu = true;
-            displayTrackerHomeMenu = true;
-            displayCheckHeightBox = true;
-            displayPluginAutoWp = true;
+            displayRallyPointsMenu = false;
+            displayGeoFenceMenu = false;
+            displaySplineCircleAutoWp = false;
+            displayCircleSurveyAutoWp = false;
+            displayTextAutoWp = false;
+            displayPoiMenu = false;
+            displayTrackerHomeMenu = false;
+            displayCheckHeightBox = false;
+            displayPluginAutoWp = false;
 
             //initial setup
-            displayInstallFirmware = true;
-            displayWizard = true;
-            displayFrameType = true;
-            displayAccelCalibration = true;
-            displayCompassConfiguration = true;
-            displayRadioCalibration = true;
-            displayEscCalibration = true;
-            displayFlightModes = true;
-            displayFailSafe = true;
-            displaySikRadio = true;
-            displayBattMonitor = true;
-            displayUAVCAN = true;
-            displayCompassMotorCalib = true;
-            displayRangeFinder = true;
-            displayAirSpeed = true;
-            displayPx4Flow = true;
-            displayOpticalFlow = true;
-            displayOsd = true;
-            displayCameraGimbal = true;
-            displayMotorTest = true;
-            displayBluetooth = true;
-            displayParachute = true;
-            displayEsp = true;
-            displayAntennaTracker = true;
-
+            displayInstallFirmware = false;
+            displayWizard = false;
+            displayFrameType = false;
+            displayAccelCalibration = false;
+            displayCompassConfiguration = false;
+            displayRadioCalibration = false;
+            displayEscCalibration = false;
+            displayFlightModes = false;
+            displayFailSafe = false;
+            displaySikRadio = false;
+            displayBattMonitor = false;
+            displayUAVCAN = false;
+            displayCompassMotorCalib = false;
+            displayRangeFinder = false;
+            displayAirSpeed = false;
+            displayPx4Flow = false;
+            displayOpticalFlow = false;
+            displayOsd = false;
+            displayCameraGimbal = false;
+            displayMotorTest = false;
+            displayBluetooth = false;
+            displayParachute = false;
+            displayEsp = false;
+            displayAntennaTracker = false;
 
             //config tuning
-            displayBasicTuning = true;
-            displayExtendedTuning = true;
-            displayStandardParams = true;
+            displayBasicTuning = false;
+            displayExtendedTuning = false;
+            displayStandardParams = false;
             displayAdvancedParams = false;
-            displayFullParamList = false;
-            displayFullParamTree = false;
+            displayFullParamList = true;
+            displayFullParamTree = true;
             displayParamCommitButton = false;
             displayBaudCMB = false;
             standardFlightModesOnly = true;
@@ -212,72 +211,72 @@ namespace MissionPlanner.Utilities
                 //MainV2 buttons
                 displaySimulation = true,
                 displayTerminal = false,
-                displayDonate = true,
-                displayHelp = true,
+                displayDonate = false,
+                displayHelp = false,
 
                 //flight Data view
                 displayAnenometer = true,
                 displayQuickTab = true,
                 displayPreFlightTab = true,
                 displayAdvActionsTab = false,
-                displaySimpleActionsTab = true,
-                displayGaugesTab = true,
+                displaySimpleActionsTab = false,
+                displayGaugesTab = false,
                 displayStatusTab = false,
                 displayServoTab = false,
                 displayScriptsTab = false,
-                displayTelemetryTab = true,
+                displayTelemetryTab = false,
                 displayDataflashTab = true,
                 displayMessagesTab = true,
 
                 //flight plan
-                displayRallyPointsMenu = true,
-                displayGeoFenceMenu = true,
-                displaySplineCircleAutoWp = true,
-                displayCircleSurveyAutoWp = true,
-                displayTextAutoWp = true,
-                displayPoiMenu = true,
-                displayTrackerHomeMenu = true,
-                displayCheckHeightBox = true,
-                displayPluginAutoWp = true,
+                displayRallyPointsMenu = false,
+                displayGeoFenceMenu = false,
+                displaySplineCircleAutoWp = false,
+                displayCircleSurveyAutoWp = false,
+                displayTextAutoWp = false,
+                displayPoiMenu = false,
+                displayTrackerHomeMenu = false,
+                displayCheckHeightBox = false,
+                displayPluginAutoWp = false,
 
                 //initial setup
-                displayInstallFirmware = true,
-                displayWizard = true,
-                displayFrameType = true,
-                displayAccelCalibration = true,
-                displayCompassConfiguration = true,
-                displayRadioCalibration = true,
-                displayEscCalibration = true,
-                displayFlightModes = true,
-                displayFailSafe = true,
-                displaySikRadio = true,
-                displayBattMonitor = true,
-                displayUAVCAN = true,
-                displayCompassMotorCalib = true,
-                displayRangeFinder = true,
-                displayAirSpeed = true,
-                displayPx4Flow = true,
-                displayOpticalFlow = true,
-                displayOsd = true,
-                displayCameraGimbal = true,
-                displayMotorTest = true,
-                displayBluetooth = true,
-                displayParachute = true,
-                displayEsp = true,
-                displayAntennaTracker = true,
+                displayInstallFirmware = false,
+                displayWizard = false,
+                displayFrameType = false,
+                displayAccelCalibration = false,
+                displayCompassConfiguration = false,
+                displayRadioCalibration = false,
+                displayEscCalibration = false,
+                displayFlightModes = false,
+                displayFailSafe = false,
+                displaySikRadio = false,
+                displayBattMonitor = false,
+                displayUAVCAN = false,
+                displayCompassMotorCalib = false,
+                displayRangeFinder = false,
+                displayAirSpeed = false,
+                displayPx4Flow = false,
+                displayOpticalFlow = false,
+                displayOsd = false,
+                displayCameraGimbal = false,
+                displayMotorTest = false,
+                displayBluetooth = false,
+                displayParachute = false,
+                displayEsp = false,
+                displayAntennaTracker = false,
 
 
                 //config tuning
-                displayBasicTuning = true,
-                displayExtendedTuning = true,
-                displayStandardParams = true,
+                displayBasicTuning = false,
+                displayExtendedTuning = false,
+                displayStandardParams = false,
                 displayAdvancedParams = false,
-                displayFullParamList = false,
-                displayFullParamTree = false,
-                displayParamCommitButton = false,
-                displayBaudCMB = true,
-                displaySerialPortCMB = true,
-                standardFlightModesOnly = false,
+                displayFullParamList = true,
+                displayFullParamTree = true,
+                displayParamCommitButton = true,
+                displayBaudCMB = false,
+                displaySerialPortCMB = false,
+                standardFlightModesOnly = true,
                 autoHideMenuForce = false,
                 isAdvancedMode = false
             };
@@ -290,6 +289,84 @@ namespace MissionPlanner.Utilities
                 //MainV2 buttons
                 displaySimulation = true,
                 displayTerminal = true,
+                displayDonate = false,
+                displayHelp = false,
+
+                //flight Data view
+                displayAnenometer = true,
+                displayQuickTab = true,
+                displayPreFlightTab = true,
+                displayAdvActionsTab = true,
+                displaySimpleActionsTab = false,
+                displayGaugesTab = false,
+                displayStatusTab = true,
+                displayServoTab = true,
+                displayScriptsTab = false,
+                displayTelemetryTab = true,
+                displayDataflashTab = true,
+                displayMessagesTab = true,
+
+                //flight plan
+                displayRallyPointsMenu = true,
+                displayGeoFenceMenu = true,
+                displaySplineCircleAutoWp = true,
+                displayTextAutoWp = true,
+                displayCircleSurveyAutoWp = true,
+                displayPoiMenu = true,
+                displayTrackerHomeMenu = true,
+                displayCheckHeightBox = false,
+                displayPluginAutoWp = false,
+
+                //initial setup
+                displayInstallFirmware = false,
+                displayWizard = false,
+                displayFrameType = false,
+                displayAccelCalibration = true,
+                displayCompassConfiguration = true,
+                displayRadioCalibration = true,
+                displayEscCalibration = false,
+                displayFlightModes = true,
+                displayFailSafe = true,
+                displaySikRadio = true,
+                displayBattMonitor = false,
+                displayUAVCAN = false,
+                displayCompassMotorCalib = false,
+                displayRangeFinder = false,
+                displayAirSpeed = false,
+                displayPx4Flow = false,
+                displayOpticalFlow = false,
+                displayOsd = false,
+                displayCameraGimbal = false,
+                displayMotorTest = false,
+                displayBluetooth = false,
+                displayParachute = false,
+                displayEsp = false,
+                displayAntennaTracker = false,
+
+
+                //config tuning
+                displayBasicTuning = false,
+                displayExtendedTuning = true,
+                displayStandardParams = false,
+                displayAdvancedParams = false,
+                displayFullParamList = true,
+                displayFullParamTree = true,
+                displayParamCommitButton = true,
+                displayBaudCMB = true,
+                displaySerialPortCMB = true,
+                standardFlightModesOnly = true,
+                autoHideMenuForce = false,
+                isAdvancedMode = false
+            };
+        }
+        public static DisplayView Aeronavics(this DisplayView v)
+        {
+            return new DisplayView()
+            {
+                displayName = DisplayNames.Aeronavics,
+                //MainV2 buttons
+                displaySimulation = true,
+                displayTerminal = true,
                 displayDonate = true,
                 displayHelp = true,
 
@@ -298,11 +375,11 @@ namespace MissionPlanner.Utilities
                 displayQuickTab = true,
                 displayPreFlightTab = true,
                 displayAdvActionsTab = true,
-                displaySimpleActionsTab = false,
-                displayGaugesTab = true,
+                displaySimpleActionsTab = true,
+                displayGaugesTab = false,
                 displayStatusTab = true,
                 displayServoTab = true,
-                displayScriptsTab = true,
+                displayScriptsTab = false,
                 displayTelemetryTab = true,
                 displayDataflashTab = true,
                 displayMessagesTab = true,
@@ -332,17 +409,17 @@ namespace MissionPlanner.Utilities
                 displayBattMonitor = true,
                 displayUAVCAN = true,
                 displayCompassMotorCalib = true,
-                displayRangeFinder = true,
-                displayAirSpeed = true,
-                displayPx4Flow = true,
-                displayOpticalFlow = true,
-                displayOsd = true,
-                displayCameraGimbal = true,
-                displayMotorTest = true,
-                displayBluetooth = true,
-                displayParachute = true,
-                displayEsp = true,
-                displayAntennaTracker = true,
+                displayRangeFinder = false,
+                displayAirSpeed = false,
+                displayPx4Flow = false,
+                displayOpticalFlow = false,
+                displayOsd = false,
+                displayCameraGimbal = false,
+                displayMotorTest = false,
+                displayBluetooth = false,
+                displayParachute = false,
+                displayEsp = false,
+                displayAntennaTracker = false,
 
 
                 //config tuning
@@ -352,32 +429,12 @@ namespace MissionPlanner.Utilities
                 displayAdvancedParams = true,
                 displayFullParamList = true,
                 displayFullParamTree = true,
-                displayParamCommitButton = false,
+                displayParamCommitButton = true,
                 displayBaudCMB = true,
                 displaySerialPortCMB = true,
-                standardFlightModesOnly =  false,
+                standardFlightModesOnly = true,
                 autoHideMenuForce = false,
                 isAdvancedMode = true
-            };
-        }
-        public static DisplayView Aeronavics(this DisplayView v)
-        {
-            return new DisplayView()
-            {
-                displayName = DisplayNames.Aeronavics,
-                displaySimulation = false,
-                displayTerminal = false,
-                displayDonate = false,
-                displayHelp = false,
-                displayAnenometer = false,
-                displayAdvActionsTab = true,
-                displaySimpleActionsTab = false,
-                displayStatusTab = true,
-                displayServoTab = true,
-                displayScriptsTab = true,
-                displayAdvancedParams = false,
-                displayFullParamList = false,
-                displayFullParamTree = false
             };
         }
     }

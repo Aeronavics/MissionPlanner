@@ -93,11 +93,11 @@ namespace MissionPlanner.GCSViews
 
                 if (MainV2.DisplayConfiguration.displayFullParamList)
                 {
-                    AddBackstageViewPage(typeof(ConfigRawParams), Strings.FullParameterList, null, true);
+                    AddBackstageViewPage(typeof(ConfigRawParams), Strings.FullParameterList);
                 }
                 if (MainV2.DisplayConfiguration.displayFullParamTree && !Program.MONO)
                 {
-                    AddBackstageViewPage(typeof(ConfigRawParamsTree), Strings.FullParameterTree, null, true);
+                    AddBackstageViewPage(typeof(ConfigRawParamsTree), Strings.FullParameterTree);
                 }
 
                 if (MainV2.comPort.BaseStream.IsOpen)
