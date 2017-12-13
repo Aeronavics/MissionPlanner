@@ -119,6 +119,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             SetCheckboxFromConfig("enableadsb", chk_ADSB);
             SetCheckboxFromConfig("norcreceiver", chk_norcreceiver);
             SetCheckboxFromConfig("showtfr", chk_tfr);
+            SetCheckboxFromConfig("autoParamCommit", CHK_AutoParamCommit);
 
             // this can't fail because it set at startup
             NUM_tracklength.Value = Settings.Instance.GetInt32("NUM_tracklength");
@@ -141,6 +142,8 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             SetCheckboxFromConfig("CHK_maprotation", CHK_maprotation);
 
             SetCheckboxFromConfig("CHK_disttohomeflightdata", CHK_disttohomeflightdata);
+
+            CHK_AutoParamCommit.Visible = MainV2.DisplayConfiguration.displayParamCommitButton;
 
             //set hud color state
             var hudcolor = Settings.Instance["hudcolor"];
@@ -906,6 +909,11 @@ namespace MissionPlanner.GCSViews.ConfigurationView
                 MainV2.DisplayConfiguration = MainV2.DisplayConfiguration.Aeronavics();
             }
             Settings.Instance["displayview"] = MainV2.DisplayConfiguration.ConvertToString();
+        }
+
+        private void CHK_AutoParamCommit_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Instance["autoParamCommit"] = CHK_AutoParamCommit.Checked.ToString();
         }
     }
 }
