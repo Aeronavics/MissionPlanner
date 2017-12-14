@@ -2280,10 +2280,19 @@ namespace MissionPlanner.Controls
                     graphicsObject.ResetTransform();
 
                     // mode and wp dist and wp
+#if !AERONAVICS
                     drawstring(graphicsObject, _mode, font, fontsize, _whiteBrush, scrollbg.Left - 30,
                         scrollbg.Bottom + 5);
+
                     drawstring(graphicsObject, (int) _disttowp + ">" + _wpno, font, fontsize, _whiteBrush,
                         scrollbg.Left - 30, scrollbg.Bottom + fontsize + 2 + 10);
+#else
+                    drawstring(graphicsObject, _mode, font, fontsize, _whiteBrush, scrollbg.Left - 40,
+                         scrollbg.Bottom + 5);
+
+                    drawstring(graphicsObject, (int) _disttowp + "m>wp" + _wpno, font, fontsize * 0.8f, _whiteBrush,
+                        scrollbg.Left - 40, scrollbg.Bottom + fontsize + 2 + 10);
+#endif
                 }
 
                 if (displayconninfo)
@@ -2309,8 +2318,10 @@ namespace MissionPlanner.Controls
                         graphicsObject.DrawLine(this._redPen, scrollbg.Left, scrollbg.Top - (int) (fontsize * 2.2) - 2,
                             scrollbg.Left + 50, scrollbg.Top - (int) (fontsize * 2.2) - 2 - 20);
                     }
+#if !AERONAVICS
                     drawstring(graphicsObject, _datetime.ToString("HH:mm:ss"), font, fontsize, _whiteBrush,
                         scrollbg.Left - 30, scrollbg.Top - fontsize - 2 - 20);
+#endif
                 }
 
                 // AOA

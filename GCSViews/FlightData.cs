@@ -182,6 +182,10 @@ namespace MissionPlanner.GCSViews
             myhud = hud1;
             MainHcopy = MainH;
 
+#if AERONAVICS
+            hud1.displayxtrack = false;
+#endif
+
             mymap.Paint += mymap_Paint;
 
             // populate the unmodified base list

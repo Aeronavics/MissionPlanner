@@ -13,6 +13,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>bin\Debug\net462\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET461;AERONAVICS</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

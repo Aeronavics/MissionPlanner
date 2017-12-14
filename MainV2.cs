@@ -2828,11 +2828,13 @@ namespace MissionPlanner
 
         protected override void OnLoad(EventArgs e)
         {
+#if AERONAVICS
             //Aeronavics customisation, turn off automatically sending a command to commit mavlink parameters after 10 seconds of writing a parameter
             if (Settings.Instance["autoParamCommit"] == null)
             {
                 Settings.Instance["autoParamCommit"] = "false";
             }
+#endif
 
             // check if its defined, and force to show it if not known about
             if (Settings.Instance["menu_autohide"] == null)
@@ -3125,7 +3127,7 @@ namespace MissionPlanner
             }
 
             // show wizard on first use
-#if false
+#if !AERONAVICS
             if (Settings.Instance["newuser"] == null)
             {
                 if (CustomMessageBox.Show("This is your first run, Do you wish to use the setup wizard?\nRecomended for new users.", "Wizard", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)

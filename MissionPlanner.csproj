@@ -23,6 +23,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Optimize>false</Optimize>
     <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>TRACE;DEBUG;NET461;AERONAVICS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
