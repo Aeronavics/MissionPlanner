@@ -481,6 +481,7 @@ namespace MissionPlanner
             MenuTerminal.Visible = DisplayConfiguration.displayTerminal;
             MenuHelp.Visible = DisplayConfiguration.displayHelp;
             MenuDonate.Visible = DisplayConfiguration.displayDonate;
+            MenuArduPilot.Visible = DisplayConfiguration.displayDonate;
             _connectionControl.CMB_baudrate.Visible = DisplayConfiguration.displayBaudCMB;
             _connectionControl.CMB_serialport.Visible = DisplayConfiguration.displaySerialPortCMB;
 
