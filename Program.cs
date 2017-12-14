@@ -103,7 +103,11 @@ namespace MissionPlanner
             }
             else
             {
+#if AERONAVICS
+                IconFile = MissionPlanner.Properties.Resources.aerodesktop.ToBitmap();
+#else
                 IconFile = MissionPlanner.Properties.Resources.mpdesktop.ToBitmap();
+#endif
             }
 
             if (File.Exists(Settings.GetRunningDirectory() + "splashbg.png")) // 600*375
