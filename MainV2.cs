@@ -2828,6 +2828,12 @@ namespace MissionPlanner
 
         protected override void OnLoad(EventArgs e)
         {
+            //Aeronavics customisation, turn off automatically sending a command to commit mavlink parameters after 10 seconds of writing a parameter
+            if (Settings.Instance["autoParamCommit"] == null)
+            {
+                Settings.Instance["autoParamCommit"] = "false";
+            }
+
             // check if its defined, and force to show it if not known about
             if (Settings.Instance["menu_autohide"] == null)
             {
