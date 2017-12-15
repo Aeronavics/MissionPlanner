@@ -248,6 +248,8 @@ namespace MissionPlanner.GCSViews
                     HUD.Custom.src = MainV2.comPort.MAV.cs;
 
                     addHudUserItem(ref cust, chk);
+
+                    chk.Dispose();
                 }
             }
 

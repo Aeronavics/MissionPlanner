@@ -590,7 +590,7 @@ namespace MissionPlanner
                 {
                     t.TabPages.Add(FlightData.tabPagemessages);
                 }
-                else if (!DisplayConfiguration.displayDataflashTab && t.TabPages.Contains(FlightData.tabPagemessages))
+                else if (!DisplayConfiguration.displayMessagesTab && t.TabPages.Contains(FlightData.tabPagemessages))
                 {
                     t.TabPages.Remove(FlightData.tabPagemessages);
                 }
@@ -3407,6 +3407,8 @@ namespace MissionPlanner
                 MissionPlanner.GenOTP otp = new MissionPlanner.GenOTP();
 
                 otp.ShowDialog(this);
+
+                otp.Dispose();
 
                 return true;
             }
