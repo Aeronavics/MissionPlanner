@@ -516,7 +516,7 @@ namespace MissionPlanner
                 {
                     t.TabPages.Add(FlightData.tabPagemessages);
                 }
-                else if (!DisplayConfiguration.displayDataflashTab && t.TabPages.Contains(FlightData.tabPagemessages))
+                else if (!DisplayConfiguration.displayMessagesTab && t.TabPages.Contains(FlightData.tabPagemessages))
                 {
                     t.TabPages.Remove(FlightData.tabPagemessages);
                 }
@@ -1502,17 +1502,7 @@ namespace MissionPlanner
                     return;
                 }
 
-                // get all the params
-                foreach (var mavstate in comPort.MAVlist)
-                {
-                    comPort.sysidcurrent = mavstate.sysid;
-                    comPort.compidcurrent = mavstate.compid;
-                    comPort.getParamList();
-                }
-
-                // set to first seen
-                comPort.sysidcurrent = comPort.MAVlist.First().sysid;
-                comPort.compidcurrent = comPort.MAVlist.First().compid;
+                comPort.getParamList();
 
                 _connectionControl.UpdateSysIDS();
 
@@ -1588,6 +1578,21 @@ namespace MissionPlanner
                     (DateTime.Now - connecttime).TotalMilliseconds, "");
 
                 MissionPlanner.Utilities.Tracking.AddEvent("Connect", "Baud", comPort.BaseStream.BaudRate.ToString(), "");
+
+                if(comPort.MAV.param.ContainsKey("SPRAY_ENABLE"))
+                    MissionPlanner.Utilities.Tracking.AddEvent("Param", "Value", "SPRAY_ENABLE",comPort.MAV.param["SPRAY_ENABLE"].ToString());
+
+                if (comPort.MAV.param.ContainsKey("CHUTE_ENABLE"))
+                    MissionPlanner.Utilities.Tracking.AddEvent("Param", "Value", "CHUTE_ENABLE", comPort.MAV.param["CHUTE_ENABLE"].ToString());
+
+                if (comPort.MAV.param.ContainsKey("TERRAIN_ENABLE"))
+                    MissionPlanner.Utilities.Tracking.AddEvent("Param", "Value", "TERRAIN_ENABLE", comPort.MAV.param["TERRAIN_ENABLE"].ToString());
+
+                if (comPort.MAV.param.ContainsKey("ADSB_ENABLE"))
+                    MissionPlanner.Utilities.Tracking.AddEvent("Param", "Value", "ADSB_ENABLE", comPort.MAV.param["ADSB_ENABLE"].ToString());
+
+                if (comPort.MAV.param.ContainsKey("AVD_ENABLE"))
+                    MissionPlanner.Utilities.Tracking.AddEvent("Param", "Value", "AVD_ENABLE", comPort.MAV.param["AVD_ENABLE"].ToString());
 
                 // save the baudrate for this port
                 Settings.Instance[_connectionControl.CMB_serialport.Text + "_BAUD"] = _connectionControl.CMB_baudrate.Text;
@@ -1943,10 +1948,10 @@ namespace MissionPlanner
             // save config
             SaveConfig();
 
-            Console.WriteLine(httpthread.IsAlive);
-            Console.WriteLine(joystickthread.IsAlive);
-            Console.WriteLine(serialreaderthread.IsAlive);
-            Console.WriteLine(pluginthread.IsAlive);
+            Console.WriteLine(httpthread?.IsAlive);
+            Console.WriteLine(joystickthread?.IsAlive);
+            Console.WriteLine(serialreaderthread?.IsAlive);
+            Console.WriteLine(pluginthread?.IsAlive);
 
             log.Info("MainV2_FormClosing done");
 
@@ -2869,6 +2874,30 @@ namespace MissionPlanner
             //log.Info("start udpmavlinkshim");
             //UDPMavlinkShim.Start();
 
+            BinaryLog.onFlightMode += (firmware, modeno) =>
+            {
+                try
+                {
+                    var modes = Common.getModesList((MainV2.Firmwares) Enum.Parse(typeof(MainV2.Firmwares), firmware));
+                    string currentmode = null;
+
+                    foreach (var mode in modes)
+                    {
+                        if (mode.Key == modeno)
+                        {
+                            currentmode = mode.Value;
+                            break;
+                        }
+                    }
+
+                    return currentmode;
+                }
+                catch
+                {
+                    return null;
+                }
+            };
+
             GStreamer.onNewImage += (sender, image) => { GCSViews.FlightData.myhud.bgimage = image; };
 
             vlcrender.onNewImage += (sender, image) =>
@@ -3309,6 +3338,8 @@ namespace MissionPlanner
                 MissionPlanner.GenOTP otp = new MissionPlanner.GenOTP();
 
                 otp.ShowDialog(this);
+
+                otp.Dispose();
 
                 return true;
             }

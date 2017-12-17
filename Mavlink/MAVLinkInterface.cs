@@ -21,7 +21,7 @@ using Timer = System.Timers.Timer;
 
 namespace MissionPlanner
 {
-    public class MAVLinkInterface : MAVLink, IDisposable
+    public class MAVLinkInterface : MAVLink, IDisposable, IMAVLinkInterface
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private ICommsSerial _baseStream;
@@ -503,6 +503,8 @@ Please check the following
                             if (seentimes >= 2 && msg.compid == 1 || seentimes >= 4)
                             {
                                 SetupMavConnect(msg, (mavlink_heartbeat_t) msg.data);
+                                sysidcurrent = msg.sysid;
+                                compidcurrent = msg.compid;
                                 exit = true;
                                 break;
                             }
@@ -535,7 +537,7 @@ Please check the following
                     frmProgressReporter.UpdateProgressAndStatus(0,
                         "Getting Params.. (sysid " + MAV.sysid + " compid " + MAV.compid + ") ");
 
-                    getParamListBG();
+                    getParamList(MAV.sysid,MAV.compid);
                 }
 
                 if (frmProgressReporter.doWorkArgs.CancelAcknowledged == true)
@@ -596,9 +598,6 @@ Please check the following
 
         void SetupMavConnect(MAVLinkMessage message, mavlink_heartbeat_t hb)
         {
-            sysidcurrent = message.sysid;
-            compidcurrent = message.compid;
-
             mavlinkversion = hb.mavlink_version;
             MAVlist[message.sysid, message.compid].aptype = (MAV_TYPE) hb.type;
             MAVlist[message.sysid, message.compid].apname = (MAV_AUTOPILOT) hb.autopilot;
@@ -1138,14 +1137,14 @@ Please check the following
 
         void FrmProgressReporterGetParams(object sender, ProgressWorkerEventArgs e, object passdata = null)
         {
-            getParamListBG();
+            getParamList(MAV.sysid, MAV.compid);
         }
 
         /// <summary>
         /// Get param list from apm
         /// </summary>
         /// <returns></returns>
-        private Dictionary<string, double> getParamListBG()
+        public Dictionary<string, double> getParamList(byte sysid, byte compid)
         {
             giveComport = true;
             List<int> indexsreceived = new List<int>();
@@ -1156,8 +1155,8 @@ Please check the following
             int param_total = 1;
 
             mavlink_param_request_list_t req = new mavlink_param_request_list_t();
-            req.target_system = MAV.sysid;
-            req.target_component = MAV.compid;
+            req.target_system = sysid;
+            req.target_component = compid;
 
             generatePacket((byte) MAVLINK_MSG_ID.PARAM_REQUEST_LIST, req);
 
@@ -1174,7 +1173,7 @@ Please check the following
 
             do
             {
-                if (frmProgressReporter.doWorkArgs.CancelRequested)
+                if (frmProgressReporter != null && frmProgressReporter.doWorkArgs.CancelRequested)
                 {
                     frmProgressReporter.doWorkArgs.CancelAcknowledged = true;
                     giveComport = false;
@@ -1206,12 +1205,12 @@ Please check the following
                         {
                             if (!indexsreceived.Contains(i))
                             {
-                                if (frmProgressReporter.doWorkArgs.CancelRequested)
+                                if (frmProgressReporter != null && frmProgressReporter.doWorkArgs.CancelRequested)
                                 {
                                     frmProgressReporter.doWorkArgs.CancelAcknowledged = true;
                                     giveComport = false;
                                     frmProgressReporter.doWorkArgs.ErrorMessage = "User Canceled";
-                                    return MAV.param;
+                                    return MAVlist[sysid, compid].param;
                                 }
 
                                 // prevent dropping out of this get params loop
@@ -1220,8 +1219,8 @@ Please check the following
                                     queued++;
 
                                     mavlink_param_request_read_t req2 = new mavlink_param_request_read_t();
-                                    req2.target_system = MAV.sysid;
-                                    req2.target_component = MAV.compid;
+                                    req2.target_system = sysid;
+                                    req2.target_component = compid;
                                     req2.param_index = i;
                                     req2.param_id = new byte[] {0x0};
 
@@ -1278,8 +1277,9 @@ Please check the following
                         if (indexsreceived.Contains(par.param_index))
                         {
                             log.Info("Already got " + (par.param_index) + " '" + paramID + "' " + (indexsreceived.Count * 100) / param_total);
-                            this.frmProgressReporter.UpdateProgressAndStatus((indexsreceived.Count*100)/param_total,
-                                "Already Got param " + paramID);
+                            if (frmProgressReporter != null)
+                                this.frmProgressReporter.UpdateProgressAndStatus(
+                                    (indexsreceived.Count * 100) / param_total, "Already Got param " + paramID);
                             continue;
                         }
 
@@ -1291,7 +1291,7 @@ Please check the following
 
                         //Console.WriteLine(DateTime.Now.Millisecond + " gp2a ");
 
-                        if (MAV.apname == MAV_AUTOPILOT.ARDUPILOTMEGA)
+                        if (MAVlist[sysid,compid].apname == MAV_AUTOPILOT.ARDUPILOTMEGA)
                         {
                             var offset = Marshal.OffsetOf(typeof(mavlink_param_value_t), "param_value");
                             newparamlist[paramID] = new MAVLinkParam(paramID, BitConverter.GetBytes(par.param_value), MAV_PARAM_TYPE.REAL32, (MAV_PARAM_TYPE)par.param_type);
@@ -1308,12 +1308,12 @@ Please check the following
                         if (par.param_index != 65535)
                             indexsreceived.Add(par.param_index);
 
-                        MAV.param_types[paramID] = (MAV_PARAM_TYPE) par.param_type;
+                        MAVlist[sysid, compid].param_types[paramID] = (MAV_PARAM_TYPE) par.param_type;
 
                         //Console.WriteLine(DateTime.Now.Millisecond + " gp3 ");
 
-                        this.frmProgressReporter.UpdateProgressAndStatus((indexsreceived.Count*100)/param_total,
-                            Strings.Gotparam + paramID);
+                        if(frmProgressReporter != null)
+                            this.frmProgressReporter.UpdateProgressAndStatus((indexsreceived.Count*100)/param_total,Strings.Gotparam + paramID);
 
                         // we hit the last param - lets escape eq total = 176 index = 0-175
                         if (par.param_index == (param_total - 1))
@@ -1332,19 +1332,19 @@ Please check the following
                         if (logdata.ToLower().Contains("copter") || logdata.ToLower().Contains("rover") ||
                             logdata.ToLower().Contains("plane"))
                         {
-                            MAV.VersionString = logdata;
+                            MAVlist[sysid, compid].VersionString = logdata;
                         }
                         else if (logdata.ToLower().Contains("nuttx"))
                         {
-                            MAV.SoftwareVersions = logdata;
+                            MAVlist[sysid, compid].SoftwareVersions = logdata;
                         }
                         else if (logdata.ToLower().Contains("px4v2"))
                         {
-                            MAV.SerialString = logdata;
+                            MAVlist[sysid, compid].SerialString = logdata;
                         }
                         else if (logdata.ToLower().Contains("frame"))
                         {
-                            MAV.FrameString = logdata;
+                            MAVlist[sysid, compid].FrameString = logdata;
                         }
                     }
                     //stopwatch.Stop();
@@ -1371,10 +1371,10 @@ Please check the following
             }
             giveComport = false;
 
-            MAV.param.Clear();
-            MAV.param.TotalReported = param_total;
-            MAV.param.AddRange(newparamlist);
-            return MAV.param;
+            MAVlist[sysid, compid].param.Clear();
+            MAVlist[sysid, compid].param.TotalReported = param_total;
+            MAVlist[sysid, compid].param.AddRange(newparamlist);
+            return MAVlist[sysid, compid].param;
         }
 
         private int _parampoll = 0;
@@ -1762,6 +1762,14 @@ Please check the following
                 giveComport = false;
                 return true;
             }
+            else if (actionid == MAV_CMD.PREFLIGHT_CALIBRATION && p6 == 1)
+            {
+                // compassmot
+                // send again just incase
+                generatePacket((byte)MAVLINK_MSG_ID.COMMAND_LONG, req, sysid, compid);
+                giveComport = false;
+                return true;
+            }
             else if (actionid == MAV_CMD.PREFLIGHT_CALIBRATION)
             {
                 retrys = 1;
@@ -1777,14 +1785,6 @@ Please check the following
             {
                 // 10 seconds as may need an imu calib
                 timeout = 10000;
-            }
-            else if (actionid == MAV_CMD.PREFLIGHT_CALIBRATION && p6 == 1)
-            {
-                // compassmot
-                // send again just incase
-                generatePacket((byte) MAVLINK_MSG_ID.COMMAND_LONG, req, sysid, compid);
-                giveComport = false;
-                return true;
             }
             else if (actionid == MAV_CMD.GET_HOME_POSITION)
             {
@@ -3043,6 +3043,8 @@ Please check the following
                         setMode(sysid, compid, "GUIDED");
                 }
 
+                log.InfoFormat("setGuidedModeWP {0}:{1} lat {2} lng {3} alt {4}", sysid, compid, gotohere.lat, gotohere.lng, gotohere.alt);
+
                 if (MAVlist[sysid,compid].cs.firmware == MainV2.Firmwares.ArduPlane)
                 {
                     MAV_MISSION_RESULT ans = setWP(sysid, compid, gotohere, 0, MAV_FRAME.GLOBAL_RELATIVE_ALT, (byte)2);
@@ -3067,16 +3069,30 @@ Please check the following
 
         public void setNewWPAlt(Locationwp gotohere)
         {
+            setNewWPAlt((byte)sysidcurrent, (byte)compidcurrent, gotohere);
+        }
+
+        public void setNewWPAlt(byte sysid, byte compid, Locationwp gotohere)
+        {
             giveComport = true;
 
             try
             {
                 gotohere.id = (ushort)MAV_CMD.WAYPOINT;
 
-                MAV_MISSION_RESULT ans = setWP(gotohere, 0, MAV_FRAME.GLOBAL_RELATIVE_ALT, (byte) 3);
+                log.InfoFormat("setNewWPAlt {0}:{1} lat {2} lng {3} alt {4}", sysid, compid, gotohere.lat, gotohere.lng, gotohere.alt);
+
+                MAV_MISSION_RESULT ans = setWP(gotohere, 0, MAV_FRAME.GLOBAL_RELATIVE_ALT, (byte)3);
 
                 if (ans != MAV_MISSION_RESULT.MAV_MISSION_ACCEPTED)
                     throw new Exception("Alt Change Failed");
+
+                /*
+                // currently plane supports just an alt change, copter requires all lat/lng/alt
+                setPositionTargetGlobalInt((byte)sysid, (byte)compid,
+                    true, false, false, false, MAVLink.MAV_FRAME.GLOBAL_RELATIVE_ALT_INT,
+                    gotohere.lat, gotohere.lng, gotohere.alt, 0, 0, 0, 0, 0);
+                    */
             }
             catch (Exception ex)
             {
@@ -3092,6 +3108,7 @@ Please check the following
         {
             // for mavlink SET_POSITION_TARGET messages
             const ushort MAVLINK_SET_POS_TYPE_MASK_POS_IGNORE = ((1 << 0) | (1 << 1) | (1 << 2));
+            const ushort MAVLINK_SET_POS_TYPE_MASK_ALT_IGNORE = ((0 << 0) | (0 << 1) | (1 << 2));
             const ushort MAVLINK_SET_POS_TYPE_MASK_VEL_IGNORE = ((1 << 3) | (1 << 4) | (1 << 5));
             const ushort MAVLINK_SET_POS_TYPE_MASK_ACC_IGNORE = ((1 << 6) | (1 << 7) | (1 << 8));
             const ushort MAVLINK_SET_POS_TYPE_MASK_FORCE = ((1 << 9));
@@ -3101,21 +3118,23 @@ Please check the following
             {
                 target_system = sysid,
                 target_component = compid,
-                alt = (float) alt,
-                lat_int = (int) (lat*1e7),
-                lon_int = (int) (lng*1e7),
-                coordinate_frame = (byte) frame,
-                vx = (float) vx,
-                vy = (float) vy,
-                vz = (float) vz,
+                alt = (float)alt,
+                lat_int = (int)(lat * 1e7),
+                lon_int = (int)(lng * 1e7),
+                coordinate_frame = (byte)frame,
+                vx = (float)vx,
+                vy = (float)vy,
+                vz = (float)vz,
                 yaw = (float)yawangle,
                 yaw_rate = (float)yawrate
             };
 
             target.type_mask = ushort.MaxValue;
 
-            if (pos)
+            if (pos && lat != 0 && lng != 0)
                 target.type_mask -= MAVLINK_SET_POS_TYPE_MASK_POS_IGNORE;
+            if (pos && lat == 0 && lng == 0)
+                target.type_mask -= MAVLINK_SET_POS_TYPE_MASK_ALT_IGNORE;
             if (vel)
                 target.type_mask -= MAVLINK_SET_POS_TYPE_MASK_VEL_IGNORE;
             if (acc)
@@ -3125,8 +3144,10 @@ Please check the following
 
             if (pos)
             {
-                MAVlist[sysid, compid].GuidedMode.x = (float)lat;
-                MAVlist[sysid, compid].GuidedMode.y = (float)lng;
+                if (lat != 0)
+                    MAVlist[sysid, compid].GuidedMode.x = (float)lat;
+                if (lng != 0)
+                    MAVlist[sysid, compid].GuidedMode.y = (float)lng;
                 MAVlist[sysid, compid].GuidedMode.z = (float)alt;
             }
 
@@ -3863,14 +3884,16 @@ Please check the following
                             }
                         }
                     }
-
-                    if (lastparamset != DateTime.MinValue && lastparamset.AddSeconds(10) < DateTime.Now)
+                    if (Settings.Instance["autoParamCommit"] == null || Settings.Instance.GetBoolean("autoParamCommit") == true)
                     {
-                        lastparamset = DateTime.MinValue;
-
-                        if (BaseStream.IsOpen)
+                        if (lastparamset != DateTime.MinValue && lastparamset.AddSeconds(10) < DateTime.Now)
                         {
-                            doCommand(MAV_CMD.PREFLIGHT_STORAGE, 1, 0, 0, 0, 0, 0, 0, false);
+                            lastparamset = DateTime.MinValue;
+
+                            if (BaseStream.IsOpen)
+                            {
+                                doCommand(MAV_CMD.PREFLIGHT_STORAGE, 1, 0, 0, 0, 0, 0, 0, false);
+                            }
                         }
                     }
 
@@ -4882,7 +4905,7 @@ Please check the following
 
             try
             {
-                List<KeyValuePair<int, string>> modelist = Common.getModesList(MAVlist[sysid,compid].cs);
+                List<KeyValuePair<int, string>> modelist = Common.getModesList(MAVlist[sysid,compid].cs.firmware);
 
                 foreach (KeyValuePair<int, string> pair in modelist)
                 {

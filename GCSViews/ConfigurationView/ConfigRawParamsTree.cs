@@ -43,6 +43,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             BUT_writePIDS.Enabled = MainV2.comPort.BaseStream.IsOpen;
             BUT_rerequestparams.Enabled = MainV2.comPort.BaseStream.IsOpen;
             BUT_reset_params.Enabled = MainV2.comPort.BaseStream.IsOpen;
+            BUT_commitToFlash.Visible = MainV2.DisplayConfiguration.displayParamCommitButton;
 
             SuspendLayout();
 
@@ -669,6 +670,22 @@ namespace MissionPlanner.GCSViews.ConfigurationView
                 ConfigRawParams.CheckForUrlAndLaunchInBrowser(descStr);
             }
             catch { }
+        }
+
+        private void BUT_commitToFlash_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                MainV2.comPort.doCommand(MAVLink.MAV_CMD.PREFLIGHT_STORAGE, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+            }
+            catch
+            {
+                CustomMessageBox.Show("Invalid command");
+                return;
+            }
+
+            CustomMessageBox.Show("Parameters committed to non-volatile memory");
+            return;
         }
     }
 }
