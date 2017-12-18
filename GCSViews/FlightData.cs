@@ -1174,8 +1174,18 @@ namespace MissionPlanner.GCSViews
                                 catch
                                 {
                                 }
-
+#if AERONAVICS
+                                if (MainV2.comPort.MAV.cs.wpno <= plla.seq || plla.seq == 0)
+                                {
+                                    addpolygonmarker(tag, plla.y, plla.x, (int)plla.z, Color.White, polygons);
+                                }
+                                else
+                                {
+                                    addpolygonmarker(tag, plla.y, plla.x, (int)plla.z, Color.White, polygons, true);
+                                }
+#else
                                 addpolygonmarker(tag, plla.y, plla.x, (int) plla.z, Color.White, polygons);
+#endif
                             }
 
                             try
@@ -1745,13 +1755,20 @@ namespace MissionPlanner.GCSViews
                 }
             });
         }
-
+#if AERONAVICS
+        private void addpolygonmarker(string tag, double lng, double lat, int alt, Color? color, GMapOverlay overlay, bool passed = false)
+#else
         private void addpolygonmarker(string tag, double lng, double lat, int alt, Color? color, GMapOverlay overlay)
+#endif
         {
             try
             {
                 PointLatLng point = new PointLatLng(lat, lng);
+#if AERONAVICS
+                GMarkerGoogle m = new GMarkerGoogle(point, passed ? GMarkerGoogleType.yellow : GMarkerGoogleType.green);
+#else
                 GMarkerGoogle m = new GMarkerGoogle(point, GMarkerGoogleType.green);
+#endif
                 m.ToolTipMode = MarkerTooltipMode.Always;
                 m.ToolTipText = tag;
                 m.Tag = tag;
