@@ -36,6 +36,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Optimize>false</Optimize>
     <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>TRACE;RELEASE;NET461;AERONAVICS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="APMPlannerXplanes\**" />
