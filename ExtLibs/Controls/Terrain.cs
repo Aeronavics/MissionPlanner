@@ -131,6 +131,7 @@ namespace MissionPlanner.Controls
         private double _lat = 0;
         private double _homealt = 0;
         public float diff = 1;
+        public float shift = 0;
         public float _targetheading = 0;
         public float _alt_target = 0;
         private string _mode = "Manual";
@@ -1271,14 +1272,18 @@ namespace MissionPlanner.Controls
                     angle = _targetheading;
                 }
 
-                TerrainElevation t = new TerrainElevation(points, angle, _lat, _lng, this.Width, this.Height, speed, autoScale, fixd);
+                TerrainElevation t = new TerrainElevation(points, angle, _lat, _lng, this.Width, this.Height, speed, autoScale, fixd,_homealt);
                 diff = t.setdiff();
+                shift = t.setshift();
 
                 float drone_width = _drone.Width / 4 * scale_factor;
                 float drone_height = _drone.Height / 4 * scale_factor;
 
                 float xPos = this.Width / 2 - drone_width / 2; //  (points[2].X+points[3].X)/2
-                float yPos = this.Height - (float)_homealt * diff - drone_height;
+                float yPos = this.Height - (float)_homealt * diff - drone_height+shift;
+
+                float ydrawing = this.Height - (float)_homealt * diff - (float)_alt * diff+shift;
+                float yhome = this.Height - (float)_homealt * diff + shift;
 
                 // draw sky
                 if (bgon == true)
@@ -1349,7 +1354,8 @@ namespace MissionPlanner.Controls
                         else
                         {
                             graphicsObject.ResetTransform();
-                            graphicsObject.TranslateTransform(0, this.Height/4-yPos);
+                            //graphicsObject.TranslateTransform(0, this.Height/4-yPos);
+                            graphicsObject.TranslateTransform(0, -_alt * diff);
                         }
 
                         float movex = (_drone.Width / 4) / 2f + xPos;
@@ -1365,12 +1371,12 @@ namespace MissionPlanner.Controls
                         graphicsObject.ResetTransform();
                         if (_mode == "Auto")
                         {
-                            graphicsObject.DrawLine(this._blackPen, this.Width - 30, this.Height - (_homealt + _alt_target) * diff, this.Width, this.Height - (_homealt + _alt_target) * diff);
+                            graphicsObject.DrawLine(this._blackPen, this.Width - 30, this.Height - (_homealt + _alt_target) * diff+shift, this.Width, this.Height - (_homealt + _alt_target) * diff+shift);
                         }
 
                         else if (_mode == "Guided")
                         {
-                            graphicsObject.DrawLine(this._blackPen, this.Width - 30, this.Height - (_homealt + _alt_target) * diff, this.Width, this.Height - (_homealt + _alt_target) * diff);
+                            graphicsObject.DrawLine(this._blackPen, this.Width - 30, this.Height - (_homealt + _alt_target) * diff+shift, this.Width, this.Height - (_homealt + _alt_target) * diff+shift);
                         }
                         
                     }
@@ -1392,10 +1398,7 @@ namespace MissionPlanner.Controls
                         graphicsObject.DrawImage(_drone, this.Width / 5 - _drone.Width/8, this.Height / 2 - _drone.Height / 4, _drone.Width / 4, _drone.Height / 4, 1);
                     }
 
-                    //Draw Sea
-                    graphicsObject.ResetTransform();
-                    Rectangle sea = new Rectangle(0, this.Height-10, this.Width, 10);
-                    graphicsObject.FillRectangle(this._blueBrush, sea);
+
 
                 }
              
@@ -1429,7 +1432,7 @@ namespace MissionPlanner.Controls
 
                     // draw arrow and text
                     graphicsObject.ResetTransform();
-                    graphicsObject.TranslateTransform(0, this.Height - (float)_homealt*diff - (float) _alt*diff);
+                    graphicsObject.TranslateTransform(0, ydrawing);
                     graphicsObject.DrawPolygon(this._blackPen, arrow);
                     graphicsObject.FillPolygon(Brushes.Black, arrow);
                     
@@ -1438,8 +1441,13 @@ namespace MissionPlanner.Controls
                     graphicsObject.ResetTransform();
 
                     this._blackPen.Width = 6;
-                    graphicsObject.DrawLine(this._blackPen, 3, this.Height-10, 3, this.Height - (float)_homealt*diff - (float)_alt*diff + 5);
-                    
+                    graphicsObject.DrawLine(this._blackPen, 3, this.Height-10, 3, ydrawing + 5);
+
+                    //Draw Sea
+                    graphicsObject.ResetTransform();
+                    Rectangle sea = new Rectangle(0, this.Height - 10, this.Width, 10);
+                    graphicsObject.FillRectangle(this._blueBrush, sea);
+
                 }
             
                 //draw heading ind
@@ -1513,17 +1521,17 @@ namespace MissionPlanner.Controls
 
                 }
 
-                //height above ground scale
+                //Height above ground scale
                 if (displaygroundheight)
                 {
 
                     graphicsObject.ResetTransform();
-                    graphicsObject.DrawLine(this._whitePen, xPos-8, points[points.Count / 2].Y, xPos-8, this.Height - (float)_homealt * diff - (float)_alt * diff);
+                    graphicsObject.DrawLine(this._whitePen, xPos-8, points[points.Count / 2].Y, xPos-8, ydrawing);
 
-                    graphicsObject.DrawLine(this._whitePen, xPos-16, this.Height - (float)_homealt * diff - (float)_alt * diff, xPos, this.Height - (float)_homealt * diff - (float)_alt * diff);
+                    graphicsObject.DrawLine(this._whitePen, xPos-16, ydrawing, xPos, ydrawing);
 
-                    drawstring(graphicsObject, ((int)_alt + _homealt - (this.Height - points[(points.Count) / 2].Y) / diff).ToString("0 m"), font, 10, (SolidBrush)Brushes.AliceBlue,
-                            this.Width / 5 + 36, (float)(this.Height - 3 * (_alt + _homealt) * diff / 4));
+                    drawstring(graphicsObject, ((int)_alt + _homealt - (this.Height + shift - points[(points.Count) / 2].Y) / diff).ToString("0 m"), font, 10, (SolidBrush)Brushes.AliceBlue,
+                            this.Width / 5 + 36, (ydrawing+points[(points.Count)/2].Y)/2);
                 }
 
                 //Home Altutide
@@ -1551,14 +1559,19 @@ namespace MissionPlanner.Controls
 
 
                     // Draw a line.
-                    graphicsObject.DrawLine(blackPen, 0, this.Height-(float)_homealt*diff, this.Width, this.Height-(float)_homealt*diff);
+                    graphicsObject.DrawLine(blackPen, 0, yhome, this.Width, yhome);
                     drawstring(graphicsObject, String.Format("Home Alt"), font, fontsize * scale_factor,
-                        _whiteBrush, halfwidth, this.Height - (float)_homealt * diff + 5 + (int)(fontoffset * 1.7));
+                        _whiteBrush, halfwidth, yhome + 5 + (int)(fontoffset * 1.7));
 
-                    graphicsObject.DrawLine(blackPen, xPos + drone_width+8, this.Height - (float)_homealt * diff, xPos + drone_width+8, this.Height - (float)_homealt * diff - (float)_alt * diff);
-                    graphicsObject.DrawLine(blackPen, xPos + drone_width + 16, this.Height - (float)_homealt * diff - (float)_alt * diff, xPos + drone_width, this.Height - (float)_homealt * diff - (float)_alt * diff);
+                    graphicsObject.DrawLine(blackPen, xPos + drone_width+8, yhome, xPos + drone_width+8, ydrawing);
+                    graphicsObject.DrawLine(blackPen, xPos + drone_width + 16, ydrawing, xPos + drone_width, ydrawing);
 
-                    drawstring(graphicsObject, ((int)_alt).ToString("0 m"), font, 10, (SolidBrush)Brushes.AliceBlue, xPos + drone_width + 16, this.Height-(float)_homealt*diff-(float)_alt*diff/2);
+                    drawstring(graphicsObject, ((int)_alt).ToString("0 m"), font, 10, (SolidBrush)Brushes.AliceBlue, xPos + drone_width + 16, yhome - (float)_alt*diff/2);
+                }
+
+                if (displaysonar)
+                {
+                    graphicsObject.DrawLine(_redPen, xPos + drone_width / 2, ydrawing, xPos + drone_width / 2 , yPos + 25);
                 }
 
 

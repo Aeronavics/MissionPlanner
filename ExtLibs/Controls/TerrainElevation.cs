@@ -22,8 +22,9 @@ namespace MissionPlanner.Controls
 
         float distance = 0;
         float diff = 0;
+        float shift = 0;
 
-        public TerrainElevation(List<PointF> points, float _heading, double _lat, double _lng, int width, int height,double _groundspeed,bool autoScale, int fixd)
+        public TerrainElevation(List<PointF> points, float _heading, double _lat, double _lng, int width, int height,double _groundspeed,bool autoScale, int fixd, double homealt)
         {
             create_pointslist(pointslist, _heading, _lat, _lng,_groundspeed,autoScale,fixd);
 
@@ -42,6 +43,8 @@ namespace MissionPlanner.Controls
                 lastloc = loc;
             }
 
+
+
             //gelocs = getGEAltPath(pointslist);    //Google Earth data
             gelocs = getSRTMAltPath(pointslist); //DEM data
             float disttotal = 0;
@@ -49,13 +52,25 @@ namespace MissionPlanner.Controls
             if (gelocs.Count != 0)
             {
                 var prevloc = gelocs[0];
-                double D = gelocs[1].GetDistance(gelocs[0]);
-                diff = space / (float)D;
+                double point_distance = gelocs[1].GetDistance(gelocs[0]);
+                diff = space / (float)point_distance;
+
+                //Shift terrain 
+                if (homealt * diff < height / 4)
+                {
+                    shift = 0;
+                }
+
+                else
+                {
+                    shift = (float)homealt * diff - height / 4;
+                }
+
                 //convert pointslist into distance, altitude points
                 foreach (PointLatLngAlt loc in gelocs)
                 {
-                    float b = (float)(height - loc.Alt*diff);
-                    points.Add(new PointF(disttotal, b));
+                    float y = (float)(height - (loc.Alt)*diff)+shift;
+                    points.Add(new PointF(disttotal, y));
                     disttotal += space;
                     prevloc = loc;
                 }
@@ -66,6 +81,11 @@ namespace MissionPlanner.Controls
         public float setdiff()
         {
             return diff;
+        }
+
+        public float setshift()
+        {
+            return shift;
         }
 
         double mod(double a, double n)
