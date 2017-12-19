@@ -183,10 +183,6 @@ namespace MissionPlanner
                 loadsettings();
 
             TRK_zoom.Value = (float)map.Zoom;
-
-            label1.Text += " (" + CurrentState.DistanceUnit+")";
-            label24.Text += " (" + CurrentState.SpeedUnit + ")";
-
             loading = false;
 
             domainUpDown1_ValueChanged(this, null);
