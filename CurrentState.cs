@@ -514,6 +514,9 @@ namespace MissionPlanner
         [DisplayText("Bearing Target (deg)")]
         public float target_bearing { get; set; }
 
+        [DisplayText("Altitude Target (metres)")]
+        public float alt_target { get; set; }
+
         [DisplayText("Dist to WP (dist)")]
         public float wp_dist
         {
@@ -1646,7 +1649,6 @@ namespace MissionPlanner
                     }
 
                     mavLinkMessage = MAV.getPacket((uint) MAVLink.MAVLINK_MSG_ID.AIRSPEED_AUTOCAL);
-
                     if (mavLinkMessage != null)
                     {
                         var asac = mavLinkMessage.ToStructure<MAVLink.mavlink_airspeed_autocal_t>();
@@ -1655,7 +1657,6 @@ namespace MissionPlanner
                     }
 
                     mavLinkMessage = MAV.getPacket((uint) MAVLink.MAVLINK_MSG_ID.SYSTEM_TIME);
-
                     if (mavLinkMessage != null)
                     {
                         var systime = mavLinkMessage.ToStructure<MAVLink.mavlink_system_time_t>();
@@ -1673,7 +1674,6 @@ namespace MissionPlanner
                     }
 
                     mavLinkMessage = MAV.getPacket((uint) MAVLink.MAVLINK_MSG_ID.HWSTATUS);
-
                     if (mavLinkMessage != null)
                     {
                         var hwstatus = mavLinkMessage.ToStructure<MAVLink.mavlink_hwstatus_t>();
@@ -2194,7 +2194,6 @@ namespace MissionPlanner
                     }
 
                     mavLinkMessage = MAV.getPacket((uint) MAVLink.MAVLINK_MSG_ID.NAV_CONTROLLER_OUTPUT);
-
                     if (mavLinkMessage != null)
                     {
                         var nav = mavLinkMessage.ToStructure<MAVLink.mavlink_nav_controller_output_t>();
@@ -2211,6 +2210,7 @@ namespace MissionPlanner
                         //MAVLink.packets[(byte)MAVLink.MSG_NAMES.NAV_CONTROLLER_OUTPUT);
                     }
 
+         
                     mavLinkMessage = MAV.getPacket((uint) MAVLink.MAVLINK_MSG_ID.RPM);
 
                     if (mavLinkMessage != null)
