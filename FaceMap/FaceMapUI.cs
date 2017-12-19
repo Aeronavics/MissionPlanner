@@ -1263,7 +1263,7 @@ namespace MissionPlanner
                             gridobject);
                     }
 
-                    plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_MOUNT_CONTROL, (double)NUM_cameraPitch.Value * -100, 0, 0, 0, 0, 0, 0, MAVLink.MAV_MOUNT_MODE.MAVLINK_TARGETING);
+                    plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_MOUNT_CONTROL, (double)NUM_cameraPitch.Value * -1, 0, 0, 0, 0, 0, 0, MAVLink.MAV_MOUNT_MODE.MAVLINK_TARGETING);
 
                     int i = 0;
                     bool startedtrigdist = false;
