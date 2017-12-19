@@ -8,9 +8,7 @@ using System.Windows.Forms;
 using GMap.NET;
 using System.Xml;
 using MissionPlanner.Utilities; // GE xml alt reader
-
-
-
+using MissionPlanner.Controls;
 
 namespace MissionPlanner.Controls
 {
@@ -22,11 +20,12 @@ namespace MissionPlanner.Controls
         List<PointLatLngAlt> pointslist = new List<PointLatLngAlt>();
         //List<Point> points = new List<Point>();
 
-        int distance = 0;
+        float distance = 0;
+        float diff = 0;
 
-        public TerrainElevation(List<Point> points, float _heading, double _lat, double _lng, int width, int height)
+        public TerrainElevation(List<PointF> points, float _heading, double _lat, double _lng, int width, int height,double _groundspeed,bool autoScale, int fixd)
         {
-            create_pointslist(pointslist, _heading, _lat, _lng);
+            create_pointslist(pointslist, _heading, _lat, _lng,_groundspeed,autoScale,fixd);
 
             // get total distance
             distance = 0;
@@ -45,20 +44,28 @@ namespace MissionPlanner.Controls
 
             //gelocs = getGEAltPath(pointslist);    //Google Earth data
             gelocs = getSRTMAltPath(pointslist); //DEM data
-            int disttotal = 0;
+            float disttotal = 0;
+            float space = (float) width / (float)(gelocs.Count);
             if (gelocs.Count != 0)
             {
                 var prevloc = gelocs[0];
+                double D = gelocs[1].GetDistance(gelocs[0]);
+                diff = space / (float)D;
                 //convert pointslist into distance, altitude points
                 foreach (PointLatLngAlt loc in gelocs)
                 {
-                    int b = (height - (int)loc.Alt);
-                    points.Add(new Point(disttotal, b));
-                    disttotal += width / (gelocs.Count);
+                    float b = (float)(height - loc.Alt*diff);
+                    points.Add(new PointF(disttotal, b));
+                    disttotal += space;
                     prevloc = loc;
                 }
-                points.Add(new Point(disttotal, height - (int)prevloc.Alt));
+                points.Add(new PointF(disttotal,(float)(height - prevloc.Alt)));
             }
+        }
+
+        public float setdiff()
+        {
+            return diff;
         }
 
         double mod(double a, double n)
@@ -69,14 +76,40 @@ namespace MissionPlanner.Controls
             return result;
         }
 
-        private void create_pointslist(List<PointLatLngAlt> pointslist, float _heading, double _lat, double _lng)
+        private void create_pointslist(List<PointLatLngAlt> pointslist, float _heading, double _lat, double _lng, double speed,bool autoScale,int fixd)
         {
-            double distance = 0.02 / (6371); //km
+            double distance = 0; //km
+            double distance2 = 0;
             float angle = Math.Abs(_heading-360) * (float)Math.PI / 180 + (float)Math.PI; 
             double latend = 0;
             double lngend = 0;
             double latradians = _lat * Math.PI / 180;
-            double lngradians = _lng * Math.PI / 180; 
+            double lngradians = _lng * Math.PI / 180;
+
+            if (autoScale)
+            {
+                distance = (0.05 + 0.01 * speed) / 6371;
+                distance2 = (0.05 + 0.01 * speed) / 6371;
+            }
+
+            else if (fixd == 50)
+            {
+                distance = 0.05 / 6371;
+                distance2 = 0.05 / 6371;
+            }
+
+            else if (fixd == 100)
+            {
+                distance = 0.1 / 6371;
+                distance2 = 0.1 / 6371;
+            }
+
+            else if (fixd == 500)
+            {
+                distance = 0.5 / 6371;
+                distance2 = 0.5 / 6371;
+            }
+
             for (int i = 0; i < 2; i++)
             {
                 latend = Math.Asin(Math.Sin(latradians) * Math.Cos(distance) + Math.Cos(latradians) * Math.Sin(distance) * Math.Cos(angle));
@@ -91,7 +124,9 @@ namespace MissionPlanner.Controls
                 pointslist.Add(new PointLatLngAlt(newlatend, newlngend, 0, (i).ToString()));
 
                 angle -= (float)Math.PI;
-                distance = 0.08 / 6371;
+
+                distance = distance2;
+                
             }
         }
 

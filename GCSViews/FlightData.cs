@@ -1125,6 +1125,9 @@ namespace MissionPlanner.GCSViews
                             MAVLink.mavlink_mission_item_t lastplla = new MAVLink.mavlink_mission_item_t();
                             MAVLink.mavlink_mission_item_t home = new MAVLink.mavlink_mission_item_t();
 
+
+                            List<float> list = new List<float>();
+
                             foreach (MAVLink.mavlink_mission_item_t plla in MainV2.comPort.MAV.wps.Values)
                             {
                                 if (plla.x == 0 || plla.y == 0)
@@ -1166,12 +1169,21 @@ namespace MissionPlanner.GCSViews
                                     }
 
                                     lastplla = plla;
+
+
                                 }
                                 catch
                                 {
                                 }
 
                                 addpolygonmarker(tag, plla.y, plla.x, (int)plla.z, Color.White, polygons);
+
+                                list.Add(plla.z);
+                            }
+
+                            if (MainV2.comPort.MAV.cs.mode == "Auto")
+                            {
+                                hud2.alt_target = list[(int)MainV2.comPort.MAV.cs.wpno];
                             }
 
                             try
@@ -3428,6 +3440,8 @@ namespace MissionPlanner.GCSViews
                     lat = MainV2.comPort.MAV.GuidedMode.x,
                     lng = MainV2.comPort.MAV.GuidedMode.y
                 });
+
+                hud2.alt_target = MainV2.comPort.MAV.GuidedMode.z;
             }
         }
 
@@ -3511,7 +3525,19 @@ namespace MissionPlanner.GCSViews
         private void tabTerrain_Resize(object sender, EventArgs e)
         {
             hud2.Width = tabTerrain.Width;
-            hud2.Height = tabTerrain.Width;
+            hud2.Height = tabTerrain.Height- BUT_GROUND_HEIGHT.Height;
+            /*
+            BUT_GROUND_HEIGHT.Location = new Point(0, hud2.Height);
+            BUT_SEA_HEIGHT.Location = new Point(0, hud2.Height+BUT_GROUND_HEIGHT.Height);
+            BUT_GROUND_SENSOR.Location = new Point(0, hud2.Height + 2 * BUT_GROUND_HEIGHT.Height);
+            BUT_TERRAIN_VIEW.Location = new Point(BUT_GROUND_HEIGHT.Width, hud2.Height);
+            */
+            BUT_GROUND_HEIGHT.Location = new Point(0, tabTerrain.Height-BUT_GROUND_HEIGHT.Height);
+            BUT_SEA_HEIGHT.Location = new Point(BUT_GROUND_HEIGHT.Width, tabTerrain.Height - BUT_GROUND_HEIGHT.Height);
+            BUT_GROUND_SENSOR.Location = new Point(BUT_GROUND_HEIGHT.Width*2, tabTerrain.Height - BUT_GROUND_HEIGHT.Height);
+            BUT_TERRAIN_VIEW.Location = new Point(BUT_GROUND_HEIGHT.Width*3, tabTerrain.Height - BUT_GROUND_HEIGHT.Height);
+            BUT_HOME_ALT.Location = new Point(BUT_GROUND_HEIGHT.Width * 4, tabTerrain.Height - BUT_GROUND_HEIGHT.Height);
+
         }
 
         private void resetToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3773,6 +3799,134 @@ namespace MissionPlanner.GCSViews
         {
             hud1.Russian = !hud1.Russian;
             Settings.Instance["russian_hud"] = hud1.Russian.ToString();
+        }
+
+        private void autoScaleHudToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            hud2.autoScale = true;
+        }
+
+        private void tool50mStripMenuItem_Click(object sender, EventArgs e)
+        {
+            hud2.autoScale = false;
+            hud2.fixd = 50;
+        }
+
+        private void tool100mStripMenuItem_Click(object sender, EventArgs e)
+        {
+            hud2.autoScale = false;
+            hud2.fixd = 100;
+        }
+
+        private void tool500mStripMenuItem_Click(object sender, EventArgs e)
+        {
+            hud2.autoScale = false;
+            hud2.fixd = 500;
+        }
+
+        private void BUT_GROUND_HEIGHT_Click(object sender, EventArgs e)
+        {
+
+            try
+            {
+                if(hud2.displaygroundheight)
+                {
+                    hud2.displaygroundheight = false;
+                }
+
+                else
+                {
+                    hud2.displaygroundheight = true;
+                }
+            }
+            catch
+            {
+                CustomMessageBox.Show(Strings.ErrorNoResponce, Strings.ERROR);
+            }
+        }
+
+        private void BUT_SEA_HEIGHT_Click(object sender, EventArgs e)
+        {
+
+            try
+            {
+                if (hud2.displayseaheight)
+                {
+                    hud2.displayseaheight = false;
+                }
+
+                else
+                {
+                    hud2.displayseaheight = true;
+                }
+            }
+            catch
+            {
+                CustomMessageBox.Show(Strings.ErrorNoResponce, Strings.ERROR);
+            }
+        }
+
+        private void BUT_GROUND_SENSOR_Click(object sender, EventArgs e)
+        {
+
+            try
+            {
+                if (hud2.displaysonar)
+                {
+                    hud2.displaysonar = false;
+                }
+
+                else
+                {
+                    hud2.displaysonar = true;
+                }
+            }
+            catch
+            {
+                CustomMessageBox.Show(Strings.ErrorNoResponce, Strings.ERROR);
+            }
+        }
+
+        private void BUT_TERRAIN_VIEW_Click(object sender, EventArgs e)
+        {
+
+            try
+            {
+                if (hud2.frontview)
+                {
+                    hud2.frontview = false;
+                }
+
+                else
+                {
+                    hud2.frontview = true;
+                }
+            }
+            catch
+            {
+                CustomMessageBox.Show(Strings.ErrorNoResponce, Strings.ERROR);
+            }
+        }
+
+        private void BUT_HOME_ALT_Click(object sender, EventArgs e)
+        {
+
+            try
+            {
+                if (hud2.displayhomealt)
+                {
+                    hud2.displayhomealt = false;
+                }
+
+                else
+                {
+                    hud2.displayhomealt = true;
+                }
+            }
+            catch
+            {
+                CustomMessageBox.Show(Strings.ErrorNoResponce, Strings.ERROR);
+            }
         }
 
         private void setHomeHereToolStripMenuItem_Click(object sender, EventArgs e)
