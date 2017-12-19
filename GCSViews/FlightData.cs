@@ -4614,6 +4614,13 @@ namespace MissionPlanner.GCSViews
             MainV2.comPort.setMountConfigure(MAVLink.MAV_MOUNT_MODE.MAVLINK_TARGETING, false, false, false);
             MainV2.comPort.setMountControl((float)trackBarPitch.Value * 100.0f, (float)trackBarRoll.Value * 100.0f, (float)trackBarYaw.Value * 100.0f, false);
         }
+
+#if AERONAVICS
+        private void BUT_payloadFolder_Click(object sender, EventArgs e)
+        {
+            Process.Start("explorer.exe", "/root,\\\\169.254." + MainV2.comPort.sysidcurrent + ".2\\airside_shared\\payload");
+        }
+#endif
     }
 }
  

@@ -2778,9 +2778,6 @@
   <data name="BUT_PayloadFolder.Text" xml:space="preserve">
     <value>Payload Files</value>
   </data>
-  <data name="BUT_PayloadFolder.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
   <data name="&gt;&gt;BUT_PayloadFolder.Name" xml:space="preserve">
     <value>BUT_PayloadFolder</value>
   </data>
@@ -3175,7 +3172,7 @@
     <value>zg1</value>
   </data>
   <data name="&gt;&gt;zg1.Type" xml:space="preserve">
-    <value>ZedGraph.ZedGraphControl, ZedGraph, Version=5.1.5.19855, Culture=neutral, PublicKeyToken=null</value>
+    <value>ZedGraph.ZedGraphControl, ZedGraph, Version=5.1.5.22515, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;zg1.Parent" xml:space="preserve">
     <value>splitContainer1.Panel1</value>
