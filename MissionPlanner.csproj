@@ -318,6 +318,9 @@
     <Compile Include="Controls\PreFlight\CheckListInput.cs" />
     <Compile Include="Controls\PreFlight\CheckListItem.cs" />
     <Compile Include="Controls\Waypoints\Spline2.cs" />
+	<Compile Include="FaceMap\FaceMapPlugin.cs" />
+	<Compile Include="FaceMap\FaceMap.cs" />
+    <Compile Include="FaceMap\FaceMapUI.cs"> <SubType>Control</SubType> </Compile>
     <Compile Include="GCSViews\FlightData.cs"> <SubType>Control</SubType> </Compile>
     <Compile Include="GCSViews\FlightPlanner.cs"> <SubType>Control</SubType> </Compile>
     <Compile Include="GCSViews\Help.cs"> <SubType>Control</SubType> </Compile>
@@ -565,6 +568,7 @@
     <Compile Include="Controls\Video.Designer.cs"><DependentUpon>Video.cs</DependentUpon> </Compile>
     <Compile Include="Controls\PreFlight\CheckListControl.Designer.cs"><DependentUpon>CheckListControl.cs</DependentUpon> </Compile>
     <Compile Include="Controls\PreFlight\CheckListEditor.Designer.cs"><DependentUpon>CheckListEditor.cs</DependentUpon> </Compile>
+	<Compile Include="FaceMap\FaceMapUI.Designer.cs"><DependentUpon>FaceMapUI.cs</DependentUpon> </Compile>
     <Compile Include="GCSViews\FlightData.Designer.cs"><DependentUpon>FlightData.cs</DependentUpon> </Compile>
     <Compile Include="GCSViews\FlightPlanner.Designer.cs"><DependentUpon>FlightPlanner.cs</DependentUpon> </Compile>
     <Compile Include="GCSViews\Help.Designer.cs"><DependentUpon>Help.cs</DependentUpon> </Compile>
@@ -917,6 +921,7 @@
     <EmbeddedResource Include="Controls\Video.resx"><DependentUpon>Video.cs</DependentUpon> </EmbeddedResource>
     <EmbeddedResource Include="Controls\PreFlight\CheckListEditor.resx"><DependentUpon>CheckListEditor.cs</DependentUpon> </EmbeddedResource>
     <EmbeddedResource Include="Controls\PreFlight\CheckListInput.resx"><DependentUpon>CheckListInput.cs</DependentUpon> </EmbeddedResource>
+	<EmbeddedResource Include="FaceMap\FaceMapUI.resx"><DependentUpon>FaceMapUI.cs</DependentUpon> </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\FlightData.resx"><DependentUpon>FlightData.cs</DependentUpon> </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\FlightData.ar.resx"><DependentUpon>FlightData.cs</DependentUpon> </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\FlightData.az-Latn-AZ.resx"><DependentUpon>FlightData.cs</DependentUpon> </EmbeddedResource>
