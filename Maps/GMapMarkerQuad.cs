@@ -9,7 +9,11 @@ namespace MissionPlanner.Maps
     [Serializable]
     public class GMapMarkerQuad : GMapMarker
     {
+#if AERONAVICS
+        private readonly Bitmap icon = global::MissionPlanner.Properties.Resources.aero_quad2;
+#else
         private readonly Bitmap icon = global::MissionPlanner.Properties.Resources.quadicon;
+#endif
 
         float heading = 0;
         float cog = -1;
@@ -57,12 +61,17 @@ namespace MissionPlanner.Maps
             catch
             {
             }
+#if AERONAVICS
+            g.DrawImageUnscaled(icon, icon.Width / -2, icon.Height / -2);
 
+            g.DrawString(sysid.ToString(), new Font(FontFamily.GenericMonospace, 15, FontStyle.Bold), Brushes.Orange, -8,
+                -8);
+#else
             g.DrawImageUnscaled(icon, icon.Width/-2 + 2, icon.Height/-2);
 
             g.DrawString(sysid.ToString(), new Font(FontFamily.GenericMonospace, 15, FontStyle.Bold), Brushes.Red, -8,
                 -8);
-
+#endif
             g.Transform = temp;
 
             {
