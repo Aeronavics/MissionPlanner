@@ -134,8 +134,11 @@ namespace MissionPlanner.Controls
         public float shift = 0;
         public float _targetheading = 0;
         public float _alt_target = 0;
-        private string _mode = "Manual";
+        private float _sonarrange = 0;
+        private float _y_scalar = 1;
 
+        private string _mode = "Manual";
+        private float angle = 0;
         private float scale_factor = 0;
         private float prev_groundspeed = 0;
         private float speedchange = 0;
@@ -367,6 +370,34 @@ namespace MissionPlanner.Controls
                 if (_mode != value)
                 {
                     _mode = value;
+                    this.Invalidate();
+                }
+            }
+        }
+
+        [System.ComponentModel.Browsable(true), System.ComponentModel.Category("Values")]
+        public float sonarrange
+        {
+            get { return _sonarrange; }
+            set
+            {
+                if (_sonarrange != value)
+                {
+                    _sonarrange = value;
+                    this.Invalidate();
+                }
+            }
+        }
+
+        [System.ComponentModel.Browsable(true), System.ComponentModel.Category("Values")]
+        public float y_scalar
+        {
+            get { return _y_scalar; }
+            set
+            {
+                if (_y_scalar != value)
+                {
+                    _y_scalar = value;
                     this.Invalidate();
                 }
             }
@@ -1231,9 +1262,7 @@ namespace MissionPlanner.Controls
 
                 this._whitePen.Color = _hudcolor;
 
-                //Scale factor
-
-
+                //Speed filter
                 speedchange = _groundspeed - prev_groundspeed;
 
                 if (speedchange < 0.5 && speedchange > -0.5)
@@ -1245,9 +1274,10 @@ namespace MissionPlanner.Controls
 
                 prev_groundspeed = speed;
 
+                //Scale factor
                 if (autoScale)
                 {
-                    scale_factor = 1/(1 + speed/2);
+                    scale_factor = 1/(1 + speed/4);
                 }
 
                 else
@@ -1256,14 +1286,14 @@ namespace MissionPlanner.Controls
                 }
 
                 List<PointF> points = new List<PointF>();
-                float angle = 0;
+
                 
                 if (frontview)
                 {
                     angle = _heading;
                 }
 
-                else
+                else //target view
                 {
                     if(_targetheading<0)
                     {
@@ -1272,18 +1302,18 @@ namespace MissionPlanner.Controls
                     angle = _targetheading;
                 }
 
-                TerrainElevation t = new TerrainElevation(points, angle, _lat, _lng, this.Width, this.Height, speed, autoScale, fixd,_homealt);
+                TerrainElevation t = new TerrainElevation(points, angle, _lat, _lng, this.Width, this.Height, speed, autoScale, fixd,_homealt,_y_scalar);
                 diff = t.setdiff();
-                shift = t.setshift();
+                shift = t.setshift();  //shift terrain down
 
                 float drone_width = _drone.Width / 4 * scale_factor;
                 float drone_height = _drone.Height / 4 * scale_factor;
 
-                float xPos = this.Width / 2 - drone_width / 2; //  (points[2].X+points[3].X)/2
-                float yPos = this.Height - (float)_homealt * diff - drone_height+shift;
+                float xPos = this.Width / 2 - drone_width / 2;                              //Drone position x
+                float yPos = this.Height - (float)_homealt * diff - drone_height+shift;     //Drone position y
 
-                float ydrawing = this.Height - (float)_homealt * diff - (float)_alt * diff+shift;
-                float yhome = this.Height - (float)_homealt * diff + shift;
+                float ydrawing = this.Height - (float)_homealt * diff - (float)_alt * diff+shift; //Drone Height
+                float yhome = this.Height - (float)_homealt * diff + shift;                     //Home altitude Height
 
                 // draw sky
                 if (bgon == true)
@@ -1304,8 +1334,6 @@ namespace MissionPlanner.Controls
  
                     if (_lat != 0 && _lng != 0)
                     {
-
-
                         graphicsObject.ResetTransform();
                         //graphicsObject.TranslateTransform(0, _alt);
                         if (points.Count != 0)
@@ -1325,10 +1353,10 @@ namespace MissionPlanner.Controls
                             terrain_points[i] = new PointF(this.Width, points[points.Count-1].Y);
                             terrain_points[i+1] = new PointF(this.Width, this.Height);
 
-                            if (_alt * diff > halfheight)
+                            if (ydrawing < this.Height / 4)
                             {
                                 graphicsObject.ResetTransform();
-                                //graphicsObject.TranslateTransform(0, this.Height-_alt * diff);
+                                graphicsObject.TranslateTransform(0, -(ydrawing-this.Height/4));
 
                                 graphicsObject.DrawPolygon(this._grenPen, terrain_points);
                                 graphicsObject.FillPolygon(this._grenBrush, terrain_points);
@@ -1344,8 +1372,7 @@ namespace MissionPlanner.Controls
 
                         //Draw Drone
                        
-
-                        if (this.Height-yPos + _alt * diff < 3*this.Height/4)
+                        if (ydrawing > this.Height / 4)
                         {
                             graphicsObject.ResetTransform();
                             graphicsObject.TranslateTransform(0, -_alt * diff);
@@ -1354,8 +1381,8 @@ namespace MissionPlanner.Controls
                         else
                         {
                             graphicsObject.ResetTransform();
-                            //graphicsObject.TranslateTransform(0, this.Height/4-yPos);
-                            graphicsObject.TranslateTransform(0, -_alt * diff);
+                            graphicsObject.TranslateTransform(0, this.Height/4-yPos-drone_height);
+                            //graphicsObject.TranslateTransform(0, -_alt * diff);
                         }
 
                         float movex = (_drone.Width / 4) / 2f + xPos;
@@ -1367,16 +1394,61 @@ namespace MissionPlanner.Controls
 
                         graphicsObject.DrawImage(_drone, xPos, yPos, drone_width, drone_height, 1);
 
-
+                        //Target Altitude
                         graphicsObject.ResetTransform();
-                        if (_mode == "Auto")
-                        {
-                            graphicsObject.DrawLine(this._blackPen, this.Width - 30, this.Height - (_homealt + _alt_target) * diff+shift, this.Width, this.Height - (_homealt + _alt_target) * diff+shift);
-                        }
+                        PointF[] arrow = new PointF[5];
 
-                        else if (_mode == "Guided")
+                        arrow[0] = new PointF(this.Width/2, -5);
+                        arrow[1] = new PointF(this.Width/2 - 5, -5);
+                        arrow[2] = new PointF(this.Width/2 - 10, 0);
+                        arrow[3] = new PointF(this.Width/2 - 5, 5);
+                        arrow[4] = new PointF(this.Width/2, 5);
+
+
+
+                        if (_mode == "Auto" || _mode == "Guided")
                         {
-                            graphicsObject.DrawLine(this._blackPen, this.Width - 30, this.Height - (_homealt + _alt_target) * diff+shift, this.Width, this.Height - (_homealt + _alt_target) * diff+shift);
+
+
+                            if (this.Height - ((float)_homealt + _alt_target) * diff + shift < 0 && _disttowp>fixd)
+                            {
+                                graphicsObject.TranslateTransform(this.Width / 2, this.Height / 14 + 5);
+                            }
+
+                            else if (this.Height - ((float)_homealt + _alt_target) * diff + shift < 0 && _disttowp < fixd && _disttowp!=0)
+                            {
+                                graphicsObject.TranslateTransform(_disttowp * diff / _y_scalar, this.Height / 14 + 5);
+                            }
+
+                            else if (_disttowp > fixd)
+                            {
+                                graphicsObject.TranslateTransform(this.Width / 2, this.Height - ((float)_homealt + _alt_target) * diff + shift);
+                            }
+
+                            else if (_disttowp < fixd && _disttowp != 0 && _disttowp*diff/_y_scalar > drone_width-10)
+                            {
+                                graphicsObject.TranslateTransform(_disttowp*diff/_y_scalar, this.Height - ((float)_homealt + _alt_target) * diff + shift);
+                            }
+
+                            else
+                            {
+                                graphicsObject.TranslateTransform(this.Width, this.Height);
+                            }
+
+                            /*
+                            if (this.Height - ((float)_homealt + _alt_target) * diff + shift > 0)
+                            {
+                                graphicsObject.TranslateTransform(0, this.Height - ((float)_homealt + _alt_target) * diff + shift);
+                            }
+
+                            else
+                            {
+                                graphicsObject.TranslateTransform(0, 5);
+                            }
+                            */
+
+                            graphicsObject.DrawPolygon(this._blackPen, arrow);
+                            graphicsObject.FillPolygon(Brushes.Black, arrow);
                         }
                         
                     }
@@ -1403,63 +1475,16 @@ namespace MissionPlanner.Controls
                 }
              
                 graphicsObject.ResetTransform();
-                // Left scroller
-                Rectangle scrollbg = new Rectangle(0, 0, this.Width / 10, this.Height);
 
-                if (displayseaheight)
-                {
-                    //graphicsObject.DrawRectangle(this._whitePen, scrollbg);
-
-                    //graphicsObject.FillRectangle(SolidBrush, scrollbg);
-
-                    PointF[] arrow = new PointF[5];
-
-                    arrow[0] = new PointF(0, -10);
-                    arrow[1] = new PointF(scrollbg.Width - 10, -10);
-                    arrow[2] = new PointF(scrollbg.Width - 5, 0);
-                    arrow[3] = new PointF(scrollbg.Width - 10, 10);
-                    arrow[4] = new PointF(0, 10);
-
-                    graphicsObject.TranslateTransform(0, this.Height);
-
-                    int viewrange = 26;
-
-                    float space = (scrollbg.Height) / (float)viewrange;
-                    long start = ((int)_alt - viewrange / 2);
-       
-                    this._greenPen.Width = 4;
-
-
-                    // draw arrow and text
-                    graphicsObject.ResetTransform();
-                    graphicsObject.TranslateTransform(0, ydrawing);
-                    graphicsObject.DrawPolygon(this._blackPen, arrow);
-                    graphicsObject.FillPolygon(Brushes.Black, arrow);
-                    
-                    drawstring(graphicsObject, ((int)_alt+_homealt).ToString("0 m"), font, 10, (SolidBrush)Brushes.AliceBlue,
-                      scrollbg.Right - 45, -9);
-                    graphicsObject.ResetTransform();
-
-                    this._blackPen.Width = 6;
-                    graphicsObject.DrawLine(this._blackPen, 3, this.Height-10, 3, ydrawing + 5);
-
-                    //Draw Sea
-                    graphicsObject.ResetTransform();
-                    Rectangle sea = new Rectangle(0, this.Height - 10, this.Width, 10);
-                    graphicsObject.FillRectangle(this._blueBrush, sea);
-
-                }
+                
             
-                //draw heading ind
+                //Distance Scale
                 Rectangle headbg = new Rectangle(0, 0, this.Width - 0, this.Height / 14);
 
                 graphicsObject.ResetTransform();
 
                 if (displayheading)
                 {
-
-                    // center
-                    //   graphicsObject.DrawLine(redPen, headbg.Width / 2, headbg.Bottom, headbg.Width / 2, headbg.Top);
 
                     //bottom line
                     graphicsObject.DrawLine(this._whitePen, headbg.Left + 5, headbg.Bottom - 5, headbg.Width - 5,
@@ -1521,57 +1546,134 @@ namespace MissionPlanner.Controls
 
                 }
 
-                //Height above ground scale
-                if (displaygroundheight)
+
+                float change = 0;
+                if (ydrawing < this.Height / 4)
                 {
-
-                    graphicsObject.ResetTransform();
-                    graphicsObject.DrawLine(this._whitePen, xPos-8, points[points.Count / 2].Y, xPos-8, ydrawing);
-
-                    graphicsObject.DrawLine(this._whitePen, xPos-16, ydrawing, xPos, ydrawing);
-
-                    drawstring(graphicsObject, ((int)_alt + _homealt - (this.Height + shift - points[(points.Count) / 2].Y) / diff).ToString("0 m"), font, 10, (SolidBrush)Brushes.AliceBlue,
-                            this.Width / 5 + 36, (ydrawing+points[(points.Count)/2].Y)/2);
+                    change = -(ydrawing - this.Height / 4);
                 }
 
                 //Home Altutide
                 if (displayhomealt)
                 {
                     // Set the SmoothingMode property to smooth the line.
-                    e.Graphics.SmoothingMode =
-                        System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                    //e.Graphics.SmoothingMode =
+                       // System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
                     // Create a new Pen object.
                     Pen whitPen = new Pen(Color.White);
 
                     // Set the width to 6.
-                    whitPen.Width = 6.0F;
+                    whitPen.Width = 2.0f;
 
                     // Set the DashCap to round.
                     whitPen.DashCap = System.Drawing.Drawing2D.DashCap.Round;
 
                     // Create a custom dash pattern.
-                    whitPen.DashPattern = new float[] { 3, 2, 2, 3 };
+                    whitPen.DashPattern = new float[] { 2.0f,2.0f};
 
                     float[] dashValues = { 15, 15, 15, 15 };
                     Pen blackPen = new Pen(Color.Black, 2);
                     blackPen.DashStyle = DashStyle.Dash;
 
 
+
                     // Draw a line.
-                    graphicsObject.DrawLine(blackPen, 0, yhome, this.Width, yhome);
-                    drawstring(graphicsObject, String.Format("Home Alt"), font, fontsize * scale_factor,
+                    if (ydrawing < this.Height / 4)
+                    {
+                        graphicsObject.ResetTransform();
+                        graphicsObject.TranslateTransform(0, -(ydrawing - this.Height / 4));
+                    }
+
+                        graphicsObject.DrawLine(blackPen, 0, yhome, this.Width, yhome); //dotted line (doesn't work)
+                    drawstring(graphicsObject, String.Format("Home Alt"), font, 15,
                         _whiteBrush, halfwidth, yhome + 5 + (int)(fontoffset * 1.7));
 
-                    graphicsObject.DrawLine(blackPen, xPos + drone_width+8, yhome, xPos + drone_width+8, ydrawing);
+                    if (ydrawing < this.Height / 4)
+                    {
+                        ydrawing = this.Height / 4;
+                    }
+                    graphicsObject.ResetTransform();
+                    graphicsObject.DrawLine(blackPen, xPos + drone_width+8, yhome + change, xPos + drone_width+8, ydrawing);
                     graphicsObject.DrawLine(blackPen, xPos + drone_width + 16, ydrawing, xPos + drone_width, ydrawing);
 
                     drawstring(graphicsObject, ((int)_alt).ToString("0 m"), font, 10, (SolidBrush)Brushes.AliceBlue, xPos + drone_width + 16, yhome - (float)_alt*diff/2);
                 }
 
+                //Height above ground scale
+                if (displaygroundheight)
+                {
+                    if (ydrawing < this.Height / 4)
+                    {
+                        ydrawing = this.Height / 4;
+                    }
+                    graphicsObject.ResetTransform();
+                    graphicsObject.DrawLine(this._whitePen, xPos - 8, points[points.Count / 2].Y + change, xPos - 8, ydrawing);
+
+                    graphicsObject.DrawLine(this._whitePen, xPos - 16, ydrawing, xPos, ydrawing);
+
+                    drawstring(graphicsObject, ((int)_alt + _homealt - (this.Height + shift - points[(points.Count) / 2].Y) / diff).ToString("0 m"), font, 10, (SolidBrush)Brushes.AliceBlue,
+                            xPos - 35, (ydrawing + points[(points.Count) / 2].Y) / 2);
+                }
+
+                //Ground Sensor
                 if (displaysonar)
                 {
+                    if (ydrawing < this.Height / 4)
+                    {
+                        ydrawing = this.Height / 4;
+                    }
+                    //graphicsObject.DrawLine(_redPen, xPos + drone_width / 2, ydrawing, xPos + drone_width / 2 , yPos + _sonarrange*diff);
+                    //drawstring(graphicsObject, ((int)_sonarrange).ToString("0 m"), font, 10, (SolidBrush)Brushes.AliceBlue, xPos + drone_width/2 + 10, (yPos + _sonarrange*diff)/2);
                     graphicsObject.DrawLine(_redPen, xPos + drone_width / 2, ydrawing, xPos + drone_width / 2 , yPos + 25);
+                }
+
+                // Height above Sea Level
+                Rectangle scrollbg = new Rectangle(0, 0, this.Width / 10, this.Height);
+
+                if (displayseaheight)
+                {
+
+                    PointF[] arrow = new PointF[5];
+
+                    arrow[0] = new PointF(0, -10);
+                    arrow[1] = new PointF(scrollbg.Width - 10, -10);
+                    arrow[2] = new PointF(scrollbg.Width - 5, 0);
+                    arrow[3] = new PointF(scrollbg.Width - 10, 10);
+                    arrow[4] = new PointF(0, 10);
+
+                    graphicsObject.TranslateTransform(0, this.Height);
+
+                    int viewrange = 26;
+
+                    float space = (scrollbg.Height) / (float)viewrange;
+                    long start = ((int)_alt - viewrange / 2);
+
+                    this._greenPen.Width = 4;
+
+
+                    // draw arrow and text
+                    if (ydrawing < this.Height / 4)
+                    {
+                        ydrawing = this.Height / 4;
+                    }
+                    graphicsObject.ResetTransform();
+                    graphicsObject.TranslateTransform(0, ydrawing);
+                    graphicsObject.DrawPolygon(this._blackPen, arrow);
+                    graphicsObject.FillPolygon(Brushes.Black, arrow);
+
+                    drawstring(graphicsObject, ((int)_alt + _homealt).ToString("0 m"), font, 10, (SolidBrush)Brushes.AliceBlue,
+                      scrollbg.Right - 45, -9);
+                    graphicsObject.ResetTransform();
+
+                    this._blackPen.Width = 6;
+                    graphicsObject.DrawLine(this._blackPen, 3, this.Height - 10, 3, ydrawing + 5);
+
+                    //Draw Sea
+
+                    Rectangle sea = new Rectangle(0, this.Height - 10, this.Width, 10);
+                    graphicsObject.FillRectangle(this._blueBrush, sea);
+
                 }
 
 

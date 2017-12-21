@@ -4034,4 +4034,19 @@
   <data name="BUT_TERRAIN_VIEW.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
+  <data name="yScale.Name" xml:space="preserve">
+    <value>yScale</value>
+  </data>
+  <data name="yScale.Parent" xml:space="preserve">
+    <value>tabTerrain</value>
+  </data>
+  <data name="yScale.ToolTip" xml:space="preserve">
+    <value>Change y scale</value>
+  </data>
+  <data name="yScale.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="yScale.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
 </root>
