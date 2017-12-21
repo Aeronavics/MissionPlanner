@@ -1314,12 +1314,20 @@ namespace MissionPlanner
 
         static CurrentState()
         {
+#if AERONAVICS
+            rateattitudebackup = 8;
+            ratepositionbackup = 5;
+            ratestatusbackup = 2;
+            ratesensorsbackup = 8;
+            ratercbackup = 2;
+#else
             // set default telemrates
             rateattitudebackup = 4;
             ratepositionbackup = 2;
             ratestatusbackup = 2;
             ratesensorsbackup = 2;
             ratercbackup = 2;
+#endif
         }
 
         public CurrentState()
