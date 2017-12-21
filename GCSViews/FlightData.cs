@@ -651,6 +651,10 @@ namespace MissionPlanner.GCSViews
             Zoomlevel.Maximum = 24;
             Zoomlevel.Value = Convert.ToDecimal(gMapControl1.Zoom);
 
+            yScale.Minimum = 0.5M;
+            yScale.Maximum = 10;
+            yScale.Value = 1;
+
             var item1 = ParameterMetaDataRepository.GetParameterOptionsInt("MNT_MODE",
                 MainV2.comPort.MAV.cs.firmware.ToString());
             var item2 = ParameterMetaDataRepository.GetParameterOptionsInt("MNT_DEFLT_MODE",
@@ -2157,6 +2161,17 @@ namespace MissionPlanner.GCSViews
             }
         }
 
+        private void yScale_ValueChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                hud2.y_scalar = (float) yScale.Value;            
+            }
+            catch
+            {
+            }
+        }
+
         private void gMapControl1_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -3537,6 +3552,7 @@ namespace MissionPlanner.GCSViews
             BUT_GROUND_SENSOR.Location = new Point(BUT_GROUND_HEIGHT.Width*2, tabTerrain.Height - BUT_GROUND_HEIGHT.Height);
             BUT_TERRAIN_VIEW.Location = new Point(BUT_GROUND_HEIGHT.Width*3, tabTerrain.Height - BUT_GROUND_HEIGHT.Height);
             BUT_HOME_ALT.Location = new Point(BUT_GROUND_HEIGHT.Width * 4, tabTerrain.Height - BUT_GROUND_HEIGHT.Height);
+            yScale.Location = new Point(BUT_GROUND_HEIGHT.Width * 5, tabTerrain.Height - BUT_GROUND_HEIGHT.Height);
 
         }
 

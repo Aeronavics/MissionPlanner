@@ -16,15 +16,13 @@ namespace MissionPlanner.Controls
     {
         List<PointLatLngAlt> gelocs = new List<PointLatLngAlt>();
         List<PointLatLngAlt> srtmlocs = new List<PointLatLngAlt>();
-        List<PointLatLngAlt> planlocs = new List<PointLatLngAlt>();
         List<PointLatLngAlt> pointslist = new List<PointLatLngAlt>();
-        //List<Point> points = new List<Point>();
 
         float distance = 0;
         float diff = 0;
         float shift = 0;
 
-        public TerrainElevation(List<PointF> points, float _heading, double _lat, double _lng, int width, int height,double _groundspeed,bool autoScale, int fixd, double homealt)
+        public TerrainElevation(List<PointF> points, float _heading, double _lat, double _lng, int width, int height,double _groundspeed,bool autoScale, int fixd, double homealt,float y_scalar)
         {
             create_pointslist(pointslist, _heading, _lat, _lng,_groundspeed,autoScale,fixd);
 
@@ -53,7 +51,7 @@ namespace MissionPlanner.Controls
             {
                 var prevloc = gelocs[0];
                 double point_distance = gelocs[1].GetDistance(gelocs[0]);
-                diff = space / (float)point_distance;
+                diff = space*y_scalar / (float)point_distance;
 
                 //Shift terrain 
                 if (homealt * diff < height / 4)

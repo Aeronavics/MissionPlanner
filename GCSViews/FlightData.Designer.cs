@@ -181,6 +181,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.coords1 = new MissionPlanner.Controls.Coords();
             this.Zoomlevel = new System.Windows.Forms.NumericUpDown();
+            this.yScale = new System.Windows.Forms.NumericUpDown();
             this.label1 = new MissionPlanner.Controls.MyLabel();
             this.CHK_autopan = new System.Windows.Forms.CheckBox();
             this.CB_tuning = new System.Windows.Forms.CheckBox();
@@ -241,6 +242,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.TRK_zoom)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Zoomlevel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.yScale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceStatusTab)).BeginInit();
             this.SuspendLayout();
             // 
@@ -1820,6 +1822,7 @@
             this.tabTerrain.Controls.Add(this.BUT_GROUND_SENSOR);
             this.tabTerrain.Controls.Add(this.BUT_TERRAIN_VIEW);
             this.tabTerrain.Controls.Add(this.BUT_HOME_ALT);
+            this.tabTerrain.Controls.Add(this.yScale);
             resources.ApplyResources(this.tabTerrain, "tabTerrain");
             this.tabTerrain.Name = "tabTerrain";
             this.tabTerrain.UseVisualStyleBackColor = true;
@@ -1842,9 +1845,11 @@
             this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("Homealt", this.bindingSourceHud, "Homealt", true));
             this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("groundspeed", this.bindingSourceHud, "groundspeed", true));
             this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("pitch", this.bindingSourceHud, "pitch", true));
-            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("targetheading", this.bindingSourceHud, "nav_bearing", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("targetheading", this.bindingSourceHud, "target_bearing", true));
             //this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("alt_target", this.bindingSourceHud, "alt_target", true));
             this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("mode", this.bindingSourceHud, "mode", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("sonarrange", this.bindingSourceHud, "sonarrange", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("disttowp", this.bindingSourceHud, "wp_dist", true));
             this.hud2.disttowp = 0F;
             this.hud2.groundspeed = 0F;
             this.hud2.groundcourse = 0F;
@@ -1870,6 +1875,7 @@
             this.hud2.waypointview = false;
             this.hud2.displayseaheight = false;
             this.hud2.displayhomealt = false;
+            this.hud2.y_scalar = 1F;
 
             // 
             // contextMenuStripHud2
@@ -1967,6 +1973,34 @@
             this.toolTip1.SetToolTip(this.BUT_HOME_ALT, resources.GetString("BUT_HOME_ALT.ToolTip"));
             this.BUT_HOME_ALT.UseVisualStyleBackColor = true;
             this.BUT_HOME_ALT.Click += new System.EventHandler(this.BUT_HOME_ALT_Click);
+             // 
+            // yScale
+            // 
+            resources.ApplyResources(this.yScale, "yScale");
+            this.yScale.DecimalPlaces = 1;
+            this.yScale.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+            this.yScale.Maximum = new decimal(new int[] {
+            18,
+            0,
+            0,
+            0});
+            this.yScale.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.yScale.Name = "yScale";
+            this.toolTip1.SetToolTip(this.yScale, resources.GetString("yScale.ToolTip"));
+            this.yScale.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.yScale.ValueChanged += new System.EventHandler(this.yScale_ValueChanged);
             // 
             // tabPayload
             // 
@@ -2537,6 +2571,7 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Zoomlevel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.yScale)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceStatusTab)).EndInit();
             this.ResumeLayout(false);
 
@@ -2569,6 +2604,7 @@
         private System.Windows.Forms.TableLayoutPanel tableMap;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.NumericUpDown Zoomlevel;
+        private System.Windows.Forms.NumericUpDown yScale;
         private Controls.MyLabel label1;
         private System.Windows.Forms.CheckBox CHK_autopan;
         public Controls.myGMAP gMapControl1;
