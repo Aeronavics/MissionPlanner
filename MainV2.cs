@@ -475,6 +475,18 @@ namespace MissionPlanner
 
         public static bool TerminalTheming = true;
 
+#if AERONAVICS
+        private string[] DefaultQuickItems =
+        {
+            "alt",
+            "battery_voltage",
+            "DistToHome",
+            "timeInAir",
+            "gpsstatus",
+            "gpsstatus2"
+        };
+#endif
+
         public void updateLayout(object sender, EventArgs e)
         {
             MenuSimulation.Visible = DisplayConfiguration.displaySimulation;
@@ -2851,6 +2863,15 @@ namespace MissionPlanner
             if (Settings.Instance["autoParamCommit"] == null)
             {
                 Settings.Instance["autoParamCommit"] = "false";
+            }
+
+            //Set aeronavics defaults for quick view items if there is no custom config
+            for (int i = 0; i < DefaultQuickItems.Length; i++)
+            {
+                if (Settings.Instance["quickView" + (i + 1)] == null)
+                {
+                    Settings.Instance["quickView" + (i + 1)] = DefaultQuickItems[i];
+                }
             }
 #endif
 
