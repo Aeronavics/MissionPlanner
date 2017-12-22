@@ -4291,7 +4291,7 @@
     <value>tabTerrain</value>
   </data>
   <data name="BUT_GROUND_HEIGHT.Text" xml:space="preserve">
-    <value>Ground Height</value>
+    <value>altagl</value>
   </data>
   <data name="BUT_GROUND_HEIGHT.ToolTip" xml:space="preserve">
     <value>MAV height above ground</value>
@@ -4309,7 +4309,7 @@
     <value>tabTerrain</value>
   </data>
   <data name="BUT_GROUND_SENSOR.Text" xml:space="preserve">
-    <value>Ground Sensor</value>
+    <value>Laser Range</value>
   </data>
   <data name="BUT_GROUND_SENSOR.ToolTip" xml:space="preserve">
     <value>Ground sensor reading</value>
@@ -4327,7 +4327,7 @@
     <value>tabTerrain</value>
   </data>
   <data name="BUT_HOME_ALT.Text" xml:space="preserve">
-    <value>Home Alt</value>
+    <value>altrel</value>
   </data>
   <data name="BUT_HOME_ALT.ToolTip" xml:space="preserve">
     <value>Home Altitude</value>
@@ -4345,7 +4345,7 @@
     <value>tabTerrain</value>
   </data>
   <data name="BUT_SEA_HEIGHT.Text" xml:space="preserve">
-    <value>Sea Height</value>
+    <value>altasl</value>
   </data>
   <data name="BUT_SEA_HEIGHT.ToolTip" xml:space="preserve">
     <value>MAV height above sea level</value>
@@ -4363,10 +4363,10 @@
     <value>tabTerrain</value>
   </data>
   <data name="BUT_TERRAIN_VIEW.Text" xml:space="preserve">
-    <value>Front/Heading View</value>
+    <value>Front </value>
   </data>
   <data name="BUT_TERRAIN_VIEW.ToolTip" xml:space="preserve">
-    <value />
+    <value>Terrain view</value>
   </data>
   <data name="BUT_TERRAIN_VIEW.Type" xml:space="preserve">
     <value>MissionPlanner.Controls.MyButton, MissionPlanner.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
