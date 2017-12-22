@@ -3401,6 +3401,7 @@ namespace MissionPlanner
         /// <returns></returns>
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            if (GCSViews.Terminal.SSHTerminal) { return false; }
             if (keyData == Keys.F12)
             {
                 MenuConnect_Click(null, null);
