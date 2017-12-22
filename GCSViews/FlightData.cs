@@ -3886,11 +3886,13 @@ namespace MissionPlanner.GCSViews
                 if (hud2.frontview)
                 {
                     hud2.frontview = false;
+                    this.BUT_TERRAIN_VIEW.Text = "Waypoint";
                 }
 
                 else
                 {
                     hud2.frontview = true;
+                    this.BUT_TERRAIN_VIEW.Text = "Front";
                 }
             }
             catch

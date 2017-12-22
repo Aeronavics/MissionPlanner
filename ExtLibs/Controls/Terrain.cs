@@ -1396,15 +1396,14 @@ namespace MissionPlanner.Controls
 
                         //Target Altitude
                         graphicsObject.ResetTransform();
-                        PointF[] arrow = new PointF[5];
+                        PointF[] arrow = new PointF[6];
 
                         arrow[0] = new PointF(this.Width/2, -5);
                         arrow[1] = new PointF(this.Width/2 - 5, -5);
                         arrow[2] = new PointF(this.Width/2 - 10, 0);
                         arrow[3] = new PointF(this.Width/2 - 5, 5);
                         arrow[4] = new PointF(this.Width/2, 5);
-
-
+                        arrow[5] = new PointF(this.Width / 2 + 5, 0);
 
                         if (_mode == "Auto" || _mode == "Guided")
                         {
@@ -1425,7 +1424,7 @@ namespace MissionPlanner.Controls
                                 graphicsObject.TranslateTransform(this.Width / 2, this.Height - ((float)_homealt + _alt_target) * diff + shift);
                             }
 
-                            else if (_disttowp < fixd && _disttowp != 0 && _disttowp*diff/_y_scalar > drone_width-10)
+                            else if (_disttowp < fixd && _disttowp != 0 && _disttowp>0)
                             {
                                 graphicsObject.TranslateTransform(_disttowp*diff/_y_scalar, this.Height - ((float)_homealt + _alt_target) * diff + shift);
                             }
@@ -1434,18 +1433,6 @@ namespace MissionPlanner.Controls
                             {
                                 graphicsObject.TranslateTransform(this.Width, this.Height);
                             }
-
-                            /*
-                            if (this.Height - ((float)_homealt + _alt_target) * diff + shift > 0)
-                            {
-                                graphicsObject.TranslateTransform(0, this.Height - ((float)_homealt + _alt_target) * diff + shift);
-                            }
-
-                            else
-                            {
-                                graphicsObject.TranslateTransform(0, 5);
-                            }
-                            */
 
                             graphicsObject.DrawPolygon(this._blackPen, arrow);
                             graphicsObject.FillPolygon(Brushes.Black, arrow);
@@ -1513,22 +1500,30 @@ namespace MissionPlanner.Controls
                         graphicsObject.DrawLine(this._whitePen, headbg.Left + 5 + spacetot ,
                               headbg.Bottom - 5, headbg.Left + 5 + spacetot, headbg.Bottom - 10);
                         int b = 0;
-                        if (minus < 100)
+                        if (minus <= 100)
                         {
                             b = 2;
                         }
 
                         else
                         {
-                            b = 5;
+                            b = 10;
                         }
 
                         if (a / 10 % b == 0)
                         {
-                            if (a - minus < 0)
+                            if (a == 0)
                             { 
                                 drawstring(graphicsObject, String.Format("{0,3}", a - minus), font, fontsize*scale_factor,
                                     _whiteBrush, headbg.Left + spacetot,
+                                    headbg.Bottom - 24 - (int)(fontoffset * 1.7));
+                            }
+
+                            else if (a == total_dist)
+                            {
+
+                                drawstring(graphicsObject, String.Format("{0,3}", a - minus), font, fontsize * scale_factor,
+                                    _whiteBrush, headbg.Right - fontsize*scale_factor*fixd.ToString().Length,
                                     headbg.Bottom - 24 - (int)(fontoffset * 1.7));
                             }
 
@@ -1586,8 +1581,8 @@ namespace MissionPlanner.Controls
                     }
 
                         graphicsObject.DrawLine(blackPen, 0, yhome, this.Width, yhome); //dotted line (doesn't work)
-                    drawstring(graphicsObject, String.Format("Home Alt"), font, 15,
-                        _whiteBrush, halfwidth, yhome + 5 + (int)(fontoffset * 1.7));
+                    drawstring(graphicsObject, String.Format("Home"), font, 10,
+                        _whiteBrush, this.Width-45, yhome + (int)(fontoffset * 1.7)-10);
 
                     if (ydrawing < this.Height / 4)
                     {
@@ -1597,7 +1592,7 @@ namespace MissionPlanner.Controls
                     graphicsObject.DrawLine(blackPen, xPos + drone_width+8, yhome + change, xPos + drone_width+8, ydrawing);
                     graphicsObject.DrawLine(blackPen, xPos + drone_width + 16, ydrawing, xPos + drone_width, ydrawing);
 
-                    drawstring(graphicsObject, ((int)_alt).ToString("0 m"), font, 10, (SolidBrush)Brushes.AliceBlue, xPos + drone_width + 16, yhome - (float)_alt*diff/2);
+                    drawstring(graphicsObject, ((int)_alt).ToString("0 m"), font, 10, (SolidBrush)Brushes.AliceBlue, xPos + drone_width + 16, (yhome + ydrawing)/2);
                 }
 
                 //Height above ground scale
@@ -1623,9 +1618,9 @@ namespace MissionPlanner.Controls
                     {
                         ydrawing = this.Height / 4;
                     }
-                    //graphicsObject.DrawLine(_redPen, xPos + drone_width / 2, ydrawing, xPos + drone_width / 2 , yPos + _sonarrange*diff);
-                    //drawstring(graphicsObject, ((int)_sonarrange).ToString("0 m"), font, 10, (SolidBrush)Brushes.AliceBlue, xPos + drone_width/2 + 10, (yPos + _sonarrange*diff)/2);
-                    graphicsObject.DrawLine(_redPen, xPos + drone_width / 2, ydrawing, xPos + drone_width / 2 , yPos + 25);
+                    graphicsObject.DrawLine(_redPen, xPos + drone_width / 2, ydrawing, xPos + drone_width / 2 , ydrawing + _sonarrange*diff);
+                    drawstring(graphicsObject, ((int)_sonarrange).ToString("0 m"), font, 10, (SolidBrush)Brushes.AliceBlue, xPos + drone_width/2 + 10, (ydrawing + _sonarrange*diff)/2);
+                    //graphicsObject.DrawLine(_redPen, xPos + drone_width / 2, ydrawing, xPos + drone_width / 2 , yPos + 25);
                 }
 
                 // Height above Sea Level
