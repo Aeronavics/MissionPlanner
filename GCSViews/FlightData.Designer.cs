@@ -14,6 +14,7 @@
             this.SubMainLeft = new System.Windows.Forms.SplitContainer();
             this.hud1 = new MissionPlanner.Controls.HUD();
             this.contextMenuStripHud = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.contextMenuStripHud2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.videoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.recordHudToAVIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopRecordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -21,8 +22,13 @@
             this.startCameraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setGStreamerSourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setAspectRatioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fixedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tool50mStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tool100mStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tool500mStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.userItemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.russianHudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoScaleHudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.swapWithMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bindingSourceHud = new System.Windows.Forms.BindingSource(this.components);
             this.tabControlactions = new System.Windows.Forms.TabControl();
@@ -60,6 +66,11 @@
             this.BUT_RAWSensor = new MissionPlanner.Controls.MyButton();
             this.BUTrestartmission = new MissionPlanner.Controls.MyButton();
             this.BUTactiondo = new MissionPlanner.Controls.MyButton();
+            this.BUT_GROUND_HEIGHT = new MissionPlanner.Controls.MyButton();
+            this.BUT_SEA_HEIGHT = new MissionPlanner.Controls.MyButton();
+            this.BUT_GROUND_SENSOR = new MissionPlanner.Controls.MyButton();
+            this.BUT_TERRAIN_VIEW = new MissionPlanner.Controls.MyButton();
+            this.BUT_HOME_ALT = new MissionPlanner.Controls.MyButton();
             this.modifyandSetSpeed = new MissionPlanner.Controls.ModifyandSet();
             this.modifyandSetAlt = new MissionPlanner.Controls.ModifyandSet();
             this.tabActionsSimple = new System.Windows.Forms.TabPage();
@@ -67,7 +78,6 @@
             this.myButton2 = new MissionPlanner.Controls.MyButton();
             this.myButton3 = new MissionPlanner.Controls.MyButton();
             this.tabPagePreFlight = new System.Windows.Forms.TabPage();
-            this.checkListControl1 = new MissionPlanner.Controls.PreFlight.CheckListControl();
             this.tabGauges = new System.Windows.Forms.TabPage();
             this.Gvspeed = new AGaugeApp.AGauge();
             this.bindingSourceGaugesTab = new System.Windows.Forms.BindingSource(this.components);
@@ -122,6 +132,8 @@
             this.BUT_select_script = new MissionPlanner.Controls.MyButton();
             this.tabPagemessages = new System.Windows.Forms.TabPage();
             this.txt_messagebox = new System.Windows.Forms.TextBox();
+            this.tabTerrain = new System.Windows.Forms.TabPage();
+            this.hud2 = new MissionPlanner.Controls.Terrain();
             this.tabPayload = new System.Windows.Forms.TabPage();
             this.BUT_PayloadFolder = new MissionPlanner.Controls.MyButton();
             this.groupBoxRoll = new System.Windows.Forms.GroupBox();
@@ -169,6 +181,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.coords1 = new MissionPlanner.Controls.Coords();
             this.Zoomlevel = new System.Windows.Forms.NumericUpDown();
+            this.yScale = new System.Windows.Forms.NumericUpDown();
             this.label1 = new MissionPlanner.Controls.MyLabel();
             this.CHK_autopan = new System.Windows.Forms.CheckBox();
             this.CB_tuning = new System.Windows.Forms.CheckBox();
@@ -189,6 +202,7 @@
             this.SubMainLeft.Panel2.SuspendLayout();
             this.SubMainLeft.SuspendLayout();
             this.contextMenuStripHud.SuspendLayout();
+            this.contextMenuStripHud2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceHud)).BeginInit();
             this.tabControlactions.SuspendLayout();
             this.contextMenuStripactionstab.SuspendLayout();
@@ -198,7 +212,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceQuickTab)).BeginInit();
             this.tabActions.SuspendLayout();
             this.tabActionsSimple.SuspendLayout();
-            this.tabPagePreFlight.SuspendLayout();
             this.tabGauges.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceGaugesTab)).BeginInit();
             this.tabServo.SuspendLayout();
@@ -210,6 +223,7 @@
             this.tablogbrowse.SuspendLayout();
             this.tabScripts.SuspendLayout();
             this.tabPagemessages.SuspendLayout();
+            this.tabTerrain.SuspendLayout();
             this.tabPayload.SuspendLayout();
             this.groupBoxRoll.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourcePayloadTab)).BeginInit();
@@ -228,6 +242,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.TRK_zoom)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Zoomlevel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.yScale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceStatusTab)).BeginInit();
             this.SuspendLayout();
             // 
@@ -455,6 +470,7 @@
             this.tabControlactions.Controls.Add(this.tablogbrowse);
             this.tabControlactions.Controls.Add(this.tabScripts);
             this.tabControlactions.Controls.Add(this.tabPagemessages);
+            this.tabControlactions.Controls.Add(this.tabTerrain);
             this.tabControlactions.Controls.Add(this.tabPayload);
             resources.ApplyResources(this.tabControlactions, "tabControlactions");
             this.tabControlactions.Name = "tabControlactions";
@@ -920,15 +936,9 @@
             // 
             // tabPagePreFlight
             // 
-            this.tabPagePreFlight.Controls.Add(this.checkListControl1);
             resources.ApplyResources(this.tabPagePreFlight, "tabPagePreFlight");
             this.tabPagePreFlight.Name = "tabPagePreFlight";
             this.tabPagePreFlight.UseVisualStyleBackColor = true;
-            // 
-            // checkListControl1
-            // 
-            resources.ApplyResources(this.checkListControl1, "checkListControl1");
-            this.checkListControl1.Name = "checkListControl1";
             // 
             // tabGauges
             // 
@@ -1804,6 +1814,194 @@
             resources.ApplyResources(this.txt_messagebox, "txt_messagebox");
             this.txt_messagebox.Name = "txt_messagebox";
             // 
+            // tabTerrain
+            // 
+            this.tabTerrain.Controls.Add(this.hud2);
+            this.tabTerrain.Controls.Add(this.BUT_GROUND_HEIGHT);
+            this.tabTerrain.Controls.Add(this.BUT_SEA_HEIGHT);
+            this.tabTerrain.Controls.Add(this.BUT_GROUND_SENSOR);
+            this.tabTerrain.Controls.Add(this.BUT_TERRAIN_VIEW);
+            this.tabTerrain.Controls.Add(this.BUT_HOME_ALT);
+            this.tabTerrain.Controls.Add(this.yScale);
+            resources.ApplyResources(this.tabTerrain, "tabTerrain");
+            this.tabTerrain.Name = "tabTerrain";
+            this.tabTerrain.UseVisualStyleBackColor = true;
+            this.tabTerrain.Resize += new System.EventHandler(this.tabTerrain_Resize);
+            // 
+            // hud2
+            // 
+            this.hud2.alt = 0F;
+            resources.ApplyResources(this.hud2, "hud2");
+            this.hud2.BackColor = System.Drawing.Color.Black;
+            this.hud2.bgimage = null;
+            this.hud2.drone = global::MissionPlanner.Properties.Resources.drone;
+            this.hud2.ContextMenuStrip = this.contextMenuStripHud2;
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("alt", this.bindingSourceHud, "alt", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("groundcourse", this.bindingSourceHud, "groundcourse", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("heading", this.bindingSourceHud, "yaw", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("targetalt", this.bindingSourceHud, "targetalt", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("lat", this.bindingSourceHud, "lat", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("lng", this.bindingSourceHud, "lng", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("Homealt", this.bindingSourceHud, "Homealt", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("groundspeed", this.bindingSourceHud, "groundspeed", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("pitch", this.bindingSourceHud, "pitch", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("targetheading", this.bindingSourceHud, "target_bearing", true));
+            //this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("alt_target", this.bindingSourceHud, "alt_target", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("mode", this.bindingSourceHud, "mode", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("sonarrange", this.bindingSourceHud, "sonarrange", true));
+            this.hud2.DataBindings.Add(new System.Windows.Forms.Binding("disttowp", this.bindingSourceHud, "wp_dist", true));
+            this.hud2.disttowp = 0F;
+            this.hud2.groundspeed = 0F;
+            this.hud2.groundcourse = 0F;
+            this.hud2.heading = 0F;
+            this.hud2.hudcolor = System.Drawing.Color.LightGray;
+            this.hud2.lat = 0D;
+            this.hud2.Homealt = 0F;
+            this.hud2.lng = 0D;
+            this.hud2.Name = "hud2";
+            this.hud2.pitch = 0F;
+            this.hud2.targetalt = 0F;
+            this.hud2.turnrate = 0F;
+            this.hud2.wpno = 0;
+            this.hud2.xtrack_error = 0F;
+            this.hud2.autoScale = false;
+            this.hud2.fixd = 50;
+            this.hud2.targetheading = 0F;
+            this.hud2.alt_target = 0F;
+            this.hud2.mode = "Unknown";
+            this.hud2.displaygroundheight = false;
+            this.hud2.displaysonar = false;
+            this.hud2.frontview = true;
+            this.hud2.waypointview = false;
+            this.hud2.displayseaheight = false;
+            this.hud2.displayhomealt = false;
+            this.hud2.y_scalar = 1F;
+
+            // 
+            // contextMenuStripHud2
+            // 
+            this.contextMenuStripHud2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.autoScaleHudToolStripMenuItem,
+            this.fixedToolStripMenuItem});
+            this.contextMenuStripHud2.Name = "contextMenuStrip3";
+            resources.ApplyResources(this.contextMenuStripHud2, "contextMenuStripHud2");
+            // 
+            // autoScaleHudToolStripMenuItem
+            // 
+            this.autoScaleHudToolStripMenuItem.Name = "autoScaleHudToolStripMenuItem";
+            resources.ApplyResources(this.autoScaleHudToolStripMenuItem, "autoScaleHudToolStripMenuItem");
+            this.autoScaleHudToolStripMenuItem.Click += new System.EventHandler(this.autoScaleHudToolStripMenuItem_Click);
+            // 
+            // fixedToolStripMenuItem
+            // 
+            this.fixedToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            tool50mStripMenuItem,
+            tool100mStripMenuItem,
+            tool500mStripMenuItem});
+            this.fixedToolStripMenuItem.Name = "fixedToolStripMenuItem";
+            resources.ApplyResources(this.fixedToolStripMenuItem, "fixedToolStripMenuItem");
+            // 
+            // tool50mStripMenuItem
+            // 
+            this.tool50mStripMenuItem.Name = "tool50mStripMenuItem";
+            resources.ApplyResources(this.tool50mStripMenuItem, "tool50mStripMenuItem");
+            this.tool50mStripMenuItem.Click += new System.EventHandler(this.tool50mStripMenuItem_Click);
+            // 
+            // tool100mStripMenuItem
+            // 
+            this.tool100mStripMenuItem.Name = "tool100mStripMenuItem";
+            resources.ApplyResources(this.tool100mStripMenuItem, "tool100mStripMenuItem");
+            this.tool100mStripMenuItem.Click += new System.EventHandler(this.tool100mStripMenuItem_Click);
+            // 
+            // tool500mStripMenuItem
+            // 
+            this.tool500mStripMenuItem.Name = "tool500mStripMenuItem";
+            resources.ApplyResources(this.tool500mStripMenuItem, "tool500mStripMenuItem");
+            this.tool500mStripMenuItem.Click += new System.EventHandler(this.tool500mStripMenuItem_Click);
+            // 
+            // BUT_GROUND_HEIGHT
+            // 
+            this.BUT_GROUND_HEIGHT.ColorMouseDown = System.Drawing.Color.Empty;
+            this.BUT_GROUND_HEIGHT.ColorMouseOver = System.Drawing.Color.Empty;
+            this.BUT_GROUND_HEIGHT.ColorNotEnabled = System.Drawing.Color.Empty;
+            resources.ApplyResources(this.BUT_GROUND_HEIGHT, "BUT_GROUND_HEIGHT");
+            this.BUT_GROUND_HEIGHT.Name = "BUT_GROUND_HEIGHT";
+            this.toolTip1.SetToolTip(this.BUT_GROUND_HEIGHT, resources.GetString("BUT_GROUND_HEIGHT.ToolTip"));
+            this.BUT_GROUND_HEIGHT.UseVisualStyleBackColor = true;
+            this.BUT_GROUND_HEIGHT.Click += new System.EventHandler(this.BUT_GROUND_HEIGHT_Click);
+            // 
+            // BUT_SEA_HEIGHT
+            // 
+            this.BUT_SEA_HEIGHT.ColorMouseDown = System.Drawing.Color.Empty;
+            this.BUT_SEA_HEIGHT.ColorMouseOver = System.Drawing.Color.Empty;
+            this.BUT_SEA_HEIGHT.ColorNotEnabled = System.Drawing.Color.Empty;
+            resources.ApplyResources(this.BUT_SEA_HEIGHT, "BUT_SEA_HEIGHT");
+            this.BUT_SEA_HEIGHT.Name = "BUT_SEA_HEIGHT";
+            this.toolTip1.SetToolTip(this.BUT_SEA_HEIGHT, resources.GetString("BUT_SEA_HEIGHT.ToolTip"));
+            this.BUT_SEA_HEIGHT.UseVisualStyleBackColor = true;
+            this.BUT_SEA_HEIGHT.Click += new System.EventHandler(this.BUT_SEA_HEIGHT_Click);
+            // 
+            // BUT_GROUND_SENSOR
+            // 
+            this.BUT_GROUND_SENSOR.ColorMouseDown = System.Drawing.Color.Empty;
+            this.BUT_GROUND_SENSOR.ColorMouseOver = System.Drawing.Color.Empty;
+            this.BUT_GROUND_SENSOR.ColorNotEnabled = System.Drawing.Color.Empty;
+            resources.ApplyResources(this.BUT_GROUND_SENSOR, "BUT_GROUND_SENSOR");
+            this.BUT_GROUND_SENSOR.Name = "BUT_GROUND_SENSOR";
+            this.toolTip1.SetToolTip(this.BUT_GROUND_SENSOR, resources.GetString("BUT_GROUND_SENSOR.ToolTip"));
+            this.BUT_GROUND_SENSOR.UseVisualStyleBackColor = true;
+            this.BUT_GROUND_SENSOR.Click += new System.EventHandler(this.BUT_GROUND_SENSOR_Click);
+            // 
+            // BUT_TERRAIN_VIEW
+            // 
+            this.BUT_TERRAIN_VIEW.ColorMouseDown = System.Drawing.Color.Empty;
+            this.BUT_TERRAIN_VIEW.ColorMouseOver = System.Drawing.Color.Empty;
+            this.BUT_TERRAIN_VIEW.ColorNotEnabled = System.Drawing.Color.Empty;
+            resources.ApplyResources(this.BUT_TERRAIN_VIEW, "BUT_TERRAIN_VIEW");
+            this.BUT_TERRAIN_VIEW.Name = "BUT_TERRAIN_VIEW";
+            this.toolTip1.SetToolTip(this.BUT_TERRAIN_VIEW, resources.GetString("BUT_TERRAIN_VIEW.ToolTip"));
+            this.BUT_TERRAIN_VIEW.UseVisualStyleBackColor = true;
+            this.BUT_TERRAIN_VIEW.Click += new System.EventHandler(this.BUT_TERRAIN_VIEW_Click);
+            // 
+            // BUT_HOME_ALT
+            // 
+            this.BUT_HOME_ALT.ColorMouseDown = System.Drawing.Color.Empty;
+            this.BUT_HOME_ALT.ColorMouseOver = System.Drawing.Color.Empty;
+            this.BUT_HOME_ALT.ColorNotEnabled = System.Drawing.Color.Empty;
+            resources.ApplyResources(this.BUT_HOME_ALT, "BUT_HOME_ALT");
+            this.BUT_HOME_ALT.Name = "BUT_HOME_ALT";
+            this.toolTip1.SetToolTip(this.BUT_HOME_ALT, resources.GetString("BUT_HOME_ALT.ToolTip"));
+            this.BUT_HOME_ALT.UseVisualStyleBackColor = true;
+            this.BUT_HOME_ALT.Click += new System.EventHandler(this.BUT_HOME_ALT_Click);
+             // 
+            // yScale
+            // 
+            resources.ApplyResources(this.yScale, "yScale");
+            this.yScale.DecimalPlaces = 1;
+            this.yScale.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+            this.yScale.Maximum = new decimal(new int[] {
+            18,
+            0,
+            0,
+            0});
+            this.yScale.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.yScale.Name = "yScale";
+            this.toolTip1.SetToolTip(this.yScale, resources.GetString("yScale.ToolTip"));
+            this.yScale.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.yScale.ValueChanged += new System.EventHandler(this.yScale_ValueChanged);
+            // 
             // tabPayload
             // 
             this.tabPayload.Controls.Add(this.BUT_PayloadFolder);
@@ -2193,6 +2391,7 @@
             this.panel1.Controls.Add(this.CB_tuning);
             resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Name = "panel1";
+
             // 
             // coords1
             // 
@@ -2323,6 +2522,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.SubMainLeft)).EndInit();
             this.SubMainLeft.ResumeLayout(false);
             this.contextMenuStripHud.ResumeLayout(false);
+            this.contextMenuStripHud2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceHud)).EndInit();
             this.tabControlactions.ResumeLayout(false);
             this.contextMenuStripactionstab.ResumeLayout(false);
@@ -2332,7 +2532,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceQuickTab)).EndInit();
             this.tabActions.ResumeLayout(false);
             this.tabActionsSimple.ResumeLayout(false);
-            this.tabPagePreFlight.ResumeLayout(false);
             this.tabGauges.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceGaugesTab)).EndInit();
             this.tabServo.ResumeLayout(false);
@@ -2348,6 +2547,8 @@
             this.tabScripts.PerformLayout();
             this.tabPagemessages.ResumeLayout(false);
             this.tabPagemessages.PerformLayout();
+            this.tabTerrain.ResumeLayout(false);
+            this.tabTerrain.PerformLayout();
             this.tabPayload.ResumeLayout(false);
             this.groupBoxRoll.ResumeLayout(false);
             this.groupBoxRoll.PerformLayout();
@@ -2371,6 +2572,7 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Zoomlevel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.yScale)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceStatusTab)).EndInit();
             this.ResumeLayout(false);
 
@@ -2386,6 +2588,7 @@
         private System.Windows.Forms.SplitContainer SubMainLeft;
         private System.Windows.Forms.ToolStripMenuItem goHereToolStripMenuItem;
         private Controls.HUD hud1;
+        private Controls.Terrain hud2;
         private Controls.MyButton BUT_clear_track;
         private System.Windows.Forms.CheckBox CB_tuning;
         private Controls.MyButton BUT_RAWSensor;
@@ -2402,6 +2605,7 @@
         private System.Windows.Forms.TableLayoutPanel tableMap;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.NumericUpDown Zoomlevel;
+        private System.Windows.Forms.NumericUpDown yScale;
         private Controls.MyLabel label1;
         private System.Windows.Forms.CheckBox CHK_autopan;
         public Controls.myGMAP gMapControl1;
@@ -2441,6 +2645,11 @@
         private System.Windows.Forms.ToolStripMenuItem userItemsToolStripMenuItem;
         //private Crom.Controls.Docking.DockContainer dockContainer1;
         private Controls.MyButton BUT_ARM;
+        private Controls.MyButton BUT_GROUND_HEIGHT;
+        private Controls.MyButton BUT_SEA_HEIGHT;
+        private Controls.MyButton BUT_GROUND_SENSOR;
+        private Controls.MyButton BUT_TERRAIN_VIEW;
+        private Controls.MyButton BUT_HOME_ALT;
         private Controls.ModifyandSet modifyandSetAlt;
         private Controls.ModifyandSet modifyandSetSpeed;
         private System.Windows.Forms.ToolStripMenuItem triggerCameraToolStripMenuItem;
@@ -2487,8 +2696,10 @@
         private System.Windows.Forms.Timer scriptChecker;
         private System.Windows.Forms.CheckBox checkBoxRedirectOutput;
         private System.Windows.Forms.ToolStripMenuItem russianHudToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem autoScaleHudToolStripMenuItem;
         public System.Windows.Forms.ContextMenuStrip contextMenuStripMap;
         public System.Windows.Forms.ContextMenuStrip contextMenuStripHud;
+        public System.Windows.Forms.ContextMenuStrip contextMenuStripHud2;
         private System.Windows.Forms.BindingSource bindingSourceQuickTab;
         private System.Windows.Forms.BindingSource bindingSourceStatusTab;
         private System.Windows.Forms.BindingSource bindingSourceGaugesTab;
@@ -2503,6 +2714,7 @@
         private Controls.MyButton BUT_DFMavlink;
         public System.Windows.Forms.TabPage tabPagemessages;
         private System.Windows.Forms.TextBox txt_messagebox;
+        public System.Windows.Forms.TabPage tabTerrain;
         private System.Windows.Forms.Timer Messagetabtimer;
         public System.Windows.Forms.TabPage tabActionsSimple;
         private Controls.MyButton myButton1;
@@ -2529,6 +2741,10 @@
         private System.Windows.Forms.ToolStripMenuItem customizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem PointCameraCoordsToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem fixedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tool50mStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tool100mStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tool500mStripMenuItem;
         private Controls.ModifyandSet modifyandSetLoiterRad;
         private System.Windows.Forms.ToolStripMenuItem onOffCameraOverlapToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem altitudeAngelSettingsToolStripMenuItem;
