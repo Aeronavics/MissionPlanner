@@ -1130,7 +1130,7 @@ namespace MissionPlanner.GCSViews
                             MAVLink.mavlink_mission_item_t home = new MAVLink.mavlink_mission_item_t();
 
 
-                            List<float> list = new List<float>();
+                            //List<float> list = new List<float>();
 
                             foreach (MAVLink.mavlink_mission_item_t plla in MainV2.comPort.MAV.wps.Values)
                             {
@@ -1182,12 +1182,11 @@ namespace MissionPlanner.GCSViews
 
                                 addpolygonmarker(tag, plla.y, plla.x, (int)plla.z, Color.White, polygons);
 
-                                list.Add(plla.z);
-                            }
 
-                            if (MainV2.comPort.MAV.cs.mode == "Auto")
-                            {
-                                hud2.alt_target = list[(int)MainV2.comPort.MAV.cs.wpno];
+                                if (plla.seq == (int)MainV2.comPort.MAV.cs.wpno && MainV2.comPort.MAV.cs.mode == "Auto")
+                                {
+                                    hud2.alt_target = plla.z;
+                                }
                             }
 
                             try
