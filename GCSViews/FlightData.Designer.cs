@@ -67,6 +67,7 @@
             this.BUTrestartmission = new MissionPlanner.Controls.MyButton();
             this.BUTactiondo = new MissionPlanner.Controls.MyButton();
             this.BUT_GROUND_HEIGHT = new MissionPlanner.Controls.MyButton();
+            this.checkListControl1 = new MissionPlanner.Controls.PreFlight.CheckListControl();
             this.BUT_SEA_HEIGHT = new MissionPlanner.Controls.MyButton();
             this.BUT_GROUND_SENSOR = new MissionPlanner.Controls.MyButton();
             this.BUT_TERRAIN_VIEW = new MissionPlanner.Controls.MyButton();
@@ -936,6 +937,7 @@
             // 
             // tabPagePreFlight
             // 
+            this.tabPagePreFlight.Controls.Add(this.checkListControl1);
             resources.ApplyResources(this.tabPagePreFlight, "tabPagePreFlight");
             this.tabPagePreFlight.Name = "tabPagePreFlight";
             this.tabPagePreFlight.UseVisualStyleBackColor = true;
