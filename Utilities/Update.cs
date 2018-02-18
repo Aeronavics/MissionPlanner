@@ -27,7 +27,7 @@ namespace MissionPlanner.Utilities
         public static bool dobeta = false;
         public static bool domaster = false;
 
-        public static void updateCheckMain(ProgressReporterDialogue frmProgressReporter)
+        public static void updateCheckMain(IProgressReporterDialogue frmProgressReporter)
         {
             var t = Type.GetType("Mono.Runtime");
             MONO = (t != null);
@@ -42,12 +42,14 @@ namespace MissionPlanner.Utilities
                 }
                 else if (dobeta)
                 {
-                    CheckMD5(frmProgressReporter, ConfigurationManager.AppSettings["BetaUpdateLocationMD5"].ToString(),
-                        ConfigurationManager.AppSettings["BetaUpdateLocation"]);
-                } 
+                    CheckMD5(frmProgressReporter, 
+                        ConfigurationManager.AppSettings["BetaUpdateLocationMD5"].ToString(),
+                        ConfigurationManager.AppSettings["BetaUpdateLocationZip"]);
+                }
                 else
                 {
-                    CheckMD5(frmProgressReporter, ConfigurationManager.AppSettings["UpdateLocationMD5"].ToString(),
+                    CheckMD5(frmProgressReporter, 
+                        ConfigurationManager.AppSettings["UpdateLocationMD5"].ToString(),
                         ConfigurationManager.AppSettings["UpdateLocation"]);
                 }
 
@@ -125,9 +127,7 @@ namespace MissionPlanner.Utilities
             log.Debug(path);
 
             // Create a request using a URL that can receive a post. 
-            string requestUriString = baseurl + Path.GetFileName(path);
-
-            L10N.ReplaceMirrorUrl(ref requestUriString);
+            string requestUriString = baseurl;
 
             log.Info("Checking for update at: " + requestUriString);
             var webRequest = WebRequest.Create(requestUriString);
@@ -195,14 +195,11 @@ namespace MissionPlanner.Utilities
                     if (dobeta)
                         extra = "BETA ";
 
-                    DialogResult dr = DialogResult.Cancel;
-
-
-                    dr = CustomMessageBox.Show(
+                    var dr = CustomMessageBox.Show(
                         extra + Strings.UpdateFound + " [link;" + baseurl + "/ChangeLog.txt;ChangeLog]",
                         Strings.UpdateNow, MessageBoxButtons.YesNo);
 
-                    if (dr == DialogResult.Yes)
+                    if (dr == (int)DialogResult.Yes)
                     {
                         DoUpdate();
                     }
@@ -243,9 +240,9 @@ namespace MissionPlanner.Utilities
             frmProgressReporter.Dispose();
         }
 
-        static void CheckMD5(ProgressReporterDialogue frmProgressReporter, string md5url, string baseurl)
+        static void CheckMD5(IProgressReporterDialogue frmProgressReporter, string md5url, string baseurl)
         {
-            L10N.ReplaceMirrorUrl(ref baseurl);
+            log.InfoFormat("get checksums {0} - base {1}", md5url, baseurl);
 
             string responseFromServer = "";
 
@@ -273,6 +270,10 @@ namespace MissionPlanner.Utilities
                 // background md5
                 List<Tuple<string, string, Task<bool>>> tasklist = new List<Tuple<string, string, Task<bool>>>();
 
+                if (frmProgressReporter != null)
+                    frmProgressReporter.UpdateProgressAndStatus(-1,"Hashing Files");
+
+                // hash everything
                 MatchCollection matchs = regex.Matches(responseFromServer);
                 for (int i = 0; i < matchs.Count; i++)
                 {
@@ -284,8 +285,17 @@ namespace MissionPlanner.Utilities
                     tasklist.Add(new Tuple<string, string, Task<bool>>(file, hash, ismatch));
                 }
 
+                // get count and wait for all hashing to be done
+                int count = tasklist.Count(a =>
+                {
+                    a.Item3.Wait();
+                    return !a.Item3.Result;
+                });
+
                 // parallel download
                 ParallelOptions opt = new ParallelOptions() { MaxDegreeOfParallelism = 3 };
+
+                int done = 0;
 
                 Parallel.ForEach(tasklist, opt, task =>
                     //foreach (var task in tasklist)
@@ -298,13 +308,22 @@ namespace MissionPlanner.Utilities
 
                     if (!match)
                     {
+                        done++;
                         log.Info("Newer File " + file);
+
+                        if (frmProgressReporter != null && frmProgressReporter.doWorkArgs.CancelRequested)
+                        {
+                            frmProgressReporter.doWorkArgs.CancelAcknowledged = true;
+                            throw new Exception("User Request");
+                        }
 
                         // check is we have already downloaded and matchs hash
                         if (!MD5File(file + ".new", hash))
                         {
                             if (frmProgressReporter != null)
-                                frmProgressReporter.UpdateProgressAndStatus(-1, Strings.Getting + file);
+                                frmProgressReporter.UpdateProgressAndStatus((int)((done/(double)count)*100),
+                                    Strings.Getting + file + "\n" + done + " of " + count + " of total " +
+                                    tasklist.Count);
 
                             string subdir = Path.GetDirectoryName(file) + Path.DirectorySeparatorChar;
 
@@ -371,7 +390,7 @@ namespace MissionPlanner.Utilities
             return false;
         }
 
-        static void GetNewFileZip(ProgressReporterDialogue frmProgressReporter, string baseurl, string subdir, string file)
+        static void GetNewFileZip(IProgressReporterDialogue frmProgressReporter, string baseurl, string subdir, string file)
         {          
             // create dest dir
             string dir = Path.GetDirectoryName(Application.ExecutablePath) + Path.DirectorySeparatorChar + subdir;
@@ -394,6 +413,8 @@ namespace MissionPlanner.Utilities
                 return;
             }
 
+            log.InfoFormat("unzip {0}", file);
+
             entry.ExtractToFile(path + ".new", true);
 
             zip.Dispose();
@@ -401,7 +422,7 @@ namespace MissionPlanner.Utilities
             ds.Dispose();
         }
 
-        static void GetNewFile(ProgressReporterDialogue frmProgressReporter, string baseurl, string subdir, string file)
+        static void GetNewFile(IProgressReporterDialogue frmProgressReporter, string baseurl, string subdir, string file)
         {
             // create dest dir
             string dir = Path.GetDirectoryName(Application.ExecutablePath) + Path.DirectorySeparatorChar + subdir;
@@ -445,10 +466,6 @@ namespace MissionPlanner.Utilities
                         log.Info(((HttpWebResponse) response).StatusDescription);
                         // Get the stream containing content returned by the server.
                         Stream dataStream = response.GetResponseStream();
-
-                        // update status
-                        if (frmProgressReporter != null)
-                            frmProgressReporter.UpdateProgressAndStatus(-1, Strings.Getting + file);
 
                         // from head
                         long bytes = response.ContentLength;
@@ -518,18 +535,23 @@ namespace MissionPlanner.Utilities
             }
         }
 
-        static void DoUpdateWorker_DoWork(object sender, ProgressWorkerEventArgs e, object passdata = null)
+        static void DoUpdateWorker_DoWork(IProgressReporterDialogue sender)
         {
             // TODO: Is this the right place?
 
             #region Fetch Parameter Meta Data
 
-            var progressReporterDialogue = ((ProgressReporterDialogue) sender);
+            var progressReporterDialogue = ((IProgressReporterDialogue) sender);
             progressReporterDialogue.UpdateProgressAndStatus(-1, "Getting Updated Parameters");
 
             try
             {
-                ParameterMetaDataParser.GetParameterInformation();
+                if (MissionPlanner.Utilities.Update.dobeta)
+                    ParameterMetaDataParser.GetParameterInformation(
+                        ConfigurationManager.AppSettings["ParameterLocationsBleeding"], "ParameterMetaData.xml");
+                else
+                    ParameterMetaDataParser.GetParameterInformation(
+                        ConfigurationManager.AppSettings["ParameterLocations"], "ParameterMetaData.xml");
             }
             catch (Exception ex)
             {
@@ -565,15 +587,7 @@ namespace MissionPlanner.Utilities
                 }
             }
 
-            // check for updates
-            //  if (Debugger.IsAttached)
-            {
-                //      log.Info("Skipping update test as it appears we are debugging");
-            }
-            //  else
-            {
-                updateCheckMain(progressReporterDialogue);
-            }
+            updateCheckMain(progressReporterDialogue);
         }
     }
 }

@@ -5,7 +5,6 @@ clone_depth: 1
 clone_folder: c:\MP\
 init:
 - cmd: 
-cache: packages
 environment:
   email:
     secure: dkWdmOxf3t/x2H0gEo1GurKM8Due1idnog5VJtUlSEA=
@@ -15,7 +14,7 @@ build_script:
 - cmd: >-
     dotnet --info
 
-    c:\mp\.nuget\nuget.exe update -self
+    rem c:\mp\.nuget\nuget.exe update -self
     
     c:\mp\.nuget\nuget.exe restore
     
@@ -27,23 +26,32 @@ build_script:
 
     for /f %%f in ('dir /a-d /b plugins') do if exist .\%%f del .\plugins\%%f
 
-    set PATH=c:\cygwin\bin;%PATH%
+    copy version.txt c:\mp\
 
     7z a -tzip ..\..\..\MissionPlannerBeta.zip *  
 
     cd ..
 
-    c:\cygwin\bin\find.exe net461 -type f -print0 | xargs.exe -i -0 md5sum.exe '{}' > checksums.txt
+    md5sum.exe net461 > checksums.txt
 
     copy checksums.txt c:\mp\
 
     cd c:\mp\
 
-    cov-build.exe --dir cov-int msbuild.exe MissionPlanner.sln /m /p:Configuration=Debug /l:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+    rem if exist date.txt set /p datecheck=<date.txt
 
-    7z a -tzip MissionPlannerCov-int.zip c:\mp\cov-int 
+    rem echo %date% > datenow.txt
 
-    rem curl --form %token% --form %email% --form file=@MissionPlannerCov-int.zip --form version="%APPVEYOR_BUILD_VERSION%" --form description="" https://scan.coverity.com/builds?project=ArduPilot%2FMissionPlanner
+    rem if exist datenow.txt set /p datenow=<datenow.txt
+
+    rem if not "%datecheck%"=="%datenow%" echo %date% > date.txt
+
+    rem if not "%datecheck%"=="%datenow%" cov-build.exe --dir cov-int msbuild.exe MissionPlanner.sln /m /p:Configuration=Debug /l:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+
+    rem if not "%datecheck%"=="%datenow%" 7z a -tzip MissionPlannerCov-int.zip c:\mp\cov-int 
+
+    rem curl --form %token% --form %email% --form file=@MissionPlannerCov-int.zip --form version="%APPVEYOR_BUILD_VERSION%" --form project="ArduPilot\MissionPlanner" --form description="" https://scan.coverity.com/builds
+   
 
 test: off
 artifacts:
@@ -53,6 +61,8 @@ artifacts:
   name: MissionPlannerBeta
 - path: checksums.txt
   name: checksums
+- path: version.txt
+  name: version
 deploy: off
 notifications:
 - provider: Webhook

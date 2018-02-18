@@ -58,6 +58,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             // set distance/speed unit states
             CMB_distunits.DataSource = Enum.GetNames(typeof (Common.distances));
             CMB_speedunits.DataSource = Enum.GetNames(typeof (Common.speeds));
+            CMB_altunits.DataSource = Enum.GetNames(typeof(Common.altitudes));
 
             CMB_theme.DataSource = Enum.GetNames(typeof (ThemeManager.Themes));
 
@@ -121,6 +122,7 @@ namespace MissionPlanner.GCSViews.ConfigurationView
             SetCheckboxFromConfig("norcreceiver", chk_norcreceiver);
             SetCheckboxFromConfig("showtfr", chk_tfr);
             SetCheckboxFromConfig("autoParamCommit", CHK_AutoParamCommit);
+            SetCheckboxFromConfig("ShowNoFly", chk_shownofly);
 
             // this can't fail because it set at startup
             NUM_tracklength.Value = Settings.Instance.GetInt32("NUM_tracklength");
@@ -931,6 +933,19 @@ namespace MissionPlanner.GCSViews.ConfigurationView
         private void CHK_AutoParamCommit_CheckedChanged(object sender, EventArgs e)
         {
             Settings.Instance["autoParamCommit"] = CHK_AutoParamCommit.Checked.ToString();
+        }
+
+        private void chk_shownofly_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Instance["ShowNoFly"] = chk_shownofly.Checked.ToString();
+        }
+
+        private void CMB_altunits_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (startup)
+                return;
+            Settings.Instance["altunits"] = CMB_altunits.Text;
+            MainV2.instance.ChangeUnits();
         }
     }
 }

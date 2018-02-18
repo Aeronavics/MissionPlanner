@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -116,6 +117,74 @@ namespace MissionPlanner.Utilities
             // check the cache
             if (!_chunks.ContainsKey(start))
             {
+                GetChunk(start);
+            }
+
+            // return data
+            // check to see if this spans a chunk
+            if (getChunkNo(Position) != getChunkNo(Position + count-1))
+            {
+                var bytestoget = count;
+                var bytesgot = 0;
+                var startchunk = getChunkNo(Position);
+                var endchunk = getChunkNo(Position + count - 1);
+
+                // download all chunks required
+                Parallel.For(startchunk + 1, endchunk + 1, new ParallelOptions() {MaxDegreeOfParallelism = 3},
+                    (l) =>
+                    {
+                        Console.WriteLine("Parallel download {0}: {1}", _uri, l * chunksize);
+                        GetChunk(l * chunksize);
+                    });
+
+                for (long chunkno = startchunk; chunkno <= endchunk; chunkno++)
+                {
+                    var leftinchunk = Position % chunksize == 0 ? chunksize : chunksize - (Position % chunksize);
+                    bytesgot += Read(buffer, offset + bytesgot, (int)Math.Min(bytestoget - bytesgot, leftinchunk));
+                }
+            }
+            else
+            {
+                Array.Copy(_chunks[start].ToArray(), Position - start, buffer, offset, count);
+
+                Position += count;
+            }
+
+            return count;
+        }
+
+        private static List<string> gettingChunk = new List<string>();
+        private static object gettingChunkLock = new object();
+
+        private void GetChunk(long start)
+        {
+            var key = _uri + "-" + start;
+            try
+            {
+                var test = false;
+                do
+                {
+                    lock (gettingChunkLock)
+                    {
+                        // see if we are already getting it
+                        test = gettingChunk.Contains(key);
+                    }
+
+                    if (test)
+                    {
+                        Thread.Sleep(50);
+                    }
+                    else
+                    {
+                        // we dont have it and we need to get it
+                        gettingChunk.Add(key);
+                    }
+                } while (test);
+
+                // we have it already
+                if (_chunks.ContainsKey(start))
+                    return;
+
                 var end = Math.Min(Length, start + chunksize);
 
                 // cache it
@@ -133,29 +202,13 @@ namespace MissionPlanner.Utilities
                     _chunks[start] = ms;
                 }
             }
-
-            // return data
-            // check to see if this spans a chunk
-            if (getChunkNo(Position) != getChunkNo(Position + count-1))
+            finally
             {
-                var bytestoget = count;
-                var bytesgot = 0;
-                var startchunk = getChunkNo(Position);
-                var endchunk = getChunkNo(Position + count - 1);
-                for (long chunkno = startchunk; chunkno <= endchunk; chunkno++)
+                lock (gettingChunkLock)
                 {
-                    var leftinchunk = Position % chunksize == 0 ? chunksize : chunksize - (Position % chunksize);
-                    bytesgot += Read(buffer, offset + bytesgot, (int)Math.Min(bytestoget - bytesgot, leftinchunk));
+                    gettingChunk.Remove(key);
                 }
             }
-            else
-            {
-                Array.Copy(_chunks[start].ToArray(), Position - start, buffer, offset, count);
-
-                Position += count;
-            }
-
-            return count;
         }
 
         public override long Seek(long offset, SeekOrigin origin)
@@ -322,7 +375,7 @@ namespace MissionPlanner.Utilities
         }
 
         //https://stackoverflow.com/questions/13606523/retrieving-partial-content-using-multiple-http-requsets-to-fetch-data-via-parlle
-        public static void ParallelDownloadFile(string uri, string filePath, int chunkSize)
+        public static void ParallelDownloadFile(string uri, string filePath, int chunkSize = 0)
         {
             if (uri == null)
                 throw new ArgumentNullException("uri");
@@ -330,15 +383,19 @@ namespace MissionPlanner.Utilities
             // determine file size first
             long size = GetFileSize(uri);
 
+            if (chunkSize == 0)
+                chunkSize = (int)(size / 20);
+
             using (FileStream file = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.Write))
             {
                 file.SetLength(size); // set the length first
 
                 object syncObject = new object(); // synchronize file writes
-                Parallel.ForEach(LongRange(0, 1 + size / chunkSize), (start) =>
+                Parallel.ForEach(LongRange(0, 1 + size / chunkSize), new ParallelOptions { MaxDegreeOfParallelism = 3 }, (start) =>
                 {
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
                     request.AddRange(start * chunkSize, start * chunkSize + chunkSize - 1);
+                    Console.WriteLine("{0} {1}-{2}", uri, start * chunkSize, start * chunkSize + chunkSize - 1);
                     HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
                     lock (syncObject)

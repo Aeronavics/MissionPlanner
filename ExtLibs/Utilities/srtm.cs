@@ -201,7 +201,7 @@ namespace MissionPlanner.Utilities
                     int y_int = (int) yf;
                     double y_frac = yf - y_int;
 
-                    y_int = (size - 2) - y_int;
+                    y_int = (size-2) - y_int;
 
                     double alt00 = GetAlt(filename, x_int, y_int);
                     double alt10 = GetAlt(filename, x_int + 1, y_int);
@@ -210,7 +210,7 @@ namespace MissionPlanner.Utilities
 
                     double v1 = avg(alt00, alt10, x_frac);
                     double v2 = avg(alt01, alt11, x_frac);
-                    double v = avg(v1, v2, -y_frac);
+                    double v = avg(v1, v2, 1-y_frac);
 
                     if (v < -1000)
                         return altresponce.Invalid;

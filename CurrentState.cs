@@ -32,6 +32,8 @@ namespace MissionPlanner
         public static string DistanceUnit = "";
         public static float multiplierspeed = 1;
         public static string SpeedUnit = "";
+        public static float multiplieralt = 1;
+        public static string AltUnit = "";
 
         public static double toDistDisplayUnit(double input)
         {
@@ -102,6 +104,8 @@ namespace MissionPlanner
             }
         }
 
+
+
         private float _groundcourse = 0;
 
         // position
@@ -114,7 +118,7 @@ namespace MissionPlanner
         [DisplayText("Altitude (dist)")]
         public float alt
         {
-            get { return (_alt - altoffsethome)*multiplierdist; }
+            get { return (_alt - altoffsethome)* multiplieralt; }
             set
             {
                 // check update rate, and ensure time hasnt gone backwards                
@@ -137,7 +141,7 @@ namespace MissionPlanner
         [DisplayText("Altitude (dist)")]
         public float altasl
         {
-            get { return _altasl*multiplierdist; }
+            get { return _altasl* multiplieralt; }
             set { _altasl = value; }
         }
 
@@ -169,6 +173,15 @@ namespace MissionPlanner
 
         [DisplayText("Sat Count")]
         public float satcount { get; set; }
+
+        [DisplayText("Horizontal Accuracy")]
+        public float gpsh_acc { get; private set; }
+        [DisplayText("Vertical Accuracy")]
+        public float gpsv_acc { get; private set; }
+        [DisplayText("Velocity Accuracy")]
+        public float gpsvel_acc { get; private set; }
+        [DisplayText("Heading Accuracy")]
+        public float gpshdg_acc { get; private set; }
 
         [DisplayText("Latitude2 (dd)")]
         public double lat2 { get; set; }
@@ -524,7 +537,7 @@ namespace MissionPlanner
         [DisplayText("Altitude Error (dist)")]
         public float alt_error
         {
-            get { return _alt_error*multiplierdist; }
+            get { return _alt_error* multiplieralt; }
             set
             {
                 if (_alt_error == value) return;
@@ -1505,6 +1518,9 @@ namespace MissionPlanner
                         if ((ch3percent > 12  || _groundspeed > 3.0) && armed)
                             timeInAir++;
 
+                        if (!armed)
+                            timeInAir = 0;
+
                         if (!gotwind)
                             dowindcalc();
                     }
@@ -2178,6 +2194,21 @@ namespace MissionPlanner
 
                         groundspeed = gps.vel*1.0e-2f;
                         groundcourse = gps.cog*1.0e-2f;
+
+                        if (mavLinkMessage.ismavlink2)
+                        {
+                            gpsh_acc = gps.h_acc / 1000.0f;
+                            gpsv_acc = gps.v_acc / 1000.0f;
+                            gpsvel_acc = gps.vel_acc / 1000.0f;
+                            gpshdg_acc = gps.hdg_acc / 1e5f;
+                        }
+                        else
+                        {
+                            gpsh_acc = -1;
+                            gpsv_acc = -1;
+                            gpsvel_acc = -1;
+                            gpshdg_acc = -1;
+                        }
 
                         //MAVLink.packets[(byte)MAVLink.MSG_NAMES.GPS_RAW);
                     }

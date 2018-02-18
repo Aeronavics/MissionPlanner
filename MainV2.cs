@@ -58,6 +58,25 @@ namespace MissionPlanner
 
             static public int SW_SHOWNORMAL = 1;
             static public int SW_HIDE = 0;
+
+            [DllImport("kernel32.dll", SetLastError = true)]
+            public static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hReservedNull, LoadLibraryFlags dwFlags);
+
+            [System.Flags]
+            public enum LoadLibraryFlags : uint
+            {
+                DONT_RESOLVE_DLL_REFERENCES = 0x00000001,
+                LOAD_IGNORE_CODE_AUTHZ_LEVEL = 0x00000010,
+                LOAD_LIBRARY_AS_DATAFILE = 0x00000002,
+                LOAD_LIBRARY_AS_DATAFILE_EXCLUSIVE = 0x00000040,
+                LOAD_LIBRARY_AS_IMAGE_RESOURCE = 0x00000020,
+                LOAD_LIBRARY_SEARCH_APPLICATION_DIR = 0x00000200,
+                LOAD_LIBRARY_SEARCH_DEFAULT_DIRS = 0x00001000,
+                LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR = 0x00000100,
+                LOAD_LIBRARY_SEARCH_SYSTEM32 = 0x00000800,
+                LOAD_LIBRARY_SEARCH_USER_DIRS = 0x00000400,
+                LOAD_WITH_ALTERED_SEARCH_PATH = 0x00000008
+            }
         }
 
         public static menuicons displayicons = new burntkermitmenuicons();
@@ -372,7 +391,7 @@ namespace MissionPlanner
         /// <summary>
         /// spech engine static class
         /// </summary>
-        public static Speech speechEngine { get; set; }
+        public static ISpeech speechEngine { get; set; }
 
         /// <summary>
         /// joystick static class
@@ -622,6 +641,18 @@ namespace MissionPlanner
             log.Info("Mainv2 ctor");
 
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
+            try
+            {
+                if (Environment.Is64BitProcess)
+                {
+                    var skia = NativeMethods.LoadLibraryEx("x64/libSkiaSharp.dll", IntPtr.Zero, 0);
+                }
+                else
+                {
+                    var skia = NativeMethods.LoadLibraryEx("x86/libSkiaSharp.dll", IntPtr.Zero, 0);
+                }
+            } catch { }
 
             // set this before we reset it
             Settings.Instance["NUM_tracklength"] = "200";
@@ -1080,6 +1111,8 @@ namespace MissionPlanner
                 MenuDonate.Text = "";
                 MenuDonate.Image = Program.Logo;
             }
+
+
 
             Application.DoEvents();
 
@@ -1799,7 +1832,7 @@ namespace MissionPlanner
             // sanity check
             if (comPort.BaseStream.IsOpen && MainV2.comPort.MAV.cs.groundspeed > 4)
             {
-                if (DialogResult.No ==
+                if ((int)DialogResult.No ==
                     CustomMessageBox.Show(Strings.Stillmoving, Strings.Disconnect, MessageBoxButtons.YesNo))
                 {
                     return;
@@ -3042,6 +3075,28 @@ namespace MissionPlanner
 
             ZeroConf.ProbeForRTSP();
 
+            CommsSerialScan.doConnect += port =>
+            {
+                if (MainV2.instance.InvokeRequired)
+                {
+                    MainV2.instance.BeginInvoke(
+                        (Action) delegate()
+                        {
+                            MAVLinkInterface mav = new MAVLinkInterface();
+                            mav.BaseStream = port;
+                            MainV2.instance.doConnect(mav, "preset", "0");
+                            MainV2.Comports.Add(mav);
+                        });
+                }
+                else
+                {
+                    MAVLinkInterface mav = new MAVLinkInterface();
+                    mav.BaseStream = port;
+                    MainV2.instance.doConnect(mav, "preset", "0");
+                    MainV2.Comports.Add(mav);
+                }
+            };
+
             try
             {
                 log.Info("Load AltitudeAngel");
@@ -3052,7 +3107,7 @@ namespace MissionPlanner
                 {
                     if (CustomMessageBox.Show(
                             "Do you wish to enable Altitude Angel airspace management data?\nFor more information visit [link;http://www.altitudeangel.com;www.altitudeangel.com]",
-                            "Altitude Angel - Enable", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            "Altitude Angel - Enable", MessageBoxButtons.YesNo) == (int)DialogResult.Yes)
                     {
                         Utilities.AltitudeAngel.AltitudeAngel.service.SignInAsync();
                     }
@@ -3193,7 +3248,7 @@ namespace MissionPlanner
 #if !AERONAVICS
             if (Settings.Instance["newuser"] == null)
             {
-                if (CustomMessageBox.Show("This is your first run, Do you wish to use the setup wizard?\nRecomended for new users.", "Wizard", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+                if (CustomMessageBox.Show("This is your first run, Do you wish to use the setup wizard?\nRecomended for new users.", "Wizard", MessageBoxButtons.YesNo) == (int)System.Windows.Forms.DialogResult.Yes)
                 {
                     Wizard.Wizard wiz = new Wizard.Wizard();
 
@@ -3593,6 +3648,28 @@ namespace MissionPlanner
                     CurrentState.DistanceUnit = "m";
                 }
 
+                // alt
+                if (Settings.Instance["altunits"] != null)
+                {
+                    switch (
+                        (Common.distances)Enum.Parse(typeof(Common.altitudes), Settings.Instance["altunits"].ToString()))
+                    {
+                        case Common.distances.Meters:
+                            CurrentState.multiplieralt = 1;
+                            CurrentState.AltUnit = "m";
+                            break;
+                        case Common.distances.Feet:
+                            CurrentState.multiplieralt = 3.2808399f;
+                            CurrentState.AltUnit = "ft";
+                            break;
+                    }
+                }
+                else
+                {
+                    CurrentState.multiplieralt = 1;
+                    CurrentState.AltUnit = "m";
+                }
+
                 // speed
                 if (Settings.Instance["speedunits"] != null)
                 {
@@ -3616,7 +3693,7 @@ namespace MissionPlanner
                             break;
                         case Common.speeds.knots:
                             CurrentState.multiplierspeed = 1.94384449f;
-                            CurrentState.SpeedUnit = "knots";
+                            CurrentState.SpeedUnit = "kts";
                             break;
                     }
                 }

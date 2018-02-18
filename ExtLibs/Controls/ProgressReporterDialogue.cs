@@ -4,6 +4,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Reflection;
 using log4net;
+using MissionPlanner.MsgBox;
 
 namespace MissionPlanner.Controls
 {
@@ -102,7 +103,7 @@ namespace MissionPlanner.Controls
             try
             {
                 log.Info("DoWork");
-                if (this.DoWork != null) this.DoWork(this, doWorkArgs);
+                if (this.DoWork != null) this.DoWork(this);
                 log.Info("DoWork Done");
             }
             catch(Exception e)

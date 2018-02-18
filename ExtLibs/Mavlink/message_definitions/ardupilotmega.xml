@@ -3,6 +3,8 @@
   <include>common.xml</include>
   <!-- vendors -->
   <include>uAvionix.xml</include>
+  <include>icarous.xml</include>
+
   <dialect>2</dialect>
   <!-- note that APM specific messages should use the command id range from 150 to 250, to leave plenty of room for growth of common.xml If you prototype a message here, then you should consider if it is general enough to move into common.xml later -->
   <enums>
@@ -90,11 +92,22 @@
         <param index="7">Empty</param>
       </entry>
       <entry value="42004" name="MAV_CMD_FIXED_MAG_CAL">
-        <description>Magnetometer calibration based on fixed position in earth field</description>
+        <description>Magnetometer calibration based on fixed position
+        in earth field given by inclination, declination and intensity</description>
         <param index="1">MagDeclinationDegrees</param>
         <param index="2">MagInclinationDegrees</param>
         <param index="3">MagIntensityMilliGauss</param>
         <param index="4">YawDegrees</param>
+        <param index="5">Empty</param>
+        <param index="6">Empty</param>
+        <param index="7">Empty</param>
+      </entry>
+      <entry value="42005" name="MAV_CMD_FIXED_MAG_CAL_FIELD">
+        <description>Magnetometer calibration based on fixed expected field values in milliGauss</description>
+        <param index="1">FieldX</param>
+        <param index="2">FieldY</param>
+        <param index="3">FieldZ</param>
+        <param index="4">Empty</param>
         <param index="5">Empty</param>
         <param index="6">Empty</param>
         <param index="7">Empty</param>
@@ -149,9 +162,9 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="42501" name="MAV_CMD_GIMBAL_RESET">
-        <description>Causes the gimbal to reset and boot as if it was just powered on</description>
-        <param index="1">Empty</param>
+      <entry value="42427" name="MAV_CMD_SET_FACTORY_TEST_MODE">
+        <description>Command autopilot to get into factory test/diagnostic mode</description>
+        <param index="1">0 means get out of test mode, 1 means get into test mode</param>
         <param index="2">Empty</param>
         <param index="3">Empty</param>
         <param index="4">Empty</param>
@@ -159,9 +172,9 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="42427" name="MAV_CMD_SET_FACTORY_TEST_MODE">
-        <description>Command autopilot to get into factory test/diagnostic mode</description>
-        <param index="1">0 means get out of test mode, 1 means get into test mode</param>
+      <entry value="42501" name="MAV_CMD_GIMBAL_RESET">
+        <description>Causes the gimbal to reset and boot as if it was just powered on</description>
+        <param index="1">Empty</param>
         <param index="2">Empty</param>
         <param index="3">Empty</param>
         <param index="4">Empty</param>
@@ -198,6 +211,16 @@
         <param index="5">Magic number</param>
         <param index="6">Magic number</param>
         <param index="7">Magic number</param>
+      </entry>
+      <entry value="42600" name="MAV_CMD_DO_WINCH">
+        <description>Command to operate winch</description>
+        <param index="1">winch number (0 for the default winch, otherwise a number from 1 to max number of winches on the vehicle)</param>
+        <param index="2">action (0=relax, 1=relative length control, 2=rate control.  See WINCH_ACTIONS enum)</param>
+        <param index="3">release length (cable distance to unwind in meters, negative numbers to wind in cable)</param>
+        <param index="4">release rate (meters/second)</param>
+        <param index="5">Empty</param>
+        <param index="6">Empty</param>
+        <param index="7">Empty</param>
       </entry>
     </enum>
     <!-- AP_Limits Enums -->
@@ -263,6 +286,19 @@
       </entry>
       <entry value="1" name="GRIPPER_ACTION_GRAB">
         <description>gripper grabs onto cargo</description>
+      </entry>
+    </enum>
+    <!-- winch action enum -->
+    <enum name="WINCH_ACTIONS">
+      <description>Winch actions</description>
+      <entry value="0" name="WINCH_RELAXED">
+        <description>relax winch</description>
+      </entry>
+      <entry value="1" name="WINCH_RELATIVE_LENGTH_CONTROL">
+        <description>winch unwinds or winds specified length of cable optionally using specified rate</description>
+      </entry>
+      <entry value="2" name="WINCH_RATE_CONTROL">
+        <description>winch unwinds or winds cable at specified rate in meters/seconds</description>
       </entry>
     </enum>
     <!-- Camera event types -->
@@ -1426,18 +1462,18 @@
     <!-- camera vision based attitude and position delta message -->
     <message id="11011" name="VISION_POSITION_DELTA">
       <description>camera vision based attitude and position deltas</description>
-      <field name="time_usec" type="uint64_t">Timestamp (microseconds, synced to UNIX time or since system boot)</field>
-      <field name="time_delta_usec" type="uint64_t">Time in microseconds since the last reported camera frame</field>
+      <field name="time_usec" type="uint64_t" units="us">Timestamp (microseconds, synced to UNIX time or since system boot)</field>
+      <field name="time_delta_usec" type="uint64_t" units="us">Time in microseconds since the last reported camera frame</field>
       <field type="float[3]" name="angle_delta">Defines a rotation vector in body frame that rotates the vehicle from the previous to the current orientation</field>
-      <field type="float[3]" name="position_delta">Change in position in meters from previous to current frame rotated into body frame (0=forward, 1=right, 2=down)</field>
-      <field type="float" name="confidence">normalised confidence value from 0 to 100</field>
+      <field type="float[3]" name="position_delta" units="m">Change in position in meters from previous to current frame rotated into body frame (0=forward, 1=right, 2=down)</field>
+      <field type="float" name="confidence" units="%">normalised confidence value from 0 to 100</field>
     </message>
     <!-- Angle of Attack and Side Slip Angle message -->
     <message id="11020" name="AOA_SSA">
       <description>Angle of Attack and Side Slip Angle</description>
-      <field type="uint64_t" name="time_usec">Timestamp (micros since boot or Unix epoch)</field>
-      <field name="AOA" type="float">Angle of Attack (degrees)</field>
-      <field name="SSA" type="float">Side Slip Angle (degrees)</field>
+      <field type="uint64_t" name="time_usec" units="us">Timestamp (micros since boot or Unix epoch)</field>
+      <field name="AOA" type="float" units="deg">Angle of Attack (degrees)</field>
+      <field name="SSA" type="float" units="deg">Side Slip Angle (degrees)</field>
     </message>
   </messages>
 </mavlink>

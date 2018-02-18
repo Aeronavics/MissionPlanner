@@ -3,16 +3,11 @@
     <include>ardupilotmega.xml</include>
     <include>uAvionix.xml</include>
     <include>common.xml</include>
+	<include>icarous.xml</include>
     <enums>
           <enum name="MAV_COMPONENT">
               <!-- cID 0 is always reserved, it has the special meaning 'ALL COMPONENTS'. -->
               <!-- cID 0 is defined in common.xml -->
-
-              <!-- cID 1 is used by the Flight Controller: the Pixhawk hard codes C1, this definition is just provided so other components can recognise the flight controller. -->
-             <entry value="1" name="MAV_COMP_ID_FCS1">
-                  <description>cID for Primary Flight Controller.  Note that the Pixhawk hard codes C1, so this definition is just for convenience.</description>
-             </entry>
-
               <!-- cID's 25-49 are used by Mission Computer elements of the Aeronavics Avionics Stack. -->
               <entry value="25" name="MAV_COMP_ID_UNL_MC_MONOLITH">
                   <description>cID for monolithic elements on the Mission Computer, which don't have their own cID.  Most obviously, the parameter server uses this cID, so all elements using the parameter server should use this cID.</description>
