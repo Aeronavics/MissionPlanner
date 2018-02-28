@@ -924,7 +924,7 @@
     <EmbeddedResource Include="Controls\Video.resx"><DependentUpon>Video.cs</DependentUpon> </EmbeddedResource>
     <EmbeddedResource Include="Controls\PreFlight\CheckListEditor.resx"><DependentUpon>CheckListEditor.cs</DependentUpon> </EmbeddedResource>
     <EmbeddedResource Include="Controls\PreFlight\CheckListInput.resx"><DependentUpon>CheckListInput.cs</DependentUpon> </EmbeddedResource>
-	<EmbeddedResource Include="FaceMap\FaceMapUI.resx"><DependentUpon>FaceMapUI.cs</DependentUpon> </EmbeddedResource>
+    <EmbeddedResource Include="FaceMap\FaceMapUI.resx"><DependentUpon>FaceMapUI.cs</DependentUpon> </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\FlightData.resx"><DependentUpon>FlightData.cs</DependentUpon> </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\FlightData.ar.resx"><DependentUpon>FlightData.cs</DependentUpon> </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\FlightData.az-Latn-AZ.resx"><DependentUpon>FlightData.cs</DependentUpon> </EmbeddedResource>
