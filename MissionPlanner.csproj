@@ -233,7 +233,7 @@
     <PackageReference Include="SharpDX.DirectInput" version="4.0.1" targetFramework="net462" />
     <PackageReference Include="SharpZipLib" version="0.86.0" targetFramework="net40" />
     <PackageReference Include="SkiaSharp" Version="1.59.3" />
-    <PackageReference Include="SSH.NET" version="2016.0.0" targetFramework="net40" />
+    <PackageReference Include="SSH.NET" version="2016.1.0" targetFramework="net40" />
     <PackageReference Include="System.Drawing.Common" Version="4.5.0-preview1-25914-04" />
     <PackageReference Include="System.IO.Ports" Version="4.4.0" />
     <PackageReference Include="System.Reactive" Version="3.1.1" />
@@ -268,6 +268,7 @@
     <Compile Include="GCSViews\ConfigurationView\ConfigFFT.cs">
       <SubType>Control</SubType>
     </Compile>
+    <Compile Include="GCSViews\XTermRBGColors.cs" />
     <Compile Include="GenOTP.cs"> <SubType>Control</SubType> </Compile>
     <Compile Include="L10N.cs" />
     <Compile Include="Log\LogStrings.Designer.cs">
@@ -338,8 +339,8 @@
     <Compile Include="Controls\PreFlight\CheckListEditor.cs"> <SubType>Control</SubType> </Compile>
     <Compile Include="Controls\PreFlight\CheckListInput.cs" />
     <Compile Include="Controls\PreFlight\CheckListItem.cs" />
-	<Compile Include="FaceMap\FaceMapPlugin.cs" />
-	<Compile Include="FaceMap\FaceMap.cs" />
+    <Compile Include="FaceMap\FaceMapPlugin.cs" />
+    <Compile Include="FaceMap\FaceMap.cs" />
     <Compile Include="FaceMap\FaceMapUI.cs"> <SubType>Control</SubType> </Compile>
     <Compile Include="GCSViews\FlightData.cs"> <SubType>Control</SubType> </Compile>
     <Compile Include="GCSViews\FlightPlanner.cs"> <SubType>Control</SubType> </Compile>
@@ -569,7 +570,7 @@
     <Compile Include="Controls\Video.Designer.cs"><DependentUpon>Video.cs</DependentUpon> </Compile>
     <Compile Include="Controls\PreFlight\CheckListControl.Designer.cs"><DependentUpon>CheckListControl.cs</DependentUpon> </Compile>
     <Compile Include="Controls\PreFlight\CheckListEditor.Designer.cs"><DependentUpon>CheckListEditor.cs</DependentUpon> </Compile>
-	<Compile Include="FaceMap\FaceMapUI.Designer.cs"><DependentUpon>FaceMapUI.cs</DependentUpon> </Compile>
+    <Compile Include="FaceMap\FaceMapUI.Designer.cs"><DependentUpon>FaceMapUI.cs</DependentUpon> </Compile>
     <Compile Include="GCSViews\FlightData.Designer.cs"><DependentUpon>FlightData.cs</DependentUpon> </Compile>
     <Compile Include="GCSViews\FlightPlanner.Designer.cs"><DependentUpon>FlightPlanner.cs</DependentUpon> </Compile>
     <Compile Include="GCSViews\Help.Designer.cs"><DependentUpon>Help.cs</DependentUpon> </Compile>
