@@ -232,8 +232,7 @@ namespace MissionPlanner
             {
                 _displayConfiguration = value;
                 Settings.Instance["displayview"] = _displayConfiguration.ConvertToString();
-                if (LayoutChanged != null)
-                    LayoutChanged(null, EventArgs.Empty);
+                LayoutChanged?.Invoke(null, EventArgs.Empty);
             }
         }
 
@@ -567,6 +566,8 @@ namespace MissionPlanner
             Utilities.adsb.UpdatePlanePosition += adsb_UpdatePlanePosition;
 
             MAVLinkInterface.UpdateADSBPlanePosition += adsb_UpdatePlanePosition;
+
+            MAVLinkInterface.gcssysid = (byte) Settings.Instance.GetByte("gcsid", MAVLinkInterface.gcssysid);
 
             Form splash = Program.Splash;
 
@@ -1175,7 +1176,7 @@ namespace MissionPlanner
                     // create new plane
                     MainV2.instance.adsbPlanes[id] =
                         new adsb.PointLatLngAltHdg(adsb.Lat, adsb.Lng,
-                            adsb.Alt, adsb.Heading, id,
+                            adsb.Alt, adsb.Heading, adsb.Speed , id,
                             DateTime.Now) {CallSign = adsb.CallSign};
                 }
 
@@ -2574,7 +2575,9 @@ namespace MissionPlanner
                     {
                         armedstatus = MainV2.comPort.MAV.cs.armed;
                         // status just changed to armed
-                        if (MainV2.comPort.MAV.cs.armed == true && MainV2.comPort.MAV.aptype != MAVLink.MAV_TYPE.GIMBAL)
+                        if (MainV2.comPort.MAV.cs.armed == true && 
+                            MainV2.comPort.MAV.apname != MAVLink.MAV_AUTOPILOT.INVALID &&
+                            MainV2.comPort.MAV.aptype != MAVLink.MAV_TYPE.GIMBAL)
                         {
                             System.Threading.ThreadPool.QueueUserWorkItem(state =>
                             {
@@ -3149,7 +3152,7 @@ namespace MissionPlanner
                                 "GStreamer", System.Windows.Forms.MessageBoxButtons.YesNo) ==
                             (int)System.Windows.Forms.DialogResult.Yes)
                         {
-                            GStreamer.DownloadGStreamer();
+                            UDPVideoShim.DownloadGStreamer();
                         }
                     }
 
@@ -3160,18 +3163,33 @@ namespace MissionPlanner
                             // 36 retrys
                             for (int i = 0; i < 36; i++)
                             {
-                                var st = GStreamer.StartA(cmds["gstream"]);
-                                if (st == null)
+                                try
                                 {
-                                    // prevent spam
-                                    Thread.Sleep(5000);
-                                }
-                                else
-                                {
-                                    while (st.IsAlive)
+                                    var st = GStreamer.StartA(cmds["gstream"]);
+                                    if (st == null)
                                     {
-                                        Thread.Sleep(1000);
+                                        // prevent spam
+                                        Thread.Sleep(5000);
                                     }
+                                    else
+                                    {
+                                        while (st.IsAlive)
+                                        {
+                                            Thread.Sleep(1000);
+                                        }
+                                    }
+                                }
+                                catch (BadImageFormatException ex)
+                                {
+                                    // not running on x64
+                                    log.Error(ex);
+                                    return;
+                                }
+                                catch (DllNotFoundException ex)
+                                {
+                                    // missing or failed download
+                                    log.Error(ex);
+                                    return;
                                 }
                             }
                         }) {IsBackground = true}.Start();
@@ -3457,6 +3475,8 @@ namespace MissionPlanner
             }
             if (keyData == (Keys.Control | Keys.L)) // limits
             {
+                new GCSViews.ConfigurationView.ConfigUAVCAN().ShowUserControl();
+
                 return true;
             }
             if (keyData == (Keys.Control | Keys.W)) // test ac config
@@ -3656,7 +3676,11 @@ namespace MissionPlanner
 
         private void CMB_baudrate_TextChanged(object sender, EventArgs e)
         {
-            comPortBaud = int.Parse(_connectionControl.CMB_baudrate.Text);
+            if (!int.TryParse(_connectionControl.CMB_baudrate.Text, out comPortBaud))
+            {
+                CustomMessageBox.Show(Strings.ERROR, Strings.InvalidBaudRate);
+                return;
+            }
             var sb = new StringBuilder();
             int baud = 0;
             for (int i = 0; i < _connectionControl.CMB_baudrate.Text.Length; i++)

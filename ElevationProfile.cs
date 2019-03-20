@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using ZedGraph;
 using System.Xml;
+using GMap.NET.MapProviders;
 using MissionPlanner.GCSViews;
 using MissionPlanner.Utilities; // GE xml alt reader
 
@@ -61,7 +62,7 @@ namespace MissionPlanner
                 lastloc = loc;
             }
 
-            this.homealt = homealt/CurrentState.multiplieralt;
+            this.homealt = homealt;
 
             Form frm = Common.LoadingBox("Loading", "using alt data");
 
@@ -90,7 +91,7 @@ namespace MissionPlanner
                 if (geloc == null)
                     continue;
 
-                list2.Add(a, geloc.Alt);
+                list2.Add(a*CurrentState.multiplierdist, Convert.ToInt32(geloc.Alt * CurrentState.multiplieralt));
 
                 Console.WriteLine("GE " + geloc.Lng + "," + geloc.Lat + "," + geloc.Alt);
 
@@ -120,13 +121,13 @@ namespace MissionPlanner
                 else if (altmode == GCSViews.FlightPlanner.altmode.Relative)
                 {
                     // already includes the home alt
-                    list1.Add(a, (planloc.Alt/CurrentState.multiplieralt), 0, planloc.Tag);
+                    list1.Add(a * CurrentState.multiplierdist, (planloc.Alt*CurrentState.multiplieralt), 0, planloc.Tag);
                 }
                 else
                 {
                     // abs
                     // already absolute
-                    list1.Add(a, (planloc.Alt/CurrentState.multiplieralt), 0, planloc.Tag);
+                    list1.Add(a * CurrentState.multiplierdist, (planloc.Alt*CurrentState.multiplieralt), 0, planloc.Tag);
                 }
 
                 lastloc = planloc;
@@ -187,10 +188,10 @@ namespace MissionPlanner
                     disttotal += subdist;
 
                     // srtm alts
-                    list3.Add(disttotal, newpoint.Alt/CurrentState.multiplieralt);
+                    list3.Add(disttotal * CurrentState.multiplierdist, Convert.ToInt32(newpoint.Alt * CurrentState.multiplieralt));
 
                     // terrain alt
-                    list4terrain.Add(disttotal, (newpoint.Alt + alt) /CurrentState.multiplieralt);
+                    list4terrain.Add(disttotal * CurrentState.multiplierdist, Convert.ToInt32((newpoint.Alt + alt) * CurrentState.multiplieralt));
 
                     lastpnt = newpoint;
                 }
@@ -237,9 +238,9 @@ namespace MissionPlanner
             {
                 using (
                     XmlTextReader xmlreader =
-                        new XmlTextReader("http://maps.google.com/maps/api/elevation/xml?path=" + coords + "&samples=" +
+                        new XmlTextReader("https://maps.google.com/maps/api/elevation/xml?path=" + coords + "&samples=" +
                                           (distance/100).ToString(new System.Globalization.CultureInfo("en-US")) +
-                                          "&sensor=false"))
+                                          "&sensor=false&key="+GoogleMapProvider.APIKey))
                 {
                     while (xmlreader.Read())
                     {
@@ -279,8 +280,8 @@ namespace MissionPlanner
 
             // Set the titles and axis labels
             myPane.Title.Text = "Elevation above ground";
-            myPane.XAxis.Title.Text = "Distance (m)";
-            myPane.YAxis.Title.Text = "Elevation (m)";
+            myPane.XAxis.Title.Text = "Distance (" + CurrentState.DistanceUnit + ")";
+            myPane.YAxis.Title.Text = "Elevation (" + CurrentState.AltUnit + ")";
 
             LineItem myCurve;
 
@@ -308,7 +309,7 @@ namespace MissionPlanner
             myPane.XAxis.MajorGrid.IsVisible = true;
 
             myPane.XAxis.Scale.Min = 0;
-            myPane.XAxis.Scale.Max = distance;
+            myPane.XAxis.Scale.Max = distance * CurrentState.multiplierdist;
 
             // Make the Y axis scale red
             myPane.YAxis.Scale.FontSpec.FontColor = Color.Red;
