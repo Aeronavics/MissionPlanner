@@ -89,6 +89,7 @@ namespace MissionPlanner
             public bool usespeed;
             public bool autotakeoff;
             public bool autotakeoff_RTL;
+            public bool extraimages;
 
             public decimal splitmission;
 
@@ -275,6 +276,8 @@ namespace MissionPlanner
             num_setservolow.Value = facemapdata.setservo_low;
             num_setservohigh.Value = facemapdata.setservo_high;
 
+            CHK_extraimages.Checked = facemapdata.extraimages;
+
             // Copter Settings
             NUM_copter_delay.Value = facemapdata.copter_delay;
 
@@ -304,6 +307,8 @@ namespace MissionPlanner
             facemapdata.camerapitch = NUM_cameraPitch.Value;
             facemapdata.toeheight = NUM_toeHeight.Value;
             facemapdata.campitchunlock = CHK_camPitchUnlock.Checked;
+
+            facemapdata.extraimages = CHK_extraimages.Checked;
 
             // Copter Settings
             facemapdata.copter_delay = NUM_copter_delay.Value;
@@ -339,6 +344,7 @@ namespace MissionPlanner
                 loadsetting("facemap_campitch", NUM_cameraPitch);
                 loadsetting("facemap_toeheight", NUM_toeHeight);
                 loadsetting("facemap_unlockcampitch", CHK_camPitchUnlock);
+                loadsetting("facemap_extraimages", CHK_extraimages);
 
                 loadsetting("facemap_overlap", num_overlap);
                 loadsetting("facemap_sidelap", num_sidelap);
@@ -405,6 +411,7 @@ namespace MissionPlanner
             plugin.Host.config["facemap_campitch"] = NUM_cameraPitch.Value.ToString();
             plugin.Host.config["facemap_toeheight"] = NUM_toeHeight.Value.ToString();
             plugin.Host.config["facemap_unlockcampitch"] = CHK_camPitchUnlock.Checked.ToString();
+            plugin.Host.config["facemap_extraimages"] = CHK_extraimages.Checked.ToString();
 
             plugin.Host.config["facemap_usespeed"] = CHK_usespeed.Checked.ToString();
             plugin.Host.config["facemap_speed"] = NUM_UpDownFlySpeed.Value.ToString();
@@ -712,20 +719,34 @@ namespace MissionPlanner
             pictureBox1.Invalidate();
         }
 
-        private void AddWP(double Lng, double Lat, double Alt, double bearing, double delay = 0, object gridobject = null)
+        private void AddWP(double Lng, double Lat, double Alt, double bearing, double delay = 0, object gridobject = null, bool image_before_yaw = false, bool image_after_yaw = false)
         {
+            // Delay between commands by whatever the maximum is of the number that the user entered in the delay box, or another hard coded delay.
+            double max_delay = Math.Max(Math.Max((double)NUM_copter_delay.Value, 0), Math.Max(delay, 0));
+
+            // If required, we capture an extra image before we adjust the heading.
+            if (image_before_yaw && (bearing != -1))
+            {
+                plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_DIGICAM_CONTROL, 0, 0, 0, 0, 0, 1, 0, gridobject);
+                plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DELAY, max_delay, 0, 0, 0, 0, 0, 0, gridobject);
+            }
+
             if (bearing != -1)
             {
                 plugin.Host.AddWPtoList(MAVLink.MAV_CMD.CONDITION_YAW, bearing, 0, 0, 0, 0, 0, 0, gridobject);
             }
-            if (NUM_copter_delay.Value > 0 || delay > 0)
+
+            // If required, we capture an extra image after we adjust the heading.
+            if (image_after_yaw && (bearing != -1))
             {
-                plugin.Host.AddWPtoList(MAVLink.MAV_CMD.WAYPOINT, ((double)NUM_copter_delay.Value > delay ? (double)NUM_copter_delay.Value : delay), 0, 0, 0, Lng, Lat, Alt * CurrentState.multiplierdist, gridobject);
+                plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_DIGICAM_CONTROL, 0, 0, 0, 0, 0, 1, 0, gridobject);
+                plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DELAY, max_delay, 0, 0, 0, 0, 0, 0, gridobject);
+
+                // Then you need to yaw AGAIN, because DELAY counts as a nav command, so the yaw will become unlocked again.
+                plugin.Host.AddWPtoList(MAVLink.MAV_CMD.CONDITION_YAW, bearing, 0, 0, 0, 0, 0, 0, gridobject);
             }
-            else
-            {
-                plugin.Host.AddWPtoList(MAVLink.MAV_CMD.WAYPOINT, 0, 0, 0, 0, Lng, Lat, Alt * CurrentState.multiplierdist, gridobject);
-            }
+
+            plugin.Host.AddWPtoList(MAVLink.MAV_CMD.WAYPOINT, max_delay, 0, 0, 0, Lng, Lat, Alt * CurrentState.multiplierdist, gridobject);
         }
 
         string secondsToNice(double seconds)
@@ -1299,22 +1320,32 @@ namespace MissionPlanner
                                 direction = -direction;
                             }
 
+                            // If we're just arrived at the last waypoint, snap one more pic.
+                            if (plla.Tag == "R" && lastplla.Tag != "R" && CHK_extraimages.Checked)
+                            {
+                                plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_DIGICAM_CONTROL, 0, 0, 0, 0, 0, 1, 0, gridobject);
+                                plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DELAY, (double)NUM_copter_delay.Value, 0, 0, 0, 0, 0, 0, gridobject);
+                            }
+
                             // points that do not trigger the camera
-                         
+
                             if (plla.Lat != lastplla.Lat || plla.Lng != lastplla.Lng ||
                                 plla.Alt != lastplla.Alt)
                             {
                                 switch (plla.Tag)
                                 {
                                     case "M":
-                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
+                                        if (lastplla.Tag == "S" || lastplla.Tag == "SM") AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, image_after_yaw: CHK_extraimages.Checked);
+                                        else AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, image_before_yaw: CHK_extraimages.Checked, image_after_yaw: CHK_extraimages.Checked);
                                         break;
                                     case "S":
+                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1, image_before_yaw: CHK_extraimages.Checked);
+                                        break;
                                     case "E":
                                         AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
                                         break;
                                     case "R":
-                                        //turn off camera and fly without straifing the face as an indication that the mission is complete on return path
+                                        //turn off camera and fly without strafing the face as an indication that the mission is complete on return path
                                         AddWP(plla.Lng, plla.Lat, plla.Alt, -1);
 
                                         if (rad_trigdist.Checked && startedtrigdist)
@@ -1337,23 +1368,17 @@ namespace MissionPlanner
                                     if (plla.Tag == "SM")
                                     {
                                         //  s > sm, need to dup check
-                                        if (plla.Lat != lastplla.Lat || plla.Lng != lastplla.Lng ||
-                                            plla.Alt != lastplla.Alt)
-                                            AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
+                                        if (plla.Lat != lastplla.Lat || plla.Lng != lastplla.Lng || plla.Alt != lastplla.Alt)
+                                            AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, image_after_yaw: CHK_extraimages.Checked);
 
-                                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_CAM_TRIGG_DIST,
-                                            (float) NUM_spacing.Value,
-                                            0, 0, 0, 0, 0, 0, gridobject);
-
+                                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_CAM_TRIGG_DIST, (float) NUM_spacing.Value, 0, 0, 0, 0, 0, 0, gridobject);
                                         startedtrigdist = true;
                                     }
                                     else if (plla.Tag == "ME")
                                     {
-                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
+                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1, image_before_yaw: CHK_extraimages.Checked, image_after_yaw: CHK_extraimages.Checked);
 
-                                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_CAM_TRIGG_DIST, 0,
-                                            0, 0, 0, 0, 0, 0, gridobject);
-
+                                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_CAM_TRIGG_DIST, 0, 0, 0, 0, 0, 0, 0, gridobject);
                                         startedtrigdist = false;
                                     }
                                 }
@@ -1362,9 +1387,7 @@ namespace MissionPlanner
                                     // add single start trigger
                                     if (!startedtrigdist)
                                     {
-                                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_CAM_TRIGG_DIST,
-                                            (float) NUM_spacing.Value,
-                                            0, 0, 0, 0, 0, 0, gridobject);
+                                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_CAM_TRIGG_DIST, (float) NUM_spacing.Value, 0, 0, 0, 0, 0, 0, gridobject);
                                         startedtrigdist = true;
                                     }
                                     else if (plla.Tag == "ME")
@@ -1436,6 +1459,12 @@ namespace MissionPlanner
                     {
                         plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_CAM_TRIGG_DIST, 0, 0, 0, 0, 0, 0, 0, gridobject);
                         startedtrigdist = false;
+                    }
+                    // If we're just arrived at the last waypoint, snap one more pic.
+                    if (!CHK_FollowPathHome.Checked && CHK_extraimages.Checked)
+                    {
+                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_DIGICAM_CONTROL, 0, 0, 0, 0, 0, 1, 0, gridobject);
+                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DELAY, (double) NUM_copter_delay.Value, 0, 0, 0, 0, 0, 0, gridobject);
                     }
 
                     //reset gimbal pitch for landing

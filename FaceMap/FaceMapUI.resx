@@ -1432,7 +1432,7 @@
     <value>BUT_samplephoto</value>
   </data>
   <data name="&gt;&gt;BUT_samplephoto.Type" xml:space="preserve">
-    <value>MissionPlanner.Controls.MyButton, MissionPlanner.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>MissionPlanner.Controls.MyButton, MissionPlanner.Controls, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;BUT_samplephoto.Parent" xml:space="preserve">
     <value>groupBox2</value>
@@ -1909,7 +1909,7 @@
     <value>BUT_save</value>
   </data>
   <data name="&gt;&gt;BUT_save.Type" xml:space="preserve">
-    <value>MissionPlanner.Controls.MyButton, MissionPlanner.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>MissionPlanner.Controls.MyButton, MissionPlanner.Controls, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;BUT_save.Parent" xml:space="preserve">
     <value>groupBox2</value>
@@ -2473,6 +2473,36 @@ Control-O to load form file</value>
   <data name="&gt;&gt;label38.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="CHK_extraimages.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="CHK_extraimages.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="CHK_extraimages.Location" type="System.Drawing.Point, System.Drawing">
+    <value>11, 245</value>
+  </data>
+  <data name="CHK_extraimages.Size" type="System.Drawing.Size, System.Drawing">
+    <value>127, 17</value>
+  </data>
+  <data name="CHK_extraimages.TabIndex" type="System.Int32, mscorlib">
+    <value>65</value>
+  </data>
+  <data name="CHK_extraimages.Text" xml:space="preserve">
+    <value>Capture Extra Images</value>
+  </data>
+  <data name="&gt;&gt;CHK_extraimages.Name" xml:space="preserve">
+    <value>CHK_extraimages</value>
+  </data>
+  <data name="&gt;&gt;CHK_extraimages.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;CHK_extraimages.Parent" xml:space="preserve">
+    <value>groupBox6</value>
+  </data>
+  <data name="&gt;&gt;CHK_extraimages.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="CHK_FollowPathHome.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -2501,7 +2531,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;CHK_FollowPathHome.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <data name="CHK_toandland_RTL.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2531,7 +2561,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;CHK_toandland_RTL.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="CHK_toandland.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2561,7 +2591,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;CHK_toandland.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="label26.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2591,7 +2621,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;label26.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="label5.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2621,7 +2651,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="label28.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2651,7 +2681,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;label28.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="label7.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2681,7 +2711,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="label4.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2711,7 +2741,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="NUM_cameraPitch.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -2735,7 +2765,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;NUM_cameraPitch.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>9</value>
   </data>
   <data name="NUM_Benches.Location" type="System.Drawing.Point, System.Drawing">
     <value>143, 137</value>
@@ -2756,7 +2786,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;NUM_Benches.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>10</value>
   </data>
   <data name="NUM_angle.Location" type="System.Drawing.Point, System.Drawing">
     <value>143, 86</value>
@@ -2777,7 +2807,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;NUM_angle.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>11</value>
   </data>
   <data name="CMB_camera.Location" type="System.Drawing.Point, System.Drawing">
     <value>105, 13</value>
@@ -2798,7 +2828,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;CMB_camera.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>12</value>
   </data>
   <data name="CHK_camPitchUnlock.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2828,7 +2858,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;CHK_camPitchUnlock.ZOrder" xml:space="preserve">
-    <value>12</value>
+    <value>13</value>
   </data>
   <data name="CHK_facedirection.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2858,7 +2888,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;CHK_facedirection.ZOrder" xml:space="preserve">
-    <value>13</value>
+    <value>14</value>
   </data>
   <data name="NUM_BermDepth.Location" type="System.Drawing.Point, System.Drawing">
     <value>143, 112</value>
@@ -2879,7 +2909,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;NUM_BermDepth.ZOrder" xml:space="preserve">
-    <value>14</value>
+    <value>15</value>
   </data>
   <data name="NUM_toeHeight.Location" type="System.Drawing.Point, System.Drawing">
     <value>142, 212</value>
@@ -2900,7 +2930,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;NUM_toeHeight.ZOrder" xml:space="preserve">
-    <value>15</value>
+    <value>16</value>
   </data>
   <data name="NUM_BenchHeight.Location" type="System.Drawing.Point, System.Drawing">
     <value>142, 58</value>
@@ -2921,7 +2951,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;NUM_BenchHeight.ZOrder" xml:space="preserve">
-    <value>16</value>
+    <value>17</value>
   </data>
   <data name="label6.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2951,7 +2981,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
-    <value>17</value>
+    <value>18</value>
   </data>
   <data name="label1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -2981,7 +3011,7 @@ Control-O to load form file</value>
     <value>groupBox6</value>
   </data>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>18</value>
+    <value>19</value>
   </data>
   <data name="groupBox6.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 6</value>
@@ -3143,7 +3173,7 @@ Control-O to load form file</value>
     <value>BUT_Accept</value>
   </data>
   <data name="&gt;&gt;BUT_Accept.Type" xml:space="preserve">
-    <value>MissionPlanner.Controls.MyButton, MissionPlanner.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>MissionPlanner.Controls.MyButton, MissionPlanner.Controls, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;BUT_Accept.Parent" xml:space="preserve">
     <value>tabSimple</value>
@@ -3224,7 +3254,7 @@ Control-O to load form file</value>
     <value>TRK_zoom</value>
   </data>
   <data name="&gt;&gt;TRK_zoom.Type" xml:space="preserve">
-    <value>MissionPlanner.Controls.MyTrackBar, MissionPlanner.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>MissionPlanner.Controls.MyTrackBar, MissionPlanner.Controls, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;TRK_zoom.Parent" xml:space="preserve">
     <value>$this</value>
@@ -3248,7 +3278,7 @@ Control-O to load form file</value>
     <value>map</value>
   </data>
   <data name="&gt;&gt;map.Type" xml:space="preserve">
-    <value>MissionPlanner.Controls.myGMAP, MissionPlanner.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>MissionPlanner.Controls.myGMAP, MissionPlanner.Controls, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;map.Parent" xml:space="preserve">
     <value>$this</value>

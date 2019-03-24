@@ -116,6 +116,7 @@
             this.tabSimple = new System.Windows.Forms.TabPage();
             this.label38 = new System.Windows.Forms.Label();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.CHK_extraimages = new System.Windows.Forms.CheckBox();
             this.CHK_FollowPathHome = new System.Windows.Forms.CheckBox();
             this.CHK_toandland_RTL = new System.Windows.Forms.CheckBox();
             this.CHK_toandland = new System.Windows.Forms.CheckBox();
@@ -892,6 +893,7 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.CHK_extraimages);
             this.groupBox6.Controls.Add(this.CHK_FollowPathHome);
             this.groupBox6.Controls.Add(this.CHK_toandland_RTL);
             this.groupBox6.Controls.Add(this.CHK_toandland);
@@ -914,6 +916,12 @@
             resources.ApplyResources(this.groupBox6, "groupBox6");
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.TabStop = false;
+            // 
+            // CHK_extraimages
+            // 
+            resources.ApplyResources(this.CHK_extraimages, "CHK_extraimages");
+            this.CHK_extraimages.Name = "CHK_extraimages";
+            this.CHK_extraimages.UseVisualStyleBackColor = true;
             // 
             // CHK_FollowPathHome
             // 
@@ -1184,6 +1192,7 @@
             this.map.EmptyTileColor = System.Drawing.Color.Gray;
             this.map.GrayScaleMode = false;
             this.map.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
+            this.map.HoldInvalidation = false;
             this.map.LevelsKeepInMemmory = 5;
             this.map.MarkersEnabled = true;
             this.map.MaxZoom = 19;
@@ -1386,5 +1395,6 @@
         private System.Windows.Forms.NumericUpDown NUM_toeHeight;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox CHK_FollowPathHome;
+        private System.Windows.Forms.CheckBox CHK_extraimages;
     }
 }
