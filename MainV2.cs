@@ -421,12 +421,24 @@ namespace MissionPlanner
 
         public static bool TerminalTheming = true;
 
+        private string[] DefaultQuickItems =
+        {
+            "alt",
+            "battery_voltage",
+            "DistToHome",
+            "timeInAir",
+            "gpsstatus",
+            "gpsstatus2"
+        };
+
         public void updateLayout(object sender, EventArgs e)
         {
             MenuSimulation.Visible = DisplayConfiguration.displaySimulation;
             MenuTerminal.Visible = DisplayConfiguration.displayTerminal;
             MenuHelp.Visible = DisplayConfiguration.displayHelp;
             MenuDonate.Visible = DisplayConfiguration.displayDonate;
+            MenuArduPilot.Visible = DisplayConfiguration.displayDonate;
+
             MissionPlanner.Controls.BackstageView.BackstageView.Advanced = DisplayConfiguration.isAdvancedMode;
 
             if (Settings.Instance.GetBoolean("menu_autohide") != DisplayConfiguration.autoHideMenuForce)
@@ -2809,6 +2821,10 @@ namespace MissionPlanner
 
         protected override void OnLoad(EventArgs e)
         {
+#if AERONAVICS
+            if (Settings.Instance["autoParamCommit"] == null) Settings.Instance["autoParamCommit"] = "false";
+#endif
+
             // check if its defined, and force to show it if not known about
             if (Settings.Instance["menu_autohide"] == null)
             {

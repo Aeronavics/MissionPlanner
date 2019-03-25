@@ -30,10 +30,10 @@ namespace MissionPlanner.Utilities
 
         //http://firmware.ardupilot.org/manifest.json
 
-        string firmwareurl = "https://raw.github.com/diydrones/binary/master/Firmware/firmware2.xml";
+        string firmwareurl = "https://services.aeronavics.com/MissionPlanner/ArduCopter/firmware2.xml";
 
-        static readonly string gholdurl = ("https://github.com/diydrones/binary/raw/!Hash!/Firmware/firmware2.xml");
-        static readonly string gholdfirmwareurl = ("https://github.com/diydrones/binary/raw/!Hash!/Firmware/!Firmware!");
+        static readonly string gholdurl = ("https://services.aeronavics.com/MissionPlanner/ArduCopter/firmware2.xml");
+        static readonly string gholdfirmwareurl = ("https://services.aeronavics.com/MissionPlanner/ArduCopter/firmware2.xml");
 
         static string[] gholdurls = new string[] {};
 
