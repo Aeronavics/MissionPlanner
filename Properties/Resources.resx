@@ -1715,7 +1715,4 @@ Control-S - save grid file\par
   <data name="planeicon6" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\planetracker6.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="aero_quad2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\aero_quad2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
 </root>
