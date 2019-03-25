@@ -1910,7 +1910,7 @@
             resources.ApplyResources(this.trackBarPitch, "trackBarPitch");
             this.trackBarPitch.LargeChange = 10;
             this.trackBarPitch.Maximum = 45;
-            this.trackBarPitch.Minimum = -45;
+            this.trackBarPitch.Minimum = -90;
             this.trackBarPitch.Name = "trackBarPitch";
             this.trackBarPitch.SmallChange = 5;
             this.trackBarPitch.TickFrequency = 10;
