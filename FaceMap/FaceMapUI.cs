@@ -1231,9 +1231,12 @@ namespace MissionPlanner
                     int wpstart = wpsplit*splitno;
                     int wpend = wpsplit*(splitno + 1);
 
+                    // If planning in absolute mode.
                     if ((FlightPlanner.altmode)plugin.Host.MainForm.FlightPlanner.CMB_altmode.SelectedValue == FlightPlanner.altmode.Absolute)
                     {
-                        exitAltitude = entryAltitude = plugin.Host.cs.HomeAlt + 10;
+                        // TODO - Restore me!
+
+                        //exitAltitude = entryAltitude = plugin.Host.cs.HomeAlt + 10;
                     }
 
                     while (wpstart != 0 && wpstart < grid.Count && grid[wpstart].Tag != "E")
@@ -1246,32 +1249,37 @@ namespace MissionPlanner
                         wpend--;
                     }
 
-                    /*if the first surveying point is above 10m fly to this altitude before starting survey run
-                      otherwise stay at 10m altitude and descend to starting altitude after reaching the start long/lat*/
-                    if (entryAltitude < grid[wpstart].Alt)
+                    /* If the first surveying point is above the home location, fly to the entry height above this altitude before starting the survey run,
+                       otherwise stay at the entry altitude. */
+
+                    // If planning in absolute mode.
+                    if ((FlightPlanner.altmode)plugin.Host.MainForm.FlightPlanner.CMB_altmode.SelectedValue == FlightPlanner.altmode.Absolute)
                     {
-                        entryAltitude = grid[wpstart].Alt;
+                        if (plugin.Host.cs.HomeAlt < grid[wpstart].Alt) entryAltitude += grid[wpstart].Alt;
+                        else entryAltitude += plugin.Host.cs.HomeAlt;
+                    }
+                    else
+                    {
+                        if (grid[wpstart].Alt > 0) entryAltitude += grid[wpstart].Alt;
                     }
 
                     if (CHK_toandland.Checked)
                     {
                         if (plugin.Host.cs.firmware == Firmwares.ArduCopter2)
                         {
-                            var wpno = plugin.Host.AddWPtoList(MAVLink.MAV_CMD.TAKEOFF, 20, 0, 0, 0, 0, 0,
-                                (entryAltitude * CurrentState.multiplierdist), gridobject);
+                            var wpno = plugin.Host.AddWPtoList(MAVLink.MAV_CMD.TAKEOFF, 20, 0, 0, 0, 0, 0, (entryAltitude * CurrentState.multiplierdist), gridobject);
 
                             wpsplitstart.Add(wpno);
                         }
                         else
                         {
-                            var wpno = plugin.Host.AddWPtoList(MAVLink.MAV_CMD.TAKEOFF, 20, 0, 0, 0, 0, 0,
-                                (entryAltitude * CurrentState.multiplierdist), gridobject);
+                            var wpno = plugin.Host.AddWPtoList(MAVLink.MAV_CMD.TAKEOFF, 20, 0, 0, 0, 0, 0, (entryAltitude * CurrentState.multiplierdist), gridobject);
 
                             wpsplitstart.Add(wpno);
                         }
                     }
 
-                    //create waypoint to first point, flying at a safe altitude
+                    // Create waypoint to first point, flying at a safe altitude.
                     AddWP(grid[0].Lng, grid[0].Lat, entryAltitude, -1);
 
                     if (CHK_usespeed.Checked)

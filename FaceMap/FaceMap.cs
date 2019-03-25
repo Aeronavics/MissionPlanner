@@ -126,12 +126,14 @@ namespace MissionPlanner
                     //calculate offset from the base of the face based on toe angle, camera pitch, camera overlap % and bench offset
                     vertOffset = distance * Math.Sin(camPitch * deg2rad) + (initialAltitude + (lane * vertIncrement) + (bench * height) + toeHeight);
                     horizOffset = distance * Math.Cos(camPitch * deg2rad) - ((initialAltitude + (lane * vertIncrement)) / Math.Tan(angle * deg2rad)) - bench * (bermDepth + height / Math.Tan(angle * deg2rad));
-                    
-                    //convert to absolute if flight planner is set to absolute mode (shift up by home alt)
-                    if (altmode == FlightPlanner.altmode.Absolute)
-                    {
-                        vertOffset += homeAlt;
-                    }
+                
+                // THIS IS COMMENTED OUT BECAUSE IT'S INSANE NONSENSE THAT SHOULD NEVER HAVE BEEN IN HERE.
+                //
+                //    //convert to absolute if flight planner is set to absolute mode (shift up by home alt)
+                //    if (altmode == FlightPlanner.altmode.Absolute)
+                //    {
+                //        vertOffset += homeAlt;
+                //    }
 
                     //if this is the first lane of a bench, climb to the altitude of the first waypoint of the lane before moving to the waypoint 
                     if (lane == 0 && ans.Count > 0)
