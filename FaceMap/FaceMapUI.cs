@@ -554,6 +554,9 @@ namespace MissionPlanner
         // Do Work
         private void domainUpDown1_ValueChanged(object sender, EventArgs e)
         {
+            const decimal BENCH_ANGLE_MAX = 90;
+            const decimal BENCH_ANGLE_MIN = 45;
+
             int strips = 0;
             int images = 0;
             int a = 1;
@@ -565,6 +568,13 @@ namespace MissionPlanner
 
             if (loading)
                 return;
+
+            // Check the value is in range; if not, coerce it.
+            if (NUM_angle.Value < BENCH_ANGLE_MIN || NUM_angle.Value > BENCH_ANGLE_MAX)
+            {
+                NUM_angle.Value = Math.Max(Math.Min(NUM_angle.Value, BENCH_ANGLE_MAX), BENCH_ANGLE_MIN);
+                return;
+            }
 
             if (!CHK_camPitchUnlock.Checked)
             {
@@ -728,7 +738,7 @@ namespace MissionPlanner
             if (image_before_yaw && (bearing != -1))
             {
                 plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_DIGICAM_CONTROL, 0, 0, 0, 0, 0, 1, 0, gridobject);
-                plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DELAY, max_delay, 0, 0, 0, 0, 0, 0, gridobject);
+                if (max_delay > 0) plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DELAY, max_delay, 0, 0, 0, 0, 0, 0, gridobject);
             }
 
             if (bearing != -1)
@@ -740,7 +750,7 @@ namespace MissionPlanner
             if (image_after_yaw && (bearing != -1))
             {
                 plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_DIGICAM_CONTROL, 0, 0, 0, 0, 0, 1, 0, gridobject);
-                plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DELAY, max_delay, 0, 0, 0, 0, 0, 0, gridobject);
+                if (max_delay > 0) plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DELAY, max_delay, 0, 0, 0, 0, 0, 0, gridobject);
 
                 // Then you need to yaw AGAIN, because DELAY counts as a nav command, so the yaw will become unlocked again.
                 plugin.Host.AddWPtoList(MAVLink.MAV_CMD.CONDITION_YAW, bearing, 0, 0, 0, 0, 0, 0, gridobject);
@@ -1332,7 +1342,7 @@ namespace MissionPlanner
                             if (plla.Tag == "R" && lastplla.Tag != "R" && CHK_extraimages.Checked)
                             {
                                 plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_DIGICAM_CONTROL, 0, 0, 0, 0, 0, 1, 0, gridobject);
-                                plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DELAY, (double)NUM_copter_delay.Value, 0, 0, 0, 0, 0, 0, gridobject);
+                                if ((double)NUM_copter_delay.Value > 0) plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DELAY, (double)NUM_copter_delay.Value, 0, 0, 0, 0, 0, 0, gridobject);
                             }
 
                             // points that do not trigger the camera
@@ -1347,10 +1357,10 @@ namespace MissionPlanner
                                         else AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, image_before_yaw: CHK_extraimages.Checked, image_after_yaw: CHK_extraimages.Checked);
                                         break;
                                     case "S":
-                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1, image_before_yaw: CHK_extraimages.Checked);
+                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, image_before_yaw: CHK_extraimages.Checked);
                                         break;
                                     case "E":
-                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
+                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading);
                                         break;
                                     case "R":
                                         //turn off camera and fly without strafing the face as an indication that the mission is complete on return path
@@ -1384,7 +1394,7 @@ namespace MissionPlanner
                                     }
                                     else if (plla.Tag == "ME")
                                     {
-                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1, image_before_yaw: CHK_extraimages.Checked, image_after_yaw: CHK_extraimages.Checked);
+                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, (double)NUM_copter_delay.Value, image_before_yaw: CHK_extraimages.Checked, image_after_yaw: CHK_extraimages.Checked);
 
                                         plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_CAM_TRIGG_DIST, 0, 0, 0, 0, 0, 0, 0, gridobject);
                                         startedtrigdist = false;
@@ -1400,7 +1410,7 @@ namespace MissionPlanner
                                     }
                                     else if (plla.Tag == "ME")
                                     {
-                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
+                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, (double)NUM_copter_delay.Value);
                                     }
                                 }
                             }
@@ -1421,7 +1431,7 @@ namespace MissionPlanner
                                     }
                                     else if (plla.Tag == "ME")
                                     {
-                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
+                                        AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, (double)NUM_copter_delay.Value);
 
                                         plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_REPEAT_SERVO,
                                             (float) NUM_reptservo.Value,
@@ -1445,7 +1455,7 @@ namespace MissionPlanner
                                 }
                                 else if (plla.Tag == "ME")
                                 {
-                                    AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, 1);
+                                    AddWP(plla.Lng, plla.Lat, plla.Alt, faceHeading, (double)NUM_copter_delay.Value);
 
                                     plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_SET_SERVO,
                                         (float) num_setservono.Value,
