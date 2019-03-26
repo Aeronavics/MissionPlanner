@@ -3226,6 +3226,7 @@ namespace MissionPlanner
             }
 
             // show wizard on first use
+#if false
             if (Settings.Instance["newuser"] == null)
             {
                 if (CustomMessageBox.Show("This is your first run, Do you wish to use the setup wizard?\nRecomended for new users.", "Wizard", MessageBoxButtons.YesNo) == (int)System.Windows.Forms.DialogResult.Yes)
@@ -3239,6 +3240,7 @@ namespace MissionPlanner
 
                 Settings.Instance["newuser"] = DateTime.Now.ToShortDateString();
             }
+#endif
         }
 
         private Dictionary<string, string> ProcessCommandLine(string[] args)
