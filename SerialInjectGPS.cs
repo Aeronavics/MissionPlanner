@@ -99,7 +99,7 @@ namespace MissionPlanner
             }            
 
             // restore current static state
-            chk_rtcmmsg.Checked = rtcm_msg;
+            //chk_rtcmmsg.Checked = rtcm_msg; // do not set on by defualt
 
             // restore setting
             if(Settings.Instance.ContainsKey("SerialInjectGPS_m8pautoconfig"))

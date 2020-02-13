@@ -134,6 +134,9 @@
             this.tabSimple = new System.Windows.Forms.TabPage();
             this.label38 = new System.Windows.Forms.Label();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.label45 = new System.Windows.Forms.Label();
+            this.NUM_mount_pitch = new System.Windows.Forms.NumericUpDown();
+            this.CHK_mount_control = new System.Windows.Forms.CheckBox();
             this.label37 = new System.Windows.Forms.Label();
             this.NUM_split = new System.Windows.Forms.NumericUpDown();
             this.CHK_usespeed = new System.Windows.Forms.CheckBox();
@@ -186,6 +189,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.NUM_spacing)).BeginInit();
             this.tabSimple.SuspendLayout();
             this.groupBox6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NUM_mount_pitch)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NUM_split)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NUM_UpDownFlySpeed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NUM_angle)).BeginInit();
@@ -1053,6 +1057,9 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.label45);
+            this.groupBox6.Controls.Add(this.NUM_mount_pitch);
+            this.groupBox6.Controls.Add(this.CHK_mount_control);
             this.groupBox6.Controls.Add(this.label37);
             this.groupBox6.Controls.Add(this.NUM_split);
             this.groupBox6.Controls.Add(this.CHK_usespeed);
@@ -1070,6 +1077,40 @@
             resources.ApplyResources(this.groupBox6, "groupBox6");
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.TabStop = false;
+            // 
+            // label45
+            // 
+            resources.ApplyResources(this.label45, "label45");
+            this.label45.Name = "label45";
+            // 
+            // NUM_mount_pitch
+            // 
+            resources.ApplyResources(this.NUM_mount_pitch, "NUM_mount_pitch");
+            this.NUM_mount_pitch.Maximum = new decimal(new int[] {
+            45,
+            0,
+            0,
+            0});
+            this.NUM_mount_pitch.Minimum = new decimal(new int[] {
+            90,
+            0,
+            0,
+            -2147483648});
+            this.NUM_mount_pitch.Name = "NUM_mount_pitch";
+            this.NUM_mount_pitch.Value = new decimal(new int[] {
+            90,
+            0,
+            0,
+            -2147483648});
+            // 
+            // CHK_mount_control
+            // 
+            resources.ApplyResources(this.CHK_mount_control, "CHK_mount_control");
+            this.CHK_mount_control.Checked = true;
+            this.CHK_mount_control.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CHK_mount_control.Name = "CHK_mount_control";
+            this.CHK_mount_control.UseVisualStyleBackColor = true;
+            this.CHK_mount_control.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
             // label37
             // 
@@ -1100,6 +1141,8 @@
             // CHK_usespeed
             // 
             resources.ApplyResources(this.CHK_usespeed, "CHK_usespeed");
+            this.CHK_usespeed.Checked = true;
+            this.CHK_usespeed.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CHK_usespeed.Name = "CHK_usespeed";
             this.CHK_usespeed.UseVisualStyleBackColor = true;
             // 
@@ -1134,7 +1177,7 @@
             0});
             this.NUM_UpDownFlySpeed.Name = "NUM_UpDownFlySpeed";
             this.NUM_UpDownFlySpeed.Value = new decimal(new int[] {
-            5,
+            10,
             0,
             0,
             0});
@@ -1223,6 +1266,8 @@
             // CHK_advanced
             // 
             resources.ApplyResources(this.CHK_advanced, "CHK_advanced");
+            this.CHK_advanced.Checked = true;
+            this.CHK_advanced.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CHK_advanced.Name = "CHK_advanced";
             this.CHK_advanced.UseVisualStyleBackColor = true;
             this.CHK_advanced.CheckedChanged += new System.EventHandler(this.CHK_advanced_CheckedChanged);
@@ -1369,6 +1414,7 @@
             this.tabSimple.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NUM_mount_pitch)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NUM_split)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NUM_UpDownFlySpeed)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NUM_angle)).EndInit();
@@ -1514,5 +1560,8 @@
         private System.Windows.Forms.Label label43;
         private System.Windows.Forms.NumericUpDown num_corridorwidth;
         private System.Windows.Forms.CheckBox chk_spiral;
+        private System.Windows.Forms.Label label45;
+        private System.Windows.Forms.NumericUpDown NUM_mount_pitch;
+        private System.Windows.Forms.CheckBox CHK_mount_control;
     }
 }

@@ -41,6 +41,11 @@
             this.quickView2 = new MissionPlanner.Controls.QuickView();
             this.quickView1 = new MissionPlanner.Controls.QuickView();
             this.tabActions = new System.Windows.Forms.TabPage();
+            this.lbl_RTLALT = new System.Windows.Forms.Label();
+            this.label44 = new System.Windows.Forms.Label();
+            this.RTLALTBTN = new MissionPlanner.Controls.MyButton();
+            this.BUT_LASER = new MissionPlanner.Controls.MyButton();
+            this.BUT_NO_LASER = new MissionPlanner.Controls.MyButton();
             this.modifyandSetLoiterRad = new MissionPlanner.Controls.ModifyandSet();
             this.BUT_abortland = new MissionPlanner.Controls.MyButton();
             this.BUT_resumemis = new MissionPlanner.Controls.MyButton();
@@ -182,6 +187,7 @@
             this.dataGridViewImageColumn2 = new System.Windows.Forms.DataGridViewImageColumn();
             this.Messagetabtimer = new System.Windows.Forms.Timer(this.components);
             this.bindingSourceStatusTab = new System.Windows.Forms.BindingSource(this.components);
+            this.lbl_RTLALT_BLANK = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.MainH)).BeginInit();
             this.MainH.Panel1.SuspendLayout();
             this.MainH.Panel2.SuspendLayout();
@@ -370,6 +376,7 @@
             // 
             // contextMenuStripHud
             // 
+            this.contextMenuStripHud.ImageScalingSize = new System.Drawing.Size(18, 18);
             this.contextMenuStripHud.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.videoToolStripMenuItem,
             this.setAspectRatioToolStripMenuItem,
@@ -481,6 +488,7 @@
             // 
             // contextMenuStripactionstab
             // 
+            this.contextMenuStripactionstab.ImageScalingSize = new System.Drawing.Size(18, 18);
             this.contextMenuStripactionstab.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.customizeToolStripMenuItem});
             this.contextMenuStripactionstab.Name = "contextMenuStripactionstab";
@@ -525,6 +533,7 @@
             // 
             // contextMenuStripQuickView
             // 
+            this.contextMenuStripQuickView.ImageScalingSize = new System.Drawing.Size(18, 18);
             this.contextMenuStripQuickView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.setViewCountToolStripMenuItem});
             this.contextMenuStripQuickView.Name = "contextMenuStripQuickView";
@@ -603,6 +612,10 @@
             // 
             // tabActions
             // 
+            this.tabActions.Controls.Add(this.label44);
+            this.tabActions.Controls.Add(this.RTLALTBTN);
+            this.tabActions.Controls.Add(this.BUT_LASER);
+            this.tabActions.Controls.Add(this.BUT_NO_LASER);
             this.tabActions.Controls.Add(this.modifyandSetLoiterRad);
             this.tabActions.Controls.Add(this.BUT_abortland);
             this.tabActions.Controls.Add(this.BUT_resumemis);
@@ -625,9 +638,54 @@
             this.tabActions.Controls.Add(this.BUTactiondo);
             this.tabActions.Controls.Add(this.modifyandSetSpeed);
             this.tabActions.Controls.Add(this.modifyandSetAlt);
+            this.tabActions.Controls.Add(this.lbl_RTLALT);
+            this.tabActions.Controls.Add(this.lbl_RTLALT_BLANK);
             resources.ApplyResources(this.tabActions, "tabActions");
             this.tabActions.Name = "tabActions";
             this.tabActions.UseVisualStyleBackColor = true;
+            // 
+            // lbl_RTLALT
+            // 
+            resources.ApplyResources(this.lbl_RTLALT, "lbl_RTLALT");
+            this.lbl_RTLALT.Name = "lbl_RTLALT";
+            // 
+            // label44
+            // 
+            resources.ApplyResources(this.label44, "label44");
+            this.label44.Name = "label44";
+            // 
+            // RTLALTBTN
+            // 
+            this.RTLALTBTN.ColorMouseDown = System.Drawing.Color.Empty;
+            this.RTLALTBTN.ColorMouseOver = System.Drawing.Color.Empty;
+            this.RTLALTBTN.ColorNotEnabled = System.Drawing.Color.Empty;
+            resources.ApplyResources(this.RTLALTBTN, "RTLALTBTN");
+            this.RTLALTBTN.Name = "RTLALTBTN";
+            this.RTLALTBTN.UseVisualStyleBackColor = true;
+            this.RTLALTBTN.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BUT_CHECKRTL_DOWN);
+            this.RTLALTBTN.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BUT_CHECKRTL_UP);
+            // 
+            // BUT_LASER
+            // 
+            this.BUT_LASER.ColorMouseDown = System.Drawing.Color.Empty;
+            this.BUT_LASER.ColorMouseOver = System.Drawing.Color.Empty;
+            this.BUT_LASER.ColorNotEnabled = System.Drawing.Color.Empty;
+            resources.ApplyResources(this.BUT_LASER, "BUT_LASER");
+            this.BUT_LASER.Name = "BUT_LASER";
+            this.toolTip1.SetToolTip(this.BUT_LASER, resources.GetString("BUT_LASER.ToolTip"));
+            this.BUT_LASER.UseVisualStyleBackColor = true;
+            this.BUT_LASER.Click += new System.EventHandler(this.BUT_LASER_Click);
+            // 
+            // BUT_NO_LASER
+            // 
+            this.BUT_NO_LASER.ColorMouseDown = System.Drawing.Color.Empty;
+            this.BUT_NO_LASER.ColorMouseOver = System.Drawing.Color.Empty;
+            this.BUT_NO_LASER.ColorNotEnabled = System.Drawing.Color.Empty;
+            resources.ApplyResources(this.BUT_NO_LASER, "BUT_NO_LASER");
+            this.BUT_NO_LASER.Name = "BUT_NO_LASER";
+            this.toolTip1.SetToolTip(this.BUT_NO_LASER, resources.GetString("BUT_NO_LASER.ToolTip"));
+            this.BUT_NO_LASER.UseVisualStyleBackColor = true;
+            this.BUT_NO_LASER.Click += new System.EventHandler(this.BUT_NO_LASER_Click);
             // 
             // modifyandSetLoiterRad
             // 
@@ -1910,7 +1968,7 @@
             resources.ApplyResources(this.trackBarPitch, "trackBarPitch");
             this.trackBarPitch.LargeChange = 10;
             this.trackBarPitch.Maximum = 45;
-            this.trackBarPitch.Minimum = -45;
+            this.trackBarPitch.Minimum = -90;
             this.trackBarPitch.Name = "trackBarPitch";
             this.trackBarPitch.SmallChange = 5;
             this.trackBarPitch.TickFrequency = 10;
@@ -1969,6 +2027,7 @@
             // 
             // contextMenuStripMap
             // 
+            this.contextMenuStripMap.ImageScalingSize = new System.Drawing.Size(18, 18);
             this.contextMenuStripMap.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.goHereToolStripMenuItem,
             this.flyToHereAltToolStripMenuItem,
@@ -2111,7 +2170,7 @@
             this.windDir1.BackColor = System.Drawing.Color.Transparent;
             this.windDir1.DataBindings.Add(new System.Windows.Forms.Binding("Direction", this.bindingSource1, "wind_dir", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             this.windDir1.DataBindings.Add(new System.Windows.Forms.Binding("Speed", this.bindingSource1, "wind_vel", true, System.Windows.Forms.DataSourceUpdateMode.Never));
-            this.windDir1.Direction = 180D;
+            this.windDir1.Direction = 360D;
             resources.ApplyResources(this.windDir1, "windDir1");
             this.windDir1.Name = "windDir1";
             this.windDir1.Speed = 0D;
@@ -2329,6 +2388,11 @@
             // 
             this.bindingSourceStatusTab.DataSource = typeof(MissionPlanner.CurrentState);
             // 
+            // lbl_RTLALT_BLANK
+            // 
+            resources.ApplyResources(this.lbl_RTLALT_BLANK, "lbl_RTLALT_BLANK");
+            this.lbl_RTLALT_BLANK.Name = "lbl_RTLALT_BLANK";
+            // 
             // FlightData
             // 
             this.Controls.Add(this.MainH);
@@ -2355,6 +2419,7 @@
             this.contextMenuStripQuickView.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceQuickTab)).EndInit();
             this.tabActions.ResumeLayout(false);
+            this.tabActions.PerformLayout();
             this.tabActionsSimple.ResumeLayout(false);
             this.tabPagePreFlight.ResumeLayout(false);
             this.tabGauges.ResumeLayout(false);
@@ -2575,5 +2640,11 @@
         private Controls.MyButton BUT_PayloadFolder;
         private System.Windows.Forms.ToolStripMenuItem setHomeHereToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem groundColorToolStripMenuItem;
+        private Controls.MyButton BUT_LASER;
+        private Controls.MyButton BUT_NO_LASER;
+        private Controls.MyButton RTLALTBTN;
+        private System.Windows.Forms.Label label44;
+        private System.Windows.Forms.Label lbl_RTLALT;
+        private System.Windows.Forms.Label lbl_RTLALT_BLANK;
     }
 }

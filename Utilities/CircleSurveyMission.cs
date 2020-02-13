@@ -5,7 +5,7 @@ namespace MissionPlanner.Utilities
 {
     public class CircleSurveyMission
     {
-        public static void createGrid(PointLatLngAlt centerPoint)
+        public static void CreateGrid(PointLatLngAlt centerPoint)
         {
             int startalt = 10;
             int endalt = 20;

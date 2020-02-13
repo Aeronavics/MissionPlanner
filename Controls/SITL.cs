@@ -111,6 +111,13 @@ namespace MissionPlanner.Controls
 
             Utilities.ThemeManager.ApplyThemeTo(this);
 
+            pictureBoxplane.Visible = false;
+            pictureBoxrover.Visible = false;
+            pictureBoxheli.Visible = false;
+            label6.Visible = false;
+            label5.Visible = false;
+            label3.Visible = false;
+
             MissionPlanner.Utilities.Tracking.AddPage(this.GetType().ToString(), this.Text);
         }
 

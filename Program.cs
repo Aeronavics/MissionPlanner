@@ -137,6 +137,8 @@ namespace MissionPlanner
             {
                 Splash.BackgroundImage = SplashBG;
                 Splash.pictureBox1.Visible = false;
+                Splash.label1.Visible = false;
+                Splash.TXT_version.Visible = false;
             }
 
             if (IconFile != null)

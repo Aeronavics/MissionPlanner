@@ -5,11 +5,11 @@ namespace MissionPlanner.Utilities
 {
     public class GimbalPoint
     {
-        public static int yawchannel = 7;
-        public static int pitchchannel = 5;
-        public static int rollchannel = -1;
+        public static int Yawchannel = 7;
+        public static int Pitchchannel = 5;
+        public static int Rollchannel = -1;
 
-        public enum axis
+        public enum Axis
         {
             roll,
             pitch,
@@ -17,74 +17,74 @@ namespace MissionPlanner.Utilities
         }
 
         /// returns the angle (degrees*100) that the RC_Channel input is receiving
-        static float angle_input(bool rev, float radio_in, float radio_min, float radio_max, float angle_min,
-            float angle_max)
+        static float Angle_input(bool Rev, float Radio_in, float Radio_min, float Radio_max, float Angle_min,
+            float Angle_max)
         {
-            return (rev ? -1.0f : 1.0f)*(radio_in - radio_min)*(angle_max - angle_min)/(radio_max - radio_min) +
-                   (rev ? angle_max : angle_min);
+            return (Rev ? -1.0f : 1.0f)*(Radio_in - Radio_min)*(Angle_max - Angle_min)/(Radio_max - Radio_min) +
+                   (Rev ? Angle_max : Angle_min);
         }
 
-        static int channelpwm(int channel)
+        static int Channelpwm(int Channel)
         {
-            if (channel == 1)
+            if (Channel == 1)
                 return (int) (float) MainV2.comPort.MAV.cs.ch1out;
-            if (channel == 2)
+            if (Channel == 2)
                 return (int) (float) MainV2.comPort.MAV.cs.ch2out;
-            if (channel == 3)
+            if (Channel == 3)
                 return (int) (float) MainV2.comPort.MAV.cs.ch3out;
-            if (channel == 4)
+            if (Channel == 4)
                 return (int) (float) MainV2.comPort.MAV.cs.ch4out;
-            if (channel == 5)
+            if (Channel == 5)
                 return (int) (float) MainV2.comPort.MAV.cs.ch5out;
-            if (channel == 6)
+            if (Channel == 6)
                 return (int) (float) MainV2.comPort.MAV.cs.ch6out;
-            if (channel == 7)
+            if (Channel == 7)
                 return (int) (float) MainV2.comPort.MAV.cs.ch7out;
-            if (channel == 8)
+            if (Channel == 8)
                 return (int) (float) MainV2.comPort.MAV.cs.ch8out;
 
             return 0;
         }
 
-        public static double ConvertPwmtoAngle(axis axis)
+        public static double ConvertPwmtoAngle(Axis axis)
         {
-            int pwmvalue = -1;
+            int Pwmvalue = -1;
 
-            if (!MainV2.comPort.MAV.param.ContainsKey("RC" + yawchannel + "_MIN"))
+            if (!MainV2.comPort.MAV.param.ContainsKey("RC" + Yawchannel + "_MIN"))
                 return 0;
 
             switch (axis)
             {
-                case GimbalPoint.axis.roll:
-                    pwmvalue = channelpwm(rollchannel);
-                    float minr = (float) MainV2.comPort.MAV.param["RC" + rollchannel + "_MIN"];
-                    float maxr = (float) MainV2.comPort.MAV.param["RC" + rollchannel + "_MAX"];
-                    float minroll = (float) MainV2.comPort.MAV.param["MNT_ANGMIN_ROL"];
-                    float maxroll = (float) MainV2.comPort.MAV.param["MNT_ANGMAX_ROL"];
-                    float revr = (float) MainV2.comPort.MAV.param["RC" + rollchannel + "_REV"];
+                case GimbalPoint.Axis.roll:
+                    Pwmvalue = Channelpwm(Rollchannel);
+                    float Minr = (float) MainV2.comPort.MAV.param["RC" + Rollchannel + "_MIN"];
+                    float Maxr = (float) MainV2.comPort.MAV.param["RC" + Rollchannel + "_MAX"];
+                    float Minroll = (float) MainV2.comPort.MAV.param["MNT_ANGMIN_ROL"];
+                    float Maxroll = (float) MainV2.comPort.MAV.param["MNT_ANGMAX_ROL"];
+                    float Revr = (float) MainV2.comPort.MAV.param["RC" + Rollchannel + "_REV"];
 
-                    return angle_input(revr != 1, pwmvalue, minr, maxr, minroll, maxroll)/100.0;
+                    return Angle_input(Revr != 1, Pwmvalue, Minr, Maxr, Minroll, Maxroll)/100.0;
 
-                case GimbalPoint.axis.pitch:
-                    pwmvalue = channelpwm(pitchchannel);
-                    float minp = (float) MainV2.comPort.MAV.param["RC" + pitchchannel + "_MIN"];
-                    float maxp = (float) MainV2.comPort.MAV.param["RC" + pitchchannel + "_MAX"];
-                    float minpitch = (float) MainV2.comPort.MAV.param["MNT_ANGMIN_TIL"];
-                    float maxpitch = (float) MainV2.comPort.MAV.param["MNT_ANGMAX_TIL"];
-                    float revp = (float) MainV2.comPort.MAV.param["RC" + pitchchannel + "_REV"];
+                case GimbalPoint.Axis.pitch:
+                    Pwmvalue = Channelpwm(Pitchchannel);
+                    float Minp = (float) MainV2.comPort.MAV.param["RC" + Pitchchannel + "_MIN"];
+                    float Maxp = (float) MainV2.comPort.MAV.param["RC" + Pitchchannel + "_MAX"];
+                    float Minpitch = (float) MainV2.comPort.MAV.param["MNT_ANGMIN_TIL"];
+                    float Maxpitch = (float) MainV2.comPort.MAV.param["MNT_ANGMAX_TIL"];
+                    float Revp = (float) MainV2.comPort.MAV.param["RC" + Pitchchannel + "_REV"];
 
 
-                    return angle_input(revp != 1, pwmvalue, minp, maxp, minpitch, maxpitch)/100.0;
+                    return Angle_input(Revp != 1, Pwmvalue, Minp, Maxp, Minpitch, Maxpitch)/100.0;
 
-                case GimbalPoint.axis.yaw:
-                    pwmvalue = channelpwm(yawchannel);
-                    float miny = (float) MainV2.comPort.MAV.param["RC" + yawchannel + "_MIN"];
-                    float maxy = (float) MainV2.comPort.MAV.param["RC" + yawchannel + "_MAX"];
-                    float minyaw = (float) MainV2.comPort.MAV.param["MNT_ANGMIN_PAN"];
-                    float maxyaw = (float) MainV2.comPort.MAV.param["MNT_ANGMAX_PAN"];
-                    float revy = (float) MainV2.comPort.MAV.param["RC" + yawchannel + "_REV"];
+                case GimbalPoint.Axis.yaw:
+                    Pwmvalue = Channelpwm(Yawchannel);
+                    float Miny = (float) MainV2.comPort.MAV.param["RC" + Yawchannel + "_MIN"];
+                    float Maxy = (float) MainV2.comPort.MAV.param["RC" + Yawchannel + "_MAX"];
+                    float Minyaw = (float) MainV2.comPort.MAV.param["MNT_ANGMIN_PAN"];
+                    float Maxyaw = (float) MainV2.comPort.MAV.param["MNT_ANGMAX_PAN"];
+                    float Revy = (float) MainV2.comPort.MAV.param["RC" + Yawchannel + "_REV"];
 
-                    return angle_input(revy != 1, pwmvalue, miny, maxy, minyaw, maxyaw)/100.0;
+                    return Angle_input(Revy != 1, Pwmvalue, Miny, Maxy, Minyaw, Maxyaw)/100.0;
             }
 
             return 0;
@@ -102,10 +102,13 @@ namespace MissionPlanner.Utilities
             double s = numer2/denom;
             if ((r < 0 || r > 1) || (s < 0 || s > 1))
                 return new PointF();
+
             // Find intersection point      
-            PointF result = new PointF();
-            result.X = (float) (start1.X + (r*(end1.X - start1.X)));
-            result.Y = (float) (start1.Y + (r*(end1.Y - start1.Y)));
+            PointF result = new PointF
+            {
+                X = (float)(start1.X + (r * (end1.X - start1.X))),
+                Y = (float)(start1.Y + (r * (end1.Y - start1.Y)))
+            };
             return result;
         }
 
@@ -114,11 +117,11 @@ namespace MissionPlanner.Utilities
             MainV2.comPort.GetMountStatus();
 
             // this should be looking at rc_channel function
-            yawchannel = (int) (float) MainV2.comPort.MAV.param["MNT_RC_IN_PAN"];
+            Yawchannel = (int) (float) MainV2.comPort.MAV.param["MNT_RC_IN_PAN"];
 
-            pitchchannel = (int) (float) MainV2.comPort.MAV.param["MNT_RC_IN_TILT"];
+            Pitchchannel = (int) (float) MainV2.comPort.MAV.param["MNT_RC_IN_TILT"];
 
-            rollchannel = (int) (float) MainV2.comPort.MAV.param["MNT_RC_IN_ROLL"];
+            Rollchannel = (int) (float) MainV2.comPort.MAV.param["MNT_RC_IN_ROLL"];
 
             //if (!MainV2.comPort.BaseStream.IsOpen)
             //  return PointLatLngAlt.Zero;
@@ -130,18 +133,19 @@ namespace MissionPlanner.Utilities
             double pitchangle = MainV2.comPort.MAV.cs.campointa;
 
             //
-            if ((double) MainV2.comPort.MAV.param["MNT_TYPE"] == 4)
+            if ((double) MainV2.comPort.MAV.param["MNT_TYPE"] == 4) //comment out whole section to only use calculated campoint.
             {
-                yawangle = MainV2.comPort.MAVlist[MainV2.comPort.sysidcurrent, 67].cs.yaw;
-                rollangle = MainV2.comPort.MAVlist[MainV2.comPort.sysidcurrent, 67].cs.roll;
-                pitchangle = MainV2.comPort.MAVlist[MainV2.comPort.sysidcurrent, 67].cs.pitch;
+                //updated compoent ID from 67 to 154
+                yawangle = MainV2.comPort.MAVlist[MainV2.comPort.sysidcurrent, 154].cs.yaw;
+                rollangle = MainV2.comPort.MAVlist[MainV2.comPort.sysidcurrent, 154].cs.roll;
+                pitchangle = MainV2.comPort.MAVlist[MainV2.comPort.sysidcurrent, 154].cs.pitch;
             }
 
             if (Math.Abs(rollangle) > 180 || yawangle == 0 && pitchangle == 0)
             {
-                yawangle = ConvertPwmtoAngle(axis.yaw);
+                yawangle = ConvertPwmtoAngle(Axis.yaw);
                 //rollangle = ConvertPwmtoAngle(axis.roll);
-                pitchangle = ConvertPwmtoAngle(axis.pitch) + MainV2.comPort.MAV.cs.pitch;
+                pitchangle = ConvertPwmtoAngle(Axis.pitch) + MainV2.comPort.MAV.cs.pitch;
 
                 pitchangle -= Math.Sin(yawangle*MathHelper.deg2rad)*MainV2.comPort.MAV.cs.roll;
             }

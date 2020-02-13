@@ -151,7 +151,7 @@ namespace MissionPlanner.GCSViews
         /// <param name="lat"></param>
         /// <param name="lng"></param>
         /// <param name="alt"></param>
-        public void setfromMap(double lat, double lng, int alt, double p1 = 0)
+        public void setfromMap(double lat, double lng, double alt, double p1 = 0)
         {
             if (selectedrow > Commands.RowCount)
             {
@@ -619,6 +619,8 @@ namespace MissionPlanner.GCSViews
             MainMap.Overlays.Add(drawnpolygonsoverlay);
 
             MainMap.Overlays.Add(poioverlay);
+
+            prop = new Propagation(MainMap);
 
             top = new GMapOverlay("top");
             //MainMap.Overlays.Add(top);
@@ -2878,6 +2880,8 @@ namespace MissionPlanner.GCSViews
         GMapOverlay geofenceoverlay;
         static GMapOverlay rallypointoverlay;
 
+        private static Propagation prop;
+
         // etc
         readonly Random rnd = new Random();
         string mobileGpsLog = string.Empty;
@@ -4346,6 +4350,12 @@ namespace MissionPlanner.GCSViews
                 if (isMouseDown || CurentRectMarker != null)
                     return;
 
+                prop.alt = MainV2.comPort.MAV.cs.alt;
+                prop.altasl = MainV2.comPort.MAV.cs.altasl;
+                prop.center = MainMap.Position;
+                prop.Update(MainV2.comPort.MAV.cs.HomeLocation, MainV2.comPort.MAV.cs.Location,
+                            MainV2.comPort.MAV.cs.battery_kmleft);
+
                 routesoverlay.Markers.Clear();
 
                 if (MainV2.comPort.MAV.cs.TrackerLocation != MainV2.comPort.MAV.cs.HomeLocation &&
@@ -5616,11 +5626,11 @@ namespace MissionPlanner.GCSViews
                 // add delay if supplied
                 Commands.Rows[rowIndex].Cells[Param1.Index].Value = p1;
 
-                setfromMap(y, x, (int)z, Math.Round(p1, 1));
+                setfromMap(y, x, z, Math.Round(p1, 1));
             }
             else if (cmd == MAVLink.MAV_CMD.LOITER_UNLIM)
             {
-                setfromMap(y, x, (int)z);
+                setfromMap(y, x, z);
             }
             else
             {
@@ -6207,7 +6217,7 @@ namespace MissionPlanner.GCSViews
                 foreach (var loc in ls.Coordinates)
                 {
                     selectedrow = Commands.Rows.Add();
-                    setfromMap(loc.Latitude, loc.Longitude, (int) loc.Altitude);
+                    setfromMap(loc.Latitude, loc.Longitude, (double)loc.Altitude);
                 }
             }
         }
@@ -6913,7 +6923,7 @@ Column 1: Field type (RALLY is the only one at the moment -- may have RALLY_LAND
 
         private void createCircleSurveyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Utilities.CircleSurveyMission.createGrid(MouseDownEnd);
+            Utilities.CircleSurveyMission.CreateGrid(MouseDownEnd);
         }
 
         private void currentPositionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -6925,7 +6935,14 @@ Column 1: Field type (RALLY is the only one at the moment -- may have RALLY_LAND
         {
             GridPlugin grid = new GridPlugin();
             grid.Host = new PluginHost();
-            grid.but_Click(sender, e);
+            grid.But_Click(sender, e);
+        }
+
+        private void faceMapToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FaceMapPlugin facemap = new FaceMapPlugin();
+            facemap.Host = new PluginHost();
+            facemap.but_Click(sender, e);
         }
         
         private void Commands_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)

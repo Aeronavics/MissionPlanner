@@ -297,7 +297,10 @@
   <data name="CHK_markers.Text" xml:space="preserve">
     <value>Маркеры</value>
   </data>
-  <data name="CHK_internals.Text" xml:space="preserve">
+  <data name="
+        
+
+.Text" xml:space="preserve">
     <value>Внутреннее</value>
   </data>
   <data name="chk_crossgrid.Text" xml:space="preserve">

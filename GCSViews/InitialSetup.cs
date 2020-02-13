@@ -154,7 +154,7 @@ namespace MissionPlanner.GCSViews
             }
 
             var opt = AddBackstageViewPage(typeof(ConfigOptional), rm.GetString("backstageViewPageopt.Text"));
-            AddBackstageViewPage(typeof(ConfigGPSInject), "RTK/GPS Inject", true, opt);
+            AddBackstageViewPage(typeof(ConfigGPSInject), "RTK/GPS Inject", true, opt); 
             if (MainV2.DisplayConfiguration.displaySikRadio)
             {
                 AddBackstageViewPage(typeof(Sikradio), rm.GetString("backstageViewPageSikradio.Text"), true, opt);

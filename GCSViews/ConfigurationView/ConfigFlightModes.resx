@@ -133,7 +133,7 @@
     <value>2, 2, 2, 2</value>
   </data>
   <data name="CB_simple6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>87, 17</value>
+    <value>100, 19</value>
   </data>
   <data name="CB_simple6.TabIndex" type="System.Int32, mscorlib">
     <value>148</value>
@@ -166,7 +166,7 @@
     <value>2, 2, 2, 2</value>
   </data>
   <data name="CB_simple5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>87, 17</value>
+    <value>100, 19</value>
   </data>
   <data name="CB_simple5.TabIndex" type="System.Int32, mscorlib">
     <value>147</value>
@@ -199,7 +199,7 @@
     <value>2, 2, 2, 2</value>
   </data>
   <data name="CB_simple4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>87, 17</value>
+    <value>100, 19</value>
   </data>
   <data name="CB_simple4.TabIndex" type="System.Int32, mscorlib">
     <value>146</value>
@@ -232,7 +232,7 @@
     <value>2, 2, 2, 2</value>
   </data>
   <data name="CB_simple3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>87, 17</value>
+    <value>100, 19</value>
   </data>
   <data name="CB_simple3.TabIndex" type="System.Int32, mscorlib">
     <value>145</value>
@@ -265,7 +265,7 @@
     <value>2, 2, 2, 2</value>
   </data>
   <data name="CB_simple2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>87, 17</value>
+    <value>100, 19</value>
   </data>
   <data name="CB_simple2.TabIndex" type="System.Int32, mscorlib">
     <value>144</value>
@@ -298,7 +298,7 @@
     <value>2, 2, 2, 2</value>
   </data>
   <data name="CB_simple1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>87, 17</value>
+    <value>100, 19</value>
   </data>
   <data name="CB_simple1.TabIndex" type="System.Int32, mscorlib">
     <value>143</value>
@@ -328,7 +328,7 @@
     <value>94, 32</value>
   </data>
   <data name="label14.Size" type="System.Drawing.Size, System.Drawing">
-    <value>74, 13</value>
+    <value>83, 15</value>
   </data>
   <data name="label14.TabIndex" type="System.Int32, mscorlib">
     <value>142</value>
@@ -358,7 +358,7 @@
     <value>174, 32</value>
   </data>
   <data name="LBL_flightmodepwm.Size" type="System.Drawing.Size, System.Drawing">
-    <value>13, 13</value>
+    <value>14, 15</value>
   </data>
   <data name="LBL_flightmodepwm.TabIndex" type="System.Int32, mscorlib">
     <value>141</value>
@@ -388,7 +388,7 @@
     <value>94, 15</value>
   </data>
   <data name="label13.Size" type="System.Drawing.Size, System.Drawing">
-    <value>74, 13</value>
+    <value>85, 15</value>
   </data>
   <data name="label13.TabIndex" type="System.Int32, mscorlib">
     <value>140</value>
@@ -421,7 +421,7 @@
     <value>174, 15</value>
   </data>
   <data name="lbl_currentmode.Size" type="System.Drawing.Size, System.Drawing">
-    <value>42, 13</value>
+    <value>49, 15</value>
   </data>
   <data name="lbl_currentmode.TabIndex" type="System.Int32, mscorlib">
     <value>139</value>
@@ -451,7 +451,7 @@
     <value>443, 0</value>
   </data>
   <data name="label12.Size" type="System.Drawing.Size, System.Drawing">
-    <value>76, 13</value>
+    <value>85, 15</value>
   </data>
   <data name="label12.TabIndex" type="System.Int32, mscorlib">
     <value>138</value>
@@ -481,7 +481,7 @@
     <value>443, 125</value>
   </data>
   <data name="label11.Size" type="System.Drawing.Size, System.Drawing">
-    <value>70, 13</value>
+    <value>78, 15</value>
   </data>
   <data name="label11.TabIndex" type="System.Int32, mscorlib">
     <value>137</value>
@@ -511,7 +511,7 @@
     <value>443, 100</value>
   </data>
   <data name="label10.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 13</value>
+    <value>106, 15</value>
   </data>
   <data name="label10.TabIndex" type="System.Int32, mscorlib">
     <value>136</value>
@@ -541,7 +541,7 @@
     <value>443, 75</value>
   </data>
   <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 13</value>
+    <value>106, 15</value>
   </data>
   <data name="label9.TabIndex" type="System.Int32, mscorlib">
     <value>135</value>
@@ -571,7 +571,7 @@
     <value>443, 50</value>
   </data>
   <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 13</value>
+    <value>106, 15</value>
   </data>
   <data name="label8.TabIndex" type="System.Int32, mscorlib">
     <value>134</value>
@@ -601,7 +601,7 @@
     <value>443, 25</value>
   </data>
   <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 13</value>
+    <value>106, 15</value>
   </data>
   <data name="label7.TabIndex" type="System.Int32, mscorlib">
     <value>133</value>
@@ -1003,7 +1003,7 @@
     <value>BUT_SaveModes</value>
   </data>
   <data name="&gt;&gt;BUT_SaveModes.Type" xml:space="preserve">
-    <value>MissionPlanner.Controls.MyButton, MissionPlanner.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>MissionPlanner.Controls.MyButton, MissionPlanner.Controls, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;BUT_SaveModes.Parent" xml:space="preserve">
     <value>tableLayoutPanel1</value>
@@ -1024,7 +1024,7 @@
     <value>2, 2, 2, 2</value>
   </data>
   <data name="chk_ss6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>106, 17</value>
+    <value>106, 19</value>
   </data>
   <data name="chk_ss6.TabIndex" type="System.Int32, mscorlib">
     <value>154</value>
@@ -1057,7 +1057,7 @@
     <value>2, 2, 2, 2</value>
   </data>
   <data name="chk_ss5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>106, 17</value>
+    <value>106, 19</value>
   </data>
   <data name="chk_ss5.TabIndex" type="System.Int32, mscorlib">
     <value>153</value>
@@ -1090,7 +1090,7 @@
     <value>2, 2, 2, 2</value>
   </data>
   <data name="chk_ss4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>106, 17</value>
+    <value>106, 19</value>
   </data>
   <data name="chk_ss4.TabIndex" type="System.Int32, mscorlib">
     <value>152</value>
@@ -1123,7 +1123,7 @@
     <value>2, 2, 2, 2</value>
   </data>
   <data name="chk_ss3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>106, 17</value>
+    <value>106, 19</value>
   </data>
   <data name="chk_ss3.TabIndex" type="System.Int32, mscorlib">
     <value>151</value>
@@ -1156,7 +1156,7 @@
     <value>2, 2, 2, 2</value>
   </data>
   <data name="chk_ss2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>106, 17</value>
+    <value>106, 19</value>
   </data>
   <data name="chk_ss2.TabIndex" type="System.Int32, mscorlib">
     <value>150</value>
@@ -1189,7 +1189,7 @@
     <value>2, 2, 2, 2</value>
   </data>
   <data name="chk_ss1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>106, 17</value>
+    <value>106, 19</value>
   </data>
   <data name="chk_ss1.TabIndex" type="System.Int32, mscorlib">
     <value>149</value>
@@ -1216,7 +1216,7 @@
     <value>333, 150</value>
   </data>
   <data name="linkLabel1_ss.Size" type="System.Drawing.Size, System.Drawing">
-    <value>93, 26</value>
+    <value>85, 45</value>
   </data>
   <data name="linkLabel1_ss.TabIndex" type="System.Int32, mscorlib">
     <value>155</value>
@@ -1276,6 +1276,6 @@
     <value>ConfigFlightModes</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.MyUserControl, MissionPlanner.Controls, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
 </root>

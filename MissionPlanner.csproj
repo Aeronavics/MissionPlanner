@@ -17,6 +17,7 @@
     <Description>Mission Planner ground control station for ardupilot</Description>
     <Copyright>Copyright © Michael Oborne 2010-2018</Copyright>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -29,9 +30,9 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>bin\Debug\</OutputPath>
@@ -58,6 +59,8 @@
     <OutputPath>bin\Release\net461\</OutputPath>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>
+    </DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
     <RootNamespace>MissionPlanner</RootNamespace>
@@ -335,6 +338,14 @@
     <Compile Include="ElevationProfile.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FaceMap\FaceMap.cs" />
+    <Compile Include="FaceMap\FaceMapPlugin.cs" />
+    <Compile Include="FaceMap\FaceMapUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FaceMap\FaceMapUI.Designer.cs">
+      <DependentUpon>FaceMapUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="FollowMe.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -478,9 +489,13 @@
     </Compile>
     <EmbeddedResource Include="Controls\PropagationSettings.resx">
       <DependentUpon>PropagationSettings.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ProximityControl.resx">
       <DependentUpon>ProximityControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FaceMap\FaceMapUI.resx">
+      <DependentUpon>FaceMapUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\ConfigurationView\ConfigHWIDs.resx">
       <DependentUpon>ConfigHWIDs.cs</DependentUpon>
@@ -1613,6 +1628,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SerialInjectGPS.resx">
       <DependentUpon>SerialInjectGPS.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="SerialInjectGPS.ar.resx">
       <DependentUpon>SerialInjectGPS.cs</DependentUpon>
@@ -1992,6 +2008,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\FlightData.resx">
       <DependentUpon>FlightData.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\FlightData.ar.resx">
       <DependentUpon>FlightData.cs</DependentUpon>
@@ -2046,6 +2063,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\FlightPlanner.resx">
       <DependentUpon>FlightPlanner.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\FlightPlanner.ar.resx">
       <DependentUpon>FlightPlanner.cs</DependentUpon>
@@ -3888,12 +3906,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Grid\GridUI.resx">
       <DependentUpon>GridUI.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Grid\GridUI.ru-KZ.resx">
       <DependentUpon>GridUI.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Grid\GridUI.tr.resx">
       <DependentUpon>GridUI.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Joystick\JoystickSetup.resx">
       <DependentUpon>JoystickSetup.cs</DependentUpon>
@@ -3966,6 +3987,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Joystick\Joy_Mount_Mode.resx">
       <DependentUpon>Joy_Mount_Mode.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Joystick\Joy_Mount_Mode.ar.resx">
       <DependentUpon>Joy_Mount_Mode.cs</DependentUpon>
@@ -3975,9 +3997,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Joystick\Joy_Mount_Mode.id-ID.resx">
       <DependentUpon>Joy_Mount_Mode.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Joystick\Joy_Mount_Mode.ko-KR.resx">
       <DependentUpon>Joy_Mount_Mode.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Joystick\Joy_Mount_Mode.pt.resx">
       <DependentUpon>Joy_Mount_Mode.cs</DependentUpon>
@@ -4907,6 +4931,7 @@
     </Content>
     <Content Include="ParameterMetaDataBackup.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Properties\launchSettings.json" />
     <None Include="adb.exe">

@@ -816,6 +816,7 @@ namespace MissionPlanner.GCSViews
 
         private void mainloop()
         {
+
             threadrun = true;
             EndPoint Remote = new IPEndPoint(IPAddress.Any, 0);
 
@@ -1273,10 +1274,10 @@ namespace MissionPlanner.GCSViews
                                 float temp3 = (float)MainV2.comPort.MAV.param["MNT_TYPE"];
 
                                 if (MainV2.comPort.MAV.param.ContainsKey("MNT_STAB_PAN") &&
-                                    // (float)MainV2.comPort.MAV.param["MNT_STAB_PAN"] == 1 &&
+                                   //(float)MainV2.comPort.MAV.param["MNT_STAB_PAN"] == 1 &&
                                     ((float)MainV2.comPort.MAV.param["MNT_STAB_TILT"] == 1 &&
-                                      (float)MainV2.comPort.MAV.param["MNT_STAB_ROLL"] == 0) ||
-                                     (float)MainV2.comPort.MAV.param["MNT_TYPE"] == 4) // storm driver
+                                     (float)MainV2.comPort.MAV.param["MNT_STAB_ROLL"] == 0) ||
+                                    (float)MainV2.comPort.MAV.param["MNT_TYPE"] == 4) // storm driver
                                 {
                                     var marker = GimbalPoint.ProjectPoint();
 
@@ -1312,7 +1313,7 @@ namespace MissionPlanner.GCSViews
                             // add new - populate camera_feedback to map
                             double oldtime = double.MinValue;
                             foreach (var mark in MainV2.comPort.MAV.camerapoints.ToArray())
-                            {
+                                {
                                 var timesincelastshot = (mark.time_usec/1000.0)/1000.0 - oldtime;
                                 MainV2.comPort.MAV.cs.timesincelastshot = timesincelastshot;
                                 bool contains = photosoverlay.Markers.Any(p => p.Tag.Equals(mark.time_usec));
@@ -4679,6 +4680,68 @@ namespace MissionPlanner.GCSViews
             }
 
             Settings.config["groundColorToolStripMenuItem"] = groundColorToolStripMenuItem.Checked.ToString();
+        }
+
+        private void BUT_LASER_Click(object sender, EventArgs e)
+        {
+            MainV2.comPort.setParam("RNGFND_TYPE", 8, false);
+        }
+
+        private void BUT_NO_LASER_Click(object sender, EventArgs e)
+        {
+            MainV2.comPort.setParam("RNGFND_TYPE", 0, false);
+        }
+
+        private void BUT_CHECKRTL(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BUT_CHECKRTL_DOWN(object sender, MouseEventArgs e)
+        {
+
+            if (MainV2.comPort.MAV.cs.firmware == Firmwares.ArduCopter2) // ac2
+            {
+
+                try
+                {
+
+                    Double RTLALT = Convert.ToInt32((MainV2.comPort.MAV.param["RTL_ALT"].ToString()));
+
+                    RTLALT = RTLALT / 100;
+
+                    if(RTLALT < 10)
+                    {
+                        lbl_RTLALT.Text = "    " + (RTLALT).ToString("N2");
+                    }
+                    else if(RTLALT < 100)
+                    {
+                        lbl_RTLALT.Text = "  " + (RTLALT).ToString("N2");
+                    }
+                    else
+                    {
+                        lbl_RTLALT.Text = "" + (RTLALT).ToString("N2");
+                    }
+                    
+
+
+                    lbl_RTLALT_BLANK.Visible = false;
+                    lbl_RTLALT.Visible = true;
+
+                }
+
+                catch
+                {
+                }
+            }
+
+
+        }
+
+        private void BUT_CHECKRTL_UP(object sender, MouseEventArgs e)
+        {
+            lbl_RTLALT.Visible = false;
+            lbl_RTLALT_BLANK.Visible = true;
         }
     }
 }

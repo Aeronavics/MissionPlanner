@@ -634,7 +634,7 @@ namespace MissionPlanner.Grid
 
                     if (CHK_internals.Checked)
                     {
-                        routesOverlay.Markers.Add(new GMarkerGoogle(item, GMarkerGoogleType.green) { ToolTipText = a.ToString(), ToolTipMode = MarkerTooltipMode.OnMouseOver });
+                        routesOverlay.Markers.Add(new GMarkerGoogle(item, GMarkerGoogleType.red) { ToolTipText = a.ToString(), ToolTipMode = MarkerTooltipMode.OnMouseOver });
                         a++;
 
                         segment.Add(prevpoint);
@@ -1572,7 +1572,14 @@ namespace MissionPlanner.Grid
                         }
                     }
 
-                    if (CHK_usespeed.Checked)
+                    if (CHK_mount_control.Checked)
+                    {
+
+                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_MOUNT_CONTROL, (double)NUM_mount_pitch.Value, 0, 0, 0, 0, 0, 0, MAVLink.MAV_MOUNT_MODE.MAVLINK_TARGETING);                
+
+                    }
+
+                        if (CHK_usespeed.Checked)
                     {
                         plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_CHANGE_SPEED, 0,
                             (int) ((float) NUM_UpDownFlySpeed.Value/CurrentState.multiplierspeed), 0, 0, 0, 0, 0,
@@ -1742,6 +1749,14 @@ namespace MissionPlanner.Grid
                         }
                     }
 
+                    if (CHK_mount_control.Checked)
+                    {
+
+                        plugin.Host.AddWPtoList(MAVLink.MAV_CMD.DO_MOUNT_CONTROL, 0, 0, 0, 0, 0, 0, 0, MAVLink.MAV_MOUNT_MODE.MAVLINK_TARGETING);
+
+                    }
+
+
                     if (CHK_toandland.Checked)
                     {
                         if (CHK_toandland_RTL.Checked)
@@ -1832,5 +1847,9 @@ namespace MissionPlanner.Grid
             domainUpDown1_ValueChanged(sender, e);
         }
 
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

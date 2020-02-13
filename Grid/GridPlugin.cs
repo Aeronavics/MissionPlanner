@@ -35,7 +35,7 @@ namespace MissionPlanner.Grid
             var temp = (string)(resources.GetObject("$this.Text"));
 
             but = new ToolStripMenuItem(temp);
-            but.Click += but_Click;
+            but.Click += But_Click;
 
             bool hit = false;
             ToolStripItemCollection col = Host.FPMenuMap.Items;
@@ -57,7 +57,7 @@ namespace MissionPlanner.Grid
             return true;
         }
 
-        public void but_Click(object sender, EventArgs e)
+        public void But_Click(object sender, EventArgs e)
         {
             using (var gridui = new GridUI(this))
             {

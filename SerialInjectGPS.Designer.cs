@@ -132,8 +132,6 @@
             // chk_rtcmmsg
             // 
             resources.ApplyResources(this.chk_rtcmmsg, "chk_rtcmmsg");
-            this.chk_rtcmmsg.Checked = true;
-            this.chk_rtcmmsg.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chk_rtcmmsg.Name = "chk_rtcmmsg";
             this.toolTip1.SetToolTip(this.chk_rtcmmsg, resources.GetString("chk_rtcmmsg.ToolTip"));
             this.chk_rtcmmsg.UseVisualStyleBackColor = true;
@@ -458,7 +456,6 @@
             // 
             // SerialInjectGPS
             // 
-            
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.chk_m8pautoconfig);
